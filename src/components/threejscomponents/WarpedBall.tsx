@@ -11,10 +11,13 @@ import fragmentPars from './shaders/warpedBall/fragment_pars.glsl';
 import fragmentMain from './shaders/warpedBall/fragment_main.glsl';
 import { OrbitControls, Sky } from '@react-three/drei';
 
+interface WarpedBallProps {
+pointer: any;
+}
 
 
-const WarpedBall = ({pointer}) => {
-  const icoRef = useRef();
+const WarpedBall: React.FC<WarpedBallProps> = ({pointer}) => {
+  const icoRef = useRef<THREE.Mesh>();
 
 
   useEffect(() => {
@@ -39,6 +42,7 @@ const WarpedBall = ({pointer}) => {
   useFrame(({ clock}) => {
     
     if(!icoRef.current) return;
+    //@ts-ignore
     const shader = icoRef.current.material.userData.shader;
     if (shader) {
       shader.uniforms.uTime.value = clock.getElapsedTime() / 30;
@@ -48,7 +52,7 @@ const WarpedBall = ({pointer}) => {
   });
 
   return <>
-
+  {/*@ts-ignore*/}
   <mesh position={[0,0,-10]} ref={icoRef} geometry={new IcosahedronGeometry(2, 250)} />;
   </> 
 };
