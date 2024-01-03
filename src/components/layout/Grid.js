@@ -16,7 +16,7 @@ export const Grid = ({ posts }) => {
       return post.categories[0] === select;
     }
   });
-  console.log(posts);
+ 
   return (
     <div className="project-grid" id="grid">
       <CV />

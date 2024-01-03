@@ -48,7 +48,7 @@ scroller.on(event => {
 
 const cameraRef = useRef<THREE.PerspectiveCamera>(new THREE.PerspectiveCamera(105, viewport.width / viewport.height, 1, 1000))
 const cameraSceneOne = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
-const cameraSceneTwo = new THREE.PerspectiveCamera(45, viewport.width / viewport.height, 1, 1000)
+const cameraSceneTwo = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 
 
 useFrame(({ clock, gl }) => {
@@ -56,7 +56,7 @@ useFrame(({ clock, gl }) => {
   gl.render(scene1, cameraSceneOne);
   
   gl.setRenderTarget(renderTargetB);
-  gl.render(scene2, cameraSceneTwo);
+  gl.render(scene2, cameraSceneOne);
 
   if (shaderRef.current )  {
    
@@ -77,9 +77,7 @@ useFrame(({ clock, gl }) => {
 console.log(shaderRef.current)
   return (
     <>
-    {/* <CustomCamera />\ */}
-    {/* <CustomPerspectiveCamera /> */}
-        {/* <OrbitControls /> */}
+  {/* <SceneTwo /> */}
         <mesh
         position={[0,0,0]}
       
@@ -87,7 +85,6 @@ console.log(shaderRef.current)
       <planeGeometry args={[viewport.width , viewport.height]} />
         <shaderMaterial
         ref={shaderRef}
-        
           uniforms={{
             uTextureOne: {
               value: null,
@@ -101,9 +98,6 @@ console.log(shaderRef.current)
             uScroll: {
               value: 0.0
             }
-            // uProgress: {
-            //   progress: 0.0,
-            // },
           }}
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
@@ -112,7 +106,6 @@ console.log(shaderRef.current)
       </mesh>
       {createPortal(<SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />, scene1)}
       {createPortal(<SceneTwo />, scene2)}
-  
     </>
   );
 };

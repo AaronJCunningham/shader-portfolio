@@ -37,7 +37,7 @@ const WarpedBall = ({pointer}) => {
   }, []);
 
   useFrame(({ clock}) => {
-    console.log(pointer)
+    
     if(!icoRef.current) return;
     const shader = icoRef.current.material.userData.shader;
     if (shader) {

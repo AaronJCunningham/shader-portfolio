@@ -37,7 +37,8 @@ console.log("scene", nodes)
     <>
       <OrbitControls camera={sceneCamera} autoRotate/>
       <Environment preset="city" background={false} />
-      <WarpedBall pointer={pointer} />  </>
+      <WarpedBall pointer={pointer} />
+      </>
   );
 };
 

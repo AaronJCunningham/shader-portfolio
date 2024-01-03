@@ -6,7 +6,7 @@ import { OrthographicCamera as OrthographicCameraType } from 'three';
 const CustomCamera: React.FC = () => {
   const camera = useRef<OrthographicCameraType>(null!);
   const { size, viewport } = useThree();
-  console.log("SIZE", size, viewport.width)
+ 
 
   useEffect(() => {
     if (camera.current) {

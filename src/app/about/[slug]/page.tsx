@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 
 
 function Page({ params }: { params: { slug: string } }) {
-  console.log(params)
+
     return<div>{params.slug}</div>
 }
 

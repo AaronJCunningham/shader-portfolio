@@ -1,39 +1,48 @@
-import React from 'react';
-import { useThree } from "@react-three/fiber";
+import React, { useRef, useEffect } from 'react';
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
+import { Environment } from '@react-three/drei';
+
+import vertexShader from "./shaders/displexRing/vertex"
+import fragmentShader from "./shaders/displexRing/fragment"
 
 const SceneTwo = () => {
-  const { size, viewport } = useThree();
-  console.log("size", size, "viewport", viewport);
+  const shaderRef = useRef<THREE.ShaderMaterial>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { size } = useThree();
 
-  // Function to generate random positions
-  const generateRandomPositions = () => {
-    const positions = [];
-    for (let i = 0; i < 30; i++) {
-      const theta = Math.random() * 2 * Math.PI; // Random angle
-      const radius = Math.random() * 5; // Random radius
-      const x = radius * Math.cos(theta);
-      const y = radius * Math.sin(theta);
-      const z = Math.random() * -20; // Random depth
-      positions.push(new THREE.Vector3(x, y, z));
+
+
+  useFrame(({ clock }, delta) => {
+    
+    const time = clock.getElapsedTime();
+    
+    if (shaderRef.current) {
+      console.log(time)
+      shaderRef.current.uniforms.uTime.value += time
+      // shaderRef.current.parent[0].rotation.x = Math.sin(delta)
     }
-    return positions;
-  };
-
-  const positions = generateRandomPositions();
+    if(meshRef.current){
+      // meshRef.current.rotation.y += 0.2
+    }
+  });
 
   return (
     <>
-      {positions.map((position, index) => (
-        <mesh 
-          key={index}
-          position={position}
-          rotation={[Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI - 10]}
-        >
-          <boxGeometry args={[1, 1, 1]} />
-          <meshBasicMaterial color={'red'} />
-        </mesh>
-      ))}
+      <mesh ref={meshRef} position={[0, 0, -9]} scale={5}>
+        <torusGeometry args={[1, 0.3, 100, 100]} />
+        <shaderMaterial ref={shaderRef} 
+        uniforms={{
+            uTime: { value: 0 },
+            uResolution: { value: new THREE.Vector2(size.width, size.height) },
+            uDisplace: { value: 2 },
+            uSpread: { value: 1.2 },
+            uNoise: { value: 16 },
+          }}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}/>
+      </mesh>
+      <Environment preset='city' />
     </>
   );
 };
