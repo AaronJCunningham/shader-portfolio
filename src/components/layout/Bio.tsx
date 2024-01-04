@@ -11,15 +11,15 @@ export function Bio() {
   const scroller = new VirtualScroll();
 
   useEffect(() => {
-    boxWidth = document.getElementById("main_header")?.getBoundingClientRect()?.width || 0;
-    console.log("boxWIDTH>>>>>", boxWidth);
+    viewportWidth = document.getElementById("main_header")?.getBoundingClientRect()?.width || 0;
+    console.log("boxWIDTH>>>>>", viewportWidth);
   });
 
   const handleScroll = throttle((event) => {
     const scrollOffset = event.y / 1000;
     if (!ref.current) return;
     gsap.to(ref.current?.children, {
-      x: (i) => (i * spacing) - (-scrollOffset * boxWidth),
+      x: (i) => (i * spacing) - (-scrollOffset * viewportWidth),
       ease: "power1",
       duration: 0.8 // Adjust duration for smoother animation
     });
