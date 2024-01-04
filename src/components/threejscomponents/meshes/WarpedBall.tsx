@@ -5,10 +5,10 @@ import { IcosahedronGeometry, DirectionalLight, AmbientLight, MeshStandardMateri
 
 
 
-import vertexPars from './shaders/warpedBall/vertex_pars.glsl';
-import vertexMain from './shaders/warpedBall/vertex_main.glsl';
-import fragmentPars from './shaders/warpedBall/fragment_pars.glsl';
-import fragmentMain from './shaders/warpedBall/fragment_main.glsl';
+import vertexPars from '../shaders/warpedBall/vertex_pars.glsl';
+import vertexMain from '../shaders/warpedBall/vertex_main.glsl';
+import fragmentPars from '../shaders/warpedBall/fragment_pars.glsl';
+import fragmentMain from '../shaders/warpedBall/fragment_main.glsl';
 import { OrbitControls, Sky } from '@react-three/drei';
 
 interface WarpedBallProps {

@@ -1,12 +1,12 @@
 
 import { Canvas } from "@react-three/fiber"
 import { Suspense } from "react"
-import ShaderScene from "./ShaderScene"
+import ShaderScene from "./scenes/ShaderScene"
 import Loader from "../svg/Loader"
 
 const MainScene = () => {
     return <div className="header_canvas">
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={null}>
     <Canvas>
     <ShaderScene />
     </Canvas>

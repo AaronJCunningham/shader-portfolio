@@ -6,14 +6,13 @@ import React, { MutableRefObject, useEffect, useRef } from 'react';
 
 import SceneOne from './SceneOne';
 import SceneTwo from './SceneTwo';
-import vertexShader from "./shaders/vertexShader.glsl.js"
-import fragmentShader from "./shaders/fragmentShader.glsl.js"
-import CustomCamera from './CustomCamera';
+import vertexShader from "../shaders/vertexShader.glsl.js"
+import fragmentShader from "../shaders/fragmentShader.glsl.js"
 import VirtualScroll from 'virtual-scroll';
-import CustomPerspectiveCamera from './CustomPerspectiveCamera';
 
-import {useLoadingProgress} from "../../store"
-import Squid from './Squid';
+
+import {useLoadingProgress} from "../../../store"
+import Squid from '../meshes/Squid';
   
 
 const ShaderScene = () => {

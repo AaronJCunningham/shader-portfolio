@@ -3,8 +3,8 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
 import { Environment, MeshDistortMaterial } from '@react-three/drei';
 
-import vertexShader from "./shaders/displexRing/vertex"
-import fragmentShader from "./shaders/displexRing/fragment"
+import vertexShader from "../shaders/displexRing/vertex"
+import fragmentShader from "../shaders/displexRing/fragment"
 
 const SceneTwo = () => {
   const shaderRef = useRef<THREE.ShaderMaterial>(null);

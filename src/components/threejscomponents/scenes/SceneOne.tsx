@@ -3,9 +3,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import { PerspectiveCamera } from "three";
-import vertexShader from "./shaders/sceneOne/vertexShader.glsl";
-import fragmentShader from "./shaders/sceneOne/fragmentShader.glsl";
-import WarpedBall from "./WarpedBall";
+import vertexShader from "../shaders/sceneOne/vertexShader.glsl";
+import fragmentShader from "../shaders/sceneOne/fragmentShader.glsl";
+import WarpedBall from "../meshes/WarpedBall";
 
 
 interface SceneOneProps {
