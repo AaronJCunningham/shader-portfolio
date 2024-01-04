@@ -44,13 +44,13 @@ float pnoise(vec3 p) {
 }
 
 void main() {
-    float pat = pnoise(vec3(vUv * uNoise , sin(uTime) * 1.4 )) * uDisplace ;
-    float proximity = abs(vUv.x - (.5 + sin(uTime)/(12. * uSpread ) ));
+    float pat = pnoise(vec3(vUv * uNoise , sin(1.0) * 1.4 )) * uDisplace ;
+    float proximity = abs(vUv.x - (.5 + sin(1.0)/(12. * uSpread ) ));
 
     vec3 full = pat * vec3(clamp(.23 * uSpread  - proximity , 0., 1.));
     vec3 newPosition = vPosition + vNormal * full; 
     vec3 purpleColor = vec3(0.498, 0.2039, 0.8314) / vec3(0.4941, 0.4941, 0.051);
     vec3 color = -vec3(pnoise(vec3(1. - newPosition.z * 35.))*40.) * (.01 -full) * purpleColor;
-  gl_FragColor = vec4(color , 1.);
+    gl_FragColor = vec4(color , 1.);
 }
 `;

@@ -13,6 +13,7 @@ import VirtualScroll from 'virtual-scroll';
 import CustomPerspectiveCamera from './CustomPerspectiveCamera';
 
 import {useLoadingProgress} from "../../store"
+import Squid from './Squid';
   
 
 const ShaderScene = () => {
@@ -56,7 +57,7 @@ useFrame(({ clock, gl }) => {
   gl.render(scene1, cameraSceneOne);
   
   gl.setRenderTarget(renderTargetB);
-  gl.render(scene2, cameraSceneOne);
+  gl.render(scene2, cameraSceneTwo);
 
   if (shaderRef.current )  {
    

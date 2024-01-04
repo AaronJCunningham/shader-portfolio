@@ -11,9 +11,9 @@ import MainScene from '@/components/threejscomponents/MainScene'
 
 export default function Home() {
   return (<>
-   <div className="header_container" >
+   <div className="header_container" id="main_header">
     <Bio />
- <MainScene />
+    <MainScene />
     </div>
     </>
   )

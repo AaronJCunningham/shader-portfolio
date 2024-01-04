@@ -53,7 +53,7 @@ const WarpedBall: React.FC<WarpedBallProps> = ({pointer}) => {
 
   return <>
   {/*@ts-ignore*/}
-  <mesh position={[0,0,-10]} ref={icoRef} geometry={new IcosahedronGeometry(2, 250)} />;
+  <mesh position={[0,0,-10]} ref={icoRef} geometry={new IcosahedronGeometry(2, 250)} scale={Math.random() * 2} />;
   </> 
 };
 
