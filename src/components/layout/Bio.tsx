@@ -5,7 +5,7 @@ import { throttle } from "lodash";
 
 export function Bio() {
   const ref = useRef<HTMLDivElement | null>(null);
-  let boxWidth = 0;
+  let viewportWidth = 0;
   const spacing = 500; // Adjust this value to control the spacing
 
   const scroller = new VirtualScroll();
@@ -35,7 +35,7 @@ export function Bio() {
 
   useEffect(() => {
     if (!ref.current) return;
-    const viewportWidth = window.innerWidth;
+    viewportWidth = document.getElementById("main_header")?.getBoundingClientRect()?.width || 0;
     const headerWidth = document.getElementById("first")?.getBoundingClientRect().width!
     const children = ref.current.children;
    
