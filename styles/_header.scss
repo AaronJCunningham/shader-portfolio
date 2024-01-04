@@ -16,17 +16,22 @@
     padding-right: 50rem;
     overflow: hidden;
     width: 100vw;
+    height: 100vh;
     pointer-events: none;
     position: absolute;
     z-index: 1;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    // justify-content: center;
+    align-items: center;
     text-align: center;
     h2{
         width: 100vw;
         font-size: 10rem;
         line-height: 8rem;
         font-weight: 900;
+        text-align: center;
+        margin: auto;
     }
 }
