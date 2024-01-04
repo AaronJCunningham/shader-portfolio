@@ -1,9 +1,13 @@
 'use client'
 
-import { Bio } from '@/components/layout/Bio'
 
+
+import dynamic from "next/dynamic";
 import "../../styles/index.scss"
-import MainScene from '@/components/threejscomponents/MainScene'
+
+
+const Bio = dynamic(() => import("../components/layout/Bio"), { ssr: false });
+const MainScene = dynamic(() => import("../components/threejscomponents/MainScene"), { ssr: false });
 
 export default function Home() {
   return (<>

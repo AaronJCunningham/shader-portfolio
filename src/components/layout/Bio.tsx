@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import VirtualScroll from "virtual-scroll";
 import { throttle } from "lodash";
 
-export function Bio() {
+export default function Bio() {
   const ref = useRef<HTMLDivElement | null>(null);
   let viewportWidth = 0;
   const spacing = 500; // Adjust this value to control the spacing
