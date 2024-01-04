@@ -50,7 +50,10 @@ export function Bio() {
     <div>
       <div className="header_title_container" ref={ref}>
         <h2 className="box" id="first">Aaron J. <span>Cunningham</span></h2>
-        <h2 className="box">Interactive BUTT</h2>
+        <h2 className="box">Interactive Developer</h2>
+        <h2 className="box">Frontend Developer</h2>
+        <h2 className="box">Frontend Developer</h2>
+        <h2 className="box">Frontend Developer</h2>
         <h2 className="box">Frontend Developer</h2>
       </div>
     </div>
