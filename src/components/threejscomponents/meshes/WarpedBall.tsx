@@ -10,6 +10,7 @@ import vertexMain from '../shaders/warpedBall/vertex_main.glsl';
 import fragmentPars from '../shaders/warpedBall/fragment_pars.glsl';
 import fragmentMain from '../shaders/warpedBall/fragment_main.glsl';
 import { OrbitControls, Sky } from '@react-three/drei';
+import { throttle } from 'lodash';
 
 interface WarpedBallProps {
 pointer: any;
@@ -39,6 +40,13 @@ const WarpedBall: React.FC<WarpedBallProps> = ({pointer}) => {
     icoRef.current.material = material;
   }, []);
 
+  const updateRotation = throttle((x, y) => {
+    if (icoRef.current) {
+      icoRef.current.rotation.y = x * 2;
+      icoRef.current.rotation.x = y * -2;
+    }
+  }, 10);
+
   useFrame(({ clock}) => {
     
     if(!icoRef.current) return;
@@ -47,13 +55,12 @@ const WarpedBall: React.FC<WarpedBallProps> = ({pointer}) => {
     if (shader) {
       shader.uniforms.uTime.value = clock.getElapsedTime() / 30;
     }
-    icoRef.current.rotation.y = pointer.x * 2
-    icoRef.current.rotation.x = pointer.y * -2
+    updateRotation(pointer.x, pointer.y)
   });
 
   return <>
   {/*@ts-ignore*/}
-  <mesh position={[0,0,-10]} ref={icoRef} geometry={new IcosahedronGeometry(2, 250)} scale={Math.random() * 2} />;
+  <mesh position={[0,0,-10]} ref={icoRef} geometry={new IcosahedronGeometry(2, 250)} scale={2} />;
   </> 
 };
 

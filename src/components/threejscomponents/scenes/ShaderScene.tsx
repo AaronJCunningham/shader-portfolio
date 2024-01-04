@@ -13,6 +13,8 @@ import VirtualScroll from 'virtual-scroll';
 
 import {useLoadingProgress} from "../../../store"
 import Squid from '../meshes/Squid';
+import { throttle } from 'lodash';
+import { lerpColor } from '@/utilities';
   
 
 const ShaderScene = () => {
@@ -34,11 +36,14 @@ const [loadingProgress, setLoadingProgress] = useLoadingProgress((state) => [
   state.loadingProgress,
   state.setLoadingProgress,
 ]);
-console.log("camera",camera)
+
+
+
 
 useEffect(() => {
 setLoadingProgress(progress)
 },[progress])
+
 console.log("LOADER>>>>>",progress)
 const scroller = new VirtualScroll()
 let scroll = 0
@@ -46,9 +51,34 @@ scroller.on(event => {
 	scroll = event.y / 1000
 })
 
+const handleScroll = throttle((event) => {
+  scroll = event.y / 1000
+}, 10); // Throttle the event handler
+
+useEffect(() => {
+  scroller.on(handleScroll);
+
+  return () => {
+    scroller.off(handleScroll);
+  };
+}, []);
+
 const cameraRef = useRef<THREE.PerspectiveCamera>(new THREE.PerspectiveCamera(105, viewport.width / viewport.height, 1, 1000))
 const cameraSceneOne = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 const cameraSceneTwo = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
+
+const colorStart = [0, 0.678, 0.992]; // RGB for 0xff22ff
+const colorEnd = [0, 0, 0]; 
+
+const updateClearColorOnScroll = (gl) => {
+
+  
+
+  const interpolatedColor = lerpColor(colorStart, colorEnd, scroll * -1);
+  const [r, g, b] = interpolatedColor;
+  console.log("RGB",r,g,b)
+  gl.setClearColor(new THREE.Color(r, g, b));
+};
 
 
 useFrame(({ clock, gl }) => {
@@ -57,7 +87,7 @@ useFrame(({ clock, gl }) => {
   
   gl.setRenderTarget(renderTargetB);
   gl.render(scene2, cameraSceneTwo);
-
+  
   if (shaderRef.current )  {
    
     // @ts-ignore
@@ -71,13 +101,13 @@ useFrame(({ clock, gl }) => {
     }
 
   gl.setRenderTarget(null)
+  updateClearColorOnScroll(gl)
 
 
   });
 console.log(shaderRef.current)
   return (
     <>
-  {/* <SceneTwo /> */}
         <mesh
         position={[0,0,0]}
       
