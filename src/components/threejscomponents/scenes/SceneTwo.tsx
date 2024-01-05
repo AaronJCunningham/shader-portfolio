@@ -3,9 +3,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Environment } from '@react-three/drei';
 
 const SceneTwo = () => {
-  const meshRef1 = useRef(null);
-  const meshRef2 = useRef(null);
-  const meshRef3 = useRef(null);
+  const meshRef1 = useRef<THREE.Mesh>(null);
+  const meshRef2 = useRef<THREE.Mesh>(null);
+  const meshRef3 = useRef<THREE.Mesh>(null);
   const { size } = useThree();
 
   // Define initial velocities
