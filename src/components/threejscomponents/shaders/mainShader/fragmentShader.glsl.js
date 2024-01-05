@@ -28,7 +28,7 @@ void main() {
         texOne = texture(uTextureThree, vUv);
         texTwo = texture(uTextureTwo, vUv);
        
-        float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.x);
+        float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.y);
 
         // Interpolate between texOne and texTwo based on blendFactor
         finalColor = mix(texOne, texTwo, blendFactor);
