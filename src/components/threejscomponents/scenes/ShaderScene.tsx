@@ -6,8 +6,8 @@ import React, { MutableRefObject, useEffect, useRef } from 'react';
 
 import SceneOne from './SceneOne';
 import SceneTwo from './SceneTwo';
-import vertexShader from "../shaders/vertexShader.glsl.js"
-import fragmentShader from "../shaders/fragmentShader.glsl.js"
+import vertexShader from "../shaders/mainShader/vertexShader.glsl.js"
+import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js"
 import VirtualScroll from 'virtual-scroll';
 
 
@@ -15,6 +15,9 @@ import {useLoadingProgress} from "../../../store"
 import Squid from '../meshes/Squid';
 import { throttle } from 'lodash';
 import { lerpColor } from '@/utilities';
+import useMouseWheel from '@/components/hooks/useWheelEvent';
+import SceneThree from './SceneThree';
+import SceneFour from './SceneFour';
   
 
 const ShaderScene = () => {
@@ -25,9 +28,13 @@ const shaderRef = useRef<THREE.ShaderMaterial>(null)
 
 const scene1 = new THREE.Scene();
 const scene2 = new THREE.Scene();
+const scene3 = new THREE.Scene();
+const scene4 = new THREE.Scene();
 
 const renderTargetA = useFBO();
 const renderTargetB = useFBO();
+const renderTargetC = useFBO();
+const renderTargetD = useFBO();
 
 const { size, camera, viewport, pointer } = useThree()
 const { active, progress, errors, item, loaded, total } = useProgress()
@@ -47,65 +54,62 @@ setLoadingProgress(progress)
 console.log("LOADER>>>>>",progress)
 const scroller = new VirtualScroll()
 let scroll = 0
-scroller.on(event => {
-	scroll = event.y / 1000
-})
+let currentPhase = 1
 
-const handleScroll = throttle((event) => {
-  scroll = event.y / 1000
-}, 10); // Throttle the event handler
 
-useEffect(() => {
-  scroller.on(handleScroll);
-
-  return () => {
-    scroller.off(handleScroll);
-  };
-}, []);
-
-const cameraRef = useRef<THREE.PerspectiveCamera>(new THREE.PerspectiveCamera(105, viewport.width / viewport.height, 1, 1000))
 const cameraSceneOne = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 const cameraSceneTwo = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
+const cameraSceneThree = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
+const cameraSceneFour = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 
 const colorStart = [0, 0.678, 0.992]; // RGB for 0xff22ff
-const colorEnd = [0, 0, 0]; 
+const colorEnd = [1.0, 0, 0.85]; 
 
-const updateClearColorOnScroll = (gl) => {
 
-  
 
-  const interpolatedColor = lerpColor(colorStart, colorEnd, scroll * -1);
-  const [r, g, b] = interpolatedColor;
-  console.log("RGB",r,g,b)
-  gl.setClearColor(new THREE.Color(r, g, b));
-};
+const {cumulativeDeltaRef, currentPhaseRef, normalizedValueRef} = useMouseWheel(() =>{
+  scroll = normalizedValueRef.current 
+  currentPhase = currentPhaseRef.current
+})
 
+// const updateClearColorOnScroll = (gl) => {
+
+//   const interpolatedColor = lerpColor(colorStart, colorEnd, scroll );
+//   const [r, g, b] = interpolatedColor;
+//   // console.log("RGB",r,g,b)
+//   gl.setClearColor(new THREE.Color(r, g, b));
+// };
 
 useFrame(({ clock, gl }) => {
   gl.setRenderTarget(renderTargetA);
   gl.render(scene1, cameraSceneOne);
-  
   gl.setRenderTarget(renderTargetB);
   gl.render(scene2, cameraSceneTwo);
+  gl.setRenderTarget(renderTargetC);
+  gl.render(scene3, cameraSceneThree);
+  gl.setRenderTarget(renderTargetD);
+  gl.render(scene4, cameraSceneFour);
   
   if (shaderRef.current )  {
-   
     // @ts-ignore
       shaderRef.current.uniforms.uTime.value = clock.getElapsedTime();
       // @ts-ignore
       shaderRef.current.uniforms.uTextureOne.value = renderTargetA.texture;
       // @ts-ignore
       shaderRef.current.uniforms.uTextureTwo.value = renderTargetB.texture;
-      shaderRef.current.uniforms.uScroll.value = -scroll;
+      // @ts-ignore
+      shaderRef.current.uniforms.uTextureThree.value = renderTargetC.texture;
+      // @ts-ignore
+      shaderRef.current.uniforms.uTextureFour.value = renderTargetD.texture;
+      shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
+      shaderRef.current.uniforms.uScroll.value = scroll % 1;
+      console.log("scroll pahsed", scroll % 1)
       // shaderRef.current.uniforms.uv.value = shaderRef
     }
-
   gl.setRenderTarget(null)
-  updateClearColorOnScroll(gl)
-
-
+  // updateClearColorOnScroll(gl)
   });
-console.log(shaderRef.current)
+// console.log(shaderRef.current)
   return (
     <>
         <mesh
@@ -122,11 +126,20 @@ console.log(shaderRef.current)
             uTextureTwo: {
               value: null,
             },
+            uTextureThree: {
+              value: null,
+            },
+            uTextureFour: {
+              value: null,
+            },
             uTime: {
               value: 0.0,
             },
             uScroll: {
               value: 0.0
+            },
+            uCurrentPhase: {
+              value: 0
             }
           }}
           vertexShader={vertexShader}
@@ -136,6 +149,8 @@ console.log(shaderRef.current)
       </mesh>
       {createPortal(<SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />, scene1)}
       {createPortal(<SceneTwo />, scene2)}
+      {createPortal(<SceneThree />, scene3)}
+      {createPortal(<SceneFour/>, scene4)}
     </>
   );
 };

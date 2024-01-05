@@ -1,61 +1,40 @@
-'use client'
 import gsap from "gsap";
-import React, { useEffect, useRef } from "react";
-import VirtualScroll from "virtual-scroll";
-import { throttle } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
+import useMouseWheel from "../hooks/useWheelEvent"; // Adjust the path as necessary
+
+gsap.registerEffect({
+  name: "swapText",
+  effect: (targets, config) => {
+    let tl = gsap.timeline({ delay: config.delay });
+    tl.to(targets, { opacity: 0, duration: config.duration / 2 });
+    tl.add(() => targets[0].innerText = config.text);
+    tl.to(targets, { opacity: 1, duration: config.duration / 2 });
+    return tl;
+  },
+  defaults: { duration: 1 },
+  extendTimeline: true
+});
 
 export default function Bio() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  let viewportWidth = 0;
-  const spacing = 500; // Adjust this value to control the spacing
+  const ref = useRef<HTMLHeadingElement | null>(null);
+  const texts = ["Aaron J. Cunningham", "2", "3", "4"];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const scroller = new VirtualScroll();
-
-  useEffect(() => {
-    viewportWidth = document.getElementById("main_header")?.getBoundingClientRect()?.width || 0;
-    console.log("boxWIDTH>>>>>", viewportWidth);
+  const { currentPhaseRef} = useMouseWheel(() => {
+    const newIndex = currentPhaseRef.current - 1;
+    if (newIndex !== currentIndex) {
+      gsap.effects.swapText([ref.current], { 
+        text: texts[newIndex] || "BROKEN",
+        duration: 0.5
+      });
+      setCurrentIndex(newIndex);
+    }
   });
-
-  const handleScroll = throttle((event) => {
-    const scrollOffset = event.y / 1000;
-    if (!ref.current) return;
-    gsap.to(ref.current?.children, {
-      x: (i) => (i * spacing) - (-scrollOffset * viewportWidth),
-      ease: "power1",
-      duration: 0.8 // Adjust duration for smoother animation
-    });
-  }, 10); // Throttle the event handler
-
-  useEffect(() => {
-    scroller.on(handleScroll);
-
-    return () => {
-      scroller.off(handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    viewportWidth = document.getElementById("main_header")?.getBoundingClientRect()?.width || 0;
-    const headerWidth = document.getElementById("first")?.getBoundingClientRect().width!
-    const children = ref.current.children;
-   
-    const leftSpacing = (viewportWidth - headerWidth) / 2
-
-    gsap.set(children, {
-      x: (i) => leftSpacing+ (i * spacing)
-    });
-  }, []);
 
   return (
     <div>
-      <div className="header_title_container" ref={ref}>
-        <h2 className="box" id="first">Aaron J. <span>Cunningham</span></h2>
-        <h2 className="box">Interactive Developer</h2>
-        <h2 className="box">Frontend Developer</h2>
-        <h2 className="box">Frontend Developer</h2>
-        <h2 className="box">Frontend Developer</h2>
-        <h2 className="box">Frontend Developer</h2>
+      <div className="header_title_container">
+        <h2 ref={ref}>{texts[0]}</h2>
       </div>
     </div>
   );

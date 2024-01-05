@@ -22,7 +22,7 @@ const SceneOne: React.FC<SceneOneProps> = ({sceneCamera, pointer}) => {
 
 
 
-console.log("scene", nodes)
+// console.log("scene", nodes)
 
   useFrame((state, delta) => {
   
