@@ -16,14 +16,9 @@ const SceneThree = () => {
   const animate = () => {
     
     const time = clock.getElapsedTime();
-    
-    if (shaderRef.current) {
-  
-      shaderRef.current.uniforms.uDisplace.value = time
-      // shaderRef.current.parent[0].rotation.x = Math.sin(delta)
-    }
+
     if(meshRef.current){
-      meshRef.current.rotation.y += 0.2
+      meshRef.current.rotation.y += 0.005
     }
     
     requestAnimationFrame(animate);
@@ -37,7 +32,7 @@ useEffect(() =>{
     <>
       <mesh ref={meshRef} position={[0, 0, -9]} scale={1}>
         <sphereGeometry args={[2, 15, 100, 100]} />
-        <meshBasicMaterial color="yellow"/>
+        <meshNormalMaterial wireframe={true}/>
       </mesh>
       <Environment preset='city' />
     </>

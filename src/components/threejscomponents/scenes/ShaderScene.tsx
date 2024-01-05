@@ -6,6 +6,9 @@ import React, { MutableRefObject, useEffect, useRef } from 'react';
 
 import SceneOne from './SceneOne';
 import SceneTwo from './SceneTwo';
+import SceneThree from './SceneThree';
+import SceneFour from './SceneFour';
+
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js"
 import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js"
 import VirtualScroll from 'virtual-scroll';
@@ -16,8 +19,7 @@ import Squid from '../meshes/Squid';
 import { throttle } from 'lodash';
 import { lerpColor } from '@/utilities';
 import useMouseWheel from '@/components/hooks/useWheelEvent';
-import SceneThree from './SceneThree';
-import SceneFour from './SceneFour';
+
   
 
 const ShaderScene = () => {
@@ -51,10 +53,10 @@ useEffect(() => {
 setLoadingProgress(progress)
 },[progress])
 
-console.log("LOADER>>>>>",progress)
+// console.log("LOADER>>>>>",progress)
 const scroller = new VirtualScroll()
 let scroll = 0
-let currentPhase = 1
+
 
 
 const cameraSceneOne = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
@@ -66,19 +68,23 @@ const colorStart = [0, 0.678, 0.992]; // RGB for 0xff22ff
 const colorEnd = [1.0, 0, 0.85]; 
 
 
+let normalizedScroll = 0; // Initialize outside the callback
+let currentPhase = 1;
 
-const {cumulativeDeltaRef, currentPhaseRef, normalizedValueRef} = useMouseWheel(() =>{
-  scroll = normalizedValueRef.current 
-  currentPhase = currentPhaseRef.current
-})
+const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } = useMouseWheel(() => {
+  const uScroll = normalizedValueRef.current; // Cumulative scroll value
+  currentPhase = currentPhaseRef.current; // Current phase number (1, 2, 3, 4)
 
-// const updateClearColorOnScroll = (gl) => {
+  // Calculate the normalized scroll value for the current phase
+  const phaseStart = (currentPhase - 1) * 0.25; // Start of the current phase range
+  normalizedScroll = (uScroll - phaseStart) / 0.25;
 
-//   const interpolatedColor = lerpColor(colorStart, colorEnd, scroll );
-//   const [r, g, b] = interpolatedColor;
-//   // console.log("RGB",r,g,b)
-//   gl.setClearColor(new THREE.Color(r, g, b));
-// };
+  // Clamp the value between 0 and 1
+  normalizedScroll = Math.min(Math.max(normalizedScroll, 0), 1);
+  console.log("THREE",currentPhase, currentPhaseRef.current)
+});
+
+
 
 useFrame(({ clock, gl }) => {
   gl.setRenderTarget(renderTargetA);
@@ -102,8 +108,8 @@ useFrame(({ clock, gl }) => {
       // @ts-ignore
       shaderRef.current.uniforms.uTextureFour.value = renderTargetD.texture;
       shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
-      shaderRef.current.uniforms.uScroll.value = scroll % 1;
-      console.log("scroll pahsed", scroll % 1)
+      shaderRef.current.uniforms.uScroll.value = normalizedScroll;
+    
       // shaderRef.current.uniforms.uv.value = shaderRef
     }
   gl.setRenderTarget(null)

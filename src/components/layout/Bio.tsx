@@ -5,7 +5,7 @@ import useMouseWheel from "../hooks/useWheelEvent"; // Adjust the path as necess
 gsap.registerEffect({
   name: "swapText",
   effect: (targets, config) => {
-    let tl = gsap.timeline({ delay: config.delay });
+    let tl = gsap.timeline();
     tl.to(targets, { opacity: 0, duration: config.duration / 2 });
     tl.add(() => targets[0].innerText = config.text);
     tl.to(targets, { opacity: 1, duration: config.duration / 2 });
@@ -17,25 +17,28 @@ gsap.registerEffect({
 
 export default function Bio() {
   const ref = useRef<HTMLHeadingElement | null>(null);
-  const texts = ["Aaron J. Cunningham", "2", "3", "4"];
+  const texts = ["Aaron J. Cunningham", "Interactive Frontend Development", "WebGL & Three.js", "Metaverse & Web3"];
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { currentPhaseRef} = useMouseWheel(() => {
+  const { currentPhaseRef } = useMouseWheel(() => {
     const newIndex = currentPhaseRef.current - 1;
-    if (newIndex !== currentIndex) {
-      gsap.effects.swapText([ref.current], { 
-        text: texts[newIndex] || "BROKEN",
-        duration: 0.5
+    console.log("OUTSIDE",newIndex, currentPhaseRef.current - 1, currentIndex )
+    if ( newIndex !== currentIndex) {
+      gsap.effects.swapText([ref.current], {
+        text: texts[newIndex],
+        duration: 0.25
       });
       setCurrentIndex(newIndex);
+      console.log("inside",newIndex, currentPhaseRef.current - 1, currentIndex )
     }
   });
 
+ 
+  
+
+
   return (
-    <div>
-      <div className="header_title_container">
-        <h2 ref={ref}>{texts[0]}</h2>
-      </div>
+    <div className="header_title_container">
+      <h2 ref={ref}></h2>
     </div>
   );
 }

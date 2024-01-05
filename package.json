@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^9.92.7",
     "@react-three/fiber": "^8.15.12",
+    "@react-three/postprocessing": "^2.15.11",
     "@siluat/flubber": "^0.4.2",
     "@types/three": "^0.160.0",
     "@types/virtual-scroll": "^2.0.3",

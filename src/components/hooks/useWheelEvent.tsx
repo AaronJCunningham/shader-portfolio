@@ -18,7 +18,7 @@ const useMouseWheel = (callback: (event: WheelEvent, cumulativeDelta: number) =>
 
       // Update normalizedValueRef
       normalizedValueRef.current = cumulativeDeltaRef.current / totalRange;
-      console.log("WTF",currentPhaseRef.current)
+     
     };
 
     window.addEventListener('wheel', handleWheel);
