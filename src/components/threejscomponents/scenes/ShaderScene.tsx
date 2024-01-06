@@ -53,9 +53,7 @@ useEffect(() => {
 setLoadingProgress(progress)
 },[progress])
 
-// console.log("LOADER>>>>>",progress)
-const scroller = new VirtualScroll()
-let scroll = 0
+
 
 
 
@@ -64,8 +62,7 @@ const cameraSceneTwo = new THREE.PerspectiveCamera(55, viewport.width / viewport
 const cameraSceneThree = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 const cameraSceneFour = new THREE.PerspectiveCamera(55, viewport.width / viewport.height, 1, 1000)
 
-const colorStart = [0, 0.678, 0.992]; // RGB for 0xff22ff
-const colorEnd = [1.0, 0, 0.85]; 
+
 
 
 let normalizedScroll = 0; // Initialize outside the callback
@@ -107,8 +104,10 @@ useFrame(({ clock, gl }) => {
       shaderRef.current.uniforms.uTextureThree.value = renderTargetC.texture;
       // @ts-ignore
       shaderRef.current.uniforms.uTextureFour.value = renderTargetD.texture;
-      shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
       shaderRef.current.uniforms.uScroll.value = normalizedScroll;
+      console.log("NORMALIZED SHADER", normalizedScroll )
+      shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
+      
     
       // shaderRef.current.uniforms.uv.value = shaderRef
     }
