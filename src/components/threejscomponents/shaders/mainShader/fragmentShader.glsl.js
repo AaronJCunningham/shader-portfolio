@@ -7,8 +7,14 @@ uniform sampler2D uNoiseTexture;
 uniform int uCurrentPhase;
 uniform float uScroll; // Normalized value for transition, should reset and range from 0 to 1 for each phase transition
 uniform float uTime;
+uniform float uGlitchIntensity;
+uniform vec2 uResolution;
 
 varying vec2 vUv;
+
+float random(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main() {
     vec4 texOne;
@@ -56,8 +62,7 @@ void main() {
         finalColor = mix(texOne, texTwo, blendFactor);
     }
 
-    // Mix the textures based on the scroll value
-    mixColor = mix(texOne, texTwo, uScroll); 
+    // Assign the glitched color to gl_FragColor
     gl_FragColor = finalColor;
 }
 `

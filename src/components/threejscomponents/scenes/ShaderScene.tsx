@@ -54,7 +54,10 @@ useEffect(() => {
 setLoadingProgress(progress)
 },[progress])
 
-
+useEffect(() =>{
+  if(!shaderRef.current) return;
+  shaderRef.current.uniforms.uResolution.value = new THREE.Vector2(size.width, size.height)
+})
 
 
 
@@ -115,6 +118,15 @@ useFrame(({ clock, gl }) => {
   gl.setRenderTarget(null)
   // updateClearColorOnScroll(gl)
   });
+
+
+const glitchIntensity = 0.5; // Example intensity value
+// Randomly trigger the glitch effect
+setInterval(() => {
+  if (shaderRef.current )  {
+    shaderRef.current.uniforms.uGlitchIntensity.value = Math.random() < 0.1 ? glitchIntensity : 0;
+  }
+}, 1000); // Check every 100ms
 // console.log(shaderRef.current)
   return (
     <>
@@ -149,6 +161,12 @@ useFrame(({ clock, gl }) => {
             },
             uCurrentPhase: {
               value: 0
+            },
+            uGlitchIntensity:{
+              value: 0.0
+            }, 
+            uResolution: {
+              value: null
             }
           }}
           vertexShader={vertexShader}
