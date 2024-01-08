@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Canvas, extend, useFrame, ReactThreeFiber, createPortal, useThree } from '@react-three/fiber';
+import { Canvas, extend, useFrame, ReactThreeFiber, createPortal, useThree, useLoader } from '@react-three/fiber';
 import { OrbitControls, OrthographicCamera, shaderMaterial, useFBO, useProgress } from '@react-three/drei';
 import React, { MutableRefObject, useEffect, useRef } from 'react';
 
@@ -11,14 +11,13 @@ import SceneFour from './SceneFour';
 
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js"
 import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js"
-import VirtualScroll from 'virtual-scroll';
+
 
 
 import {useLoadingProgress} from "../../../store"
-import Squid from '../meshes/Squid';
-import { throttle } from 'lodash';
-import { lerpColor } from '@/utilities';
+
 import useMouseWheel from '@/components/hooks/useWheelEvent';
+import { lerp } from 'three/src/math/MathUtils.js';
 
   
 
@@ -38,6 +37,8 @@ const renderTargetB = useFBO();
 const renderTargetC = useFBO();
 const renderTargetD = useFBO();
 
+const noiseTexture = useLoader(THREE.TextureLoader ,"/images/noise.png")
+console.log(noiseTexture)
 const { size, camera, viewport, pointer } = useThree()
 const { active, progress, errors, item, loaded, total } = useProgress()
 
@@ -78,7 +79,7 @@ const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } = useMouseWhee
 
   // Clamp the value between 0 and 1
   normalizedScroll = Math.min(Math.max(normalizedScroll, 0), 1);
-  console.log("THREE",currentPhase, currentPhaseRef.current)
+  // console.log("THREE",currentPhase, currentPhaseRef.current)
 });
 
 
@@ -104,8 +105,8 @@ useFrame(({ clock, gl }) => {
       shaderRef.current.uniforms.uTextureThree.value = renderTargetC.texture;
       // @ts-ignore
       shaderRef.current.uniforms.uTextureFour.value = renderTargetD.texture;
-      shaderRef.current.uniforms.uScroll.value = normalizedScroll;
-      console.log("NORMALIZED SHADER", normalizedScroll )
+      shaderRef.current.uniforms.uScroll.value = lerp(normalizedScroll, shaderRef.current.uniforms.uScroll.value, 0.1);
+      // console.log("NORMALIZED SHADER", normalizedScroll )
       shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
       
     
@@ -117,7 +118,7 @@ useFrame(({ clock, gl }) => {
 // console.log(shaderRef.current)
   return (
     <>
-        <mesh
+      <mesh
         position={[0,0,0]}
       
       >
@@ -137,6 +138,9 @@ useFrame(({ clock, gl }) => {
             uTextureFour: {
               value: null,
             },
+            uNoiseTexture: {
+              value: noiseTexture,
+            },
             uTime: {
               value: 0.0,
             },
@@ -150,7 +154,6 @@ useFrame(({ clock, gl }) => {
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
         />
-     
       </mesh>
       {createPortal(<SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />, scene1)}
       {createPortal(<SceneTwo />, scene2)}

@@ -39,6 +39,18 @@ useEffect(() =>{
         <boxGeometry args={[2, 2]} />
         <meshBasicMaterial color="red" />
       </mesh>
+      <mesh ref={meshRef} position={[-4, 0, -9]} scale={2}>
+        <boxGeometry args={[2, 2]} />
+        <meshBasicMaterial color="red" />
+      </mesh>
+      <mesh ref={meshRef} position={[4, 0, -9]} scale={2}>
+        <boxGeometry args={[2, 2]} />
+        <meshBasicMaterial color="red" />
+      </mesh>
+      <mesh ref={meshRef} position={[-5, 0, -9]} scale={2}>
+        <boxGeometry args={[2, 2]} />
+        <meshBasicMaterial color="red" />
+      </mesh>
       <Environment preset='city' />
     </>
   );

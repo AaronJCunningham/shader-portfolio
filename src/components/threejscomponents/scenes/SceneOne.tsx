@@ -35,7 +35,6 @@ const SceneOne: React.FC<SceneOneProps> = ({sceneCamera, pointer}) => {
 
   return (
     <>
- 
       <Environment preset="city" background={false} />
       <WarpedBall pointer={pointer} />
       </>

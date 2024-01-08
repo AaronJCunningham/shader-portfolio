@@ -34,6 +34,14 @@ useEffect(() =>{
         <sphereGeometry args={[2, 15, 100, 100]} />
         <meshNormalMaterial wireframe={true}/>
       </mesh>
+      <mesh ref={meshRef} position={[-4, 0, -9]} scale={1}>
+        <sphereGeometry args={[2, 15, 100, 100]} />
+        <meshNormalMaterial wireframe={true}/>
+      </mesh>
+      <mesh ref={meshRef} position={[4, 0, -9]} scale={1}>
+        <sphereGeometry args={[2, 15, 100, 100]} />
+        <meshNormalMaterial wireframe={true}/>
+      </mesh>
       <Environment preset='city' />
     </>
   );

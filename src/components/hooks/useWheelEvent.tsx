@@ -11,22 +11,25 @@ const useMouseWheel = (callback: (event: WheelEvent, cumulativeDelta: number) =>
     const handleWheel = (event: WheelEvent) => {
       cumulativeDeltaRef.current += event.deltaY;
       callback(event, cumulativeDeltaRef.current);
-
+  
       // Update currentPhaseRef
       const normalizedDelta = Math.floor((cumulativeDeltaRef.current % totalRange) / (totalRange / numScenes));
       currentPhaseRef.current = normalizedDelta + 1;
-
+  
       // Update normalizedValueRef
-      normalizedValueRef.current = cumulativeDeltaRef.current / totalRange;
-     
+      normalizedValueRef.current = (cumulativeDeltaRef.current % totalRange) / totalRange;
+      console.log("IMPORTANT>>>>>>", cumulativeDeltaRef.current,
+      currentPhaseRef.current,
+      normalizedValueRef.current)
     };
-
+  
     window.addEventListener('wheel', handleWheel);
-
+  
     return () => {
       window.removeEventListener('wheel', handleWheel);
     };
   }, [callback]);
+  
 
   return {
     cumulativeDeltaRef,
