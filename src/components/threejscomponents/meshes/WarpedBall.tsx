@@ -11,6 +11,7 @@ import fragmentPars from '../shaders/warpedBall/fragment_pars.glsl';
 import fragmentMain from '../shaders/warpedBall/fragment_main.glsl';
 import { OrbitControls, Sky } from '@react-three/drei';
 import { throttle } from 'lodash';
+import { lerp } from '@/utilities';
 
 interface WarpedBallProps {
 pointer: any;
@@ -42,8 +43,8 @@ const WarpedBall: React.FC<WarpedBallProps> = ({pointer}) => {
 
   const updateRotation = throttle((x, y) => {
     if (icoRef.current) {
-      icoRef.current.rotation.y = x * 2;
-      icoRef.current.rotation.x = y * -2;
+      icoRef.current.rotation.y = lerp(icoRef.current.rotation.y, x * 2, 0.1);
+      icoRef.current.rotation.x = lerp(icoRef.current.rotation.x, y * -2,0.1);
     }
   }, 10);
 

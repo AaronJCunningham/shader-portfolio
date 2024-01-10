@@ -18,3 +18,7 @@ export const useScroll = create((set) => ({
   scroll: null,
   setScroll: (scroll) => set({ scroll }),
 }));
+export const useSelect = create((set) => ({
+  select: null,
+  setSelect: (select) => set({ select }),
+}));

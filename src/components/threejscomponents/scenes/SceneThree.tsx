@@ -1,50 +1,59 @@
-import React, { useRef, useEffect } from 'react';
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from 'three';
-import { Environment, MeshDistortMaterial } from '@react-three/drei';
+import { MathUtils } from 'three'
+import { useRef } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Instances, Instance, Environment } from '@react-three/drei'
+import { EffectComposer, N8AO, TiltShift2 } from '@react-three/postprocessing'
 
-import vertexShader from "../shaders/displexRing/vertex"
-import fragmentShader from "../shaders/displexRing/fragment"
+const particles = Array.from({ length: 150 }, () => ({
+  factor: MathUtils.randInt(20, 100),
+  speed: MathUtils.randFloat(0.01, 0.75),
+  xFactor: MathUtils.randFloatSpread(40),
+  yFactor: MathUtils.randFloatSpread(10),
+  zFactor: MathUtils.randFloatSpread(10)
+}))
 
-const SceneThree = () => {
-  const shaderRef = useRef<THREE.ShaderMaterial>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const { size, clock,  } = useThree();
-
-
-
-  const animate = () => {
-    
-    const time = clock.getElapsedTime();
-
-    if(meshRef.current){
-      meshRef.current.rotation.y += 0.005
-    }
-    
-    requestAnimationFrame(animate);
-  };
-
-useEffect(() =>{
-  animate()
-},[])
-
+export default function App({pointer}: any) {
   return (
-    <>
-      <mesh ref={meshRef} position={[0, 0, -9]} scale={1}>
-        <sphereGeometry args={[2, 15, 100, 100]} />
-        <meshNormalMaterial wireframe={true}/>
-      </mesh>
-      <mesh ref={meshRef} position={[-4, 0, -9]} scale={1}>
-        <sphereGeometry args={[2, 15, 100, 100]} />
-        <meshNormalMaterial wireframe={true}/>
-      </mesh>
-      <mesh ref={meshRef} position={[4, 0, -9]} scale={1}>
-        <sphereGeometry args={[2, 15, 100, 100]} />
-        <meshNormalMaterial wireframe={true}/>
-      </mesh>
-      <Environment preset='city' />
-    </>
-  );
-};
+ <>
+      <color attach="background" args={['#ff22ff']} />
+      <fog attach="fog" args={['#ff22ff', 20, -5]} />
+      <ambientLight intensity={1.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+      <Bubbles pointer={pointer}/>
+    
+      <Environment preset="city" />
+      </>
+  )
+}
 
-export default SceneThree;
+function Bubbles({pointer}:any) {
+  const ref = useRef()
+  useFrame((state, delta) =>  {
+    ref.current.rotation.y = MathUtils.damp(ref.current.rotation.y, (pointer.x * Math.PI) / 3, 2.75, delta);
+    ref.current.rotation.x = MathUtils.damp(ref.current.rotation.x, (-pointer.y * Math.PI) / 3, 2.75, delta);
+  
+  })
+  return (
+    <Instances limit={particles.length} ref={ref} castShadow receiveShadow position={[0, 2.5, -9]}>
+      <sphereGeometry args={[0.45, 64, 64]} />
+      <meshNormalMaterial />
+      {particles.map((data, i) => (
+        <Bubble key={i} {...data} />
+      ))}
+    </Instances>
+  )
+}
+
+function Bubble({ factor, speed, xFactor, yFactor, zFactor }) {
+  const ref = useRef()
+  useFrame((state) => {
+    const t = factor + state.clock.elapsedTime * (speed / 2)
+    ref.current.scale.setScalar(Math.max(1.5, Math.cos(t) * 3))
+    ref.current.position.set(
+      Math.cos(t) + Math.sin(t * 1) / 10 + xFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 1) * factor) / 10,
+      Math.sin(t) + Math.cos(t * 2) / 10 + yFactor + Math.sin((t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
+      Math.sin(t) + Math.cos(t * 2) / 10 + zFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 3) * factor) / -10
+    )
+  })
+  return <Instance ref={ref} />
+}

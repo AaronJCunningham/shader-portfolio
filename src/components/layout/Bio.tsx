@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
 import useMouseWheel from "../hooks/useWheelEvent"; // Adjust the path as necessary
+import Link from "next/link";
 
 
 gsap.registerEffect({
@@ -48,7 +49,10 @@ const [normalizedValue, setNormalizedValue] = useState(0)
 
   return (
     <div className="header_title_container">
+      <div className="header_content">
       <h2 ref={ref}>{texts[currentIndex]}</h2>
+      {phase == 4 && <div className="enter_link"><Link href="/about" >MORE ABOUT ME</Link></div>}
+    </div>
     </div>
   );
 }

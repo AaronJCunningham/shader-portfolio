@@ -39,19 +39,22 @@ void main() {
         float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.x);
     
         // Pixelation effect
-        float pixelSize = mix(40.0, 200.0, blendFactor); // Adjust pixel size between 1 and 20 based on blendFactor
-        vec2 pixelatedUv = floor(vUv * pixelSize) / pixelSize;
-        texTwo = texture(uTextureTwo, pixelatedUv);
+        // float pixelSize = mix(100.0, 200.0, blendFactor); // Adjust pixel size between 1 and 20 based on blendFactor
+        // vec2 pixelatedUv = floor(vUv * pixelSize) / pixelSize;
+        // texTwo = texture(uTextureTwo, pixelatedUv);
     
         // Interpolate between texOne and texTwo based on blendFactor
         finalColor = mix(texOne, texTwo, blendFactor);
     } else if (uCurrentPhase == 3) {
         texOne = texture(uTextureFour, vUv);
         texTwo = texture(uTextureThree, vUv);
-        float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.x);
+        float angle = 95.0; // for diagonal
+        vec2 direction = vec2(cos(angle), sin(angle));
+        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, 1.0 - dot(vUv, direction));
+        finalColor = mix(texOne, texTwo, wipeFactor);
 
-        // Interpolate between texOne and texTwo based on blendFactor
-        finalColor = mix(texOne, texTwo, blendFactor);
+
+
     }
      else { // uCurrentPhase == 4
         texOne = texture(uTextureOne, vUv);
