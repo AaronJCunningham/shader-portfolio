@@ -20,7 +20,7 @@ const Loader = () => {
 
 
     return (
-        <div className="fixed inset-0 z-50 flex justify-center items-center w-[50%] m-auto">
+        <div className="fixed inset-0 z-50 flex justify-center items-center w-[50%] m-auto h-full bg-black">
             {/* @ts-ignore */}
             <Lottie lottieRef={lottieRef} animationData={loadingAnimation} loop={false}   />
         </div>

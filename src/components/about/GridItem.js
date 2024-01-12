@@ -22,7 +22,7 @@ export const GridItem = ({ post }) => {
     gsap.to(bgRef.current, { "background-color": "#797979", duration: 0.3 });
   };
 
-  console.log(gridRef.current);
+  // console.log(gridRef.current);
   return (
     <Link href={`/${post?.slug}`}>
       <div

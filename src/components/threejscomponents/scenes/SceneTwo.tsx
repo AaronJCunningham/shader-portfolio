@@ -1,56 +1,57 @@
-import React, { useRef, useEffect } from 'react';
-import { useFrame, useThree } from "@react-three/fiber";
-import { Environment } from '@react-three/drei';
-import BallManager from "../ballManger/BallManager"
+import * as THREE from "three"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
+import { Outlines, Environment, useTexture } from "@react-three/drei"
+import { Physics, useSphere } from "@react-three/cannon"
+import { EffectComposer, N8AO, SMAA } from "@react-three/postprocessing"
+import { useRef } from "react"
+// import { useControls } from "leva"
 
-const SceneTwo = ({pointer}) => {
-  // const meshRef1 = useRef<THREE.Mesh>(null);
-  // const meshRef2 = useRef<THREE.Mesh>(null);
-  // const meshRef3 = useRef<THREE.Mesh>(null);
-  // const meshRef4 = useRef<THREE.Mesh>(null);
-  // const meshRef5 = useRef<THREE.Mesh>(null);
+const rfs = THREE.MathUtils.randFloatSpread
+const sphereGeometry = new THREE.SphereGeometry(1, 32, 32)
+const baubleMaterial = new THREE.MeshNormalMaterial()
 
-  // const { size } = useThree();
+export const SceneTwo = ({pointer}) =>{
 
-  // // Define initial velocities
-  // const velocity1 = useRef({ x: 0.01, y: 0.01 });
-  // const velocity2 = useRef({ x: 0.015, y: -0.01 });
-  // const velocity3 = useRef({ x: -0.01, y: 0.015 });
-  // const velocity4 = useRef({ x: -0.01, y: 0.015 });
-  // const velocity5 = useRef({ x: -0.01, y: 0.015 });
+return (
+ 
+  
+  <>
+    <ambientLight intensity={0.5} />
+    <color attach="background" args={["#ff22ff"]} />
+    <spotLight intensity={1} angle={0.2} penumbra={1} position={[30, 30, 30]} castShadow shadow-mapSize={[512, 512]} />
+    <Physics gravity={[0, 2, 0]} iterations={10}>
+      <Pointer pointer={pointer} />
+      <Clump />
+    </Physics>
+    <Environment files="/images/adamsbridge.hdr" />
+    </> 
+ 
+)}
 
-  // useFrame(() => {
-  //   [meshRef1, meshRef2, meshRef3, meshRef4, meshRef5].forEach((ref, index) => {
-  //     if (ref.current) {
-  //       const velocity = [velocity1, velocity2, velocity3, velocity4, velocity5][index].current;
-
-  //       // Update positions
-  //       ref.current.position.x += velocity.x;
-  //       ref.current.position.y += velocity.y;
-
-  //       // Bounce off the edges
-  //       if (ref.current.position.x > size.width / 500 || ref.current.position.x < -size.width / 500) {
-  //         velocity.x = -velocity.x;
-  //       }
-  //       if (ref.current.position.y > size.height / 500 || ref.current.position.y < -size.height / 500) {
-  //         velocity.y = -velocity.y;
-  //       }
-
-  //       // Rotation
-  //       ref.current.rotation.x += 0.02;
-  //       ref.current.rotation.y += 0.01;
-  //     }
-  //   });
-  // });
-
+function Clump({ mat = new THREE.Matrix4(), vec = new THREE.Vector3(), ...props }) {
+  // const { outlines } = useControls({ outlines: { value: 0.0, step: 0.01, min: 0, max: 0.05 } })
+  // const texture = useTexture("/images/cross.jpg")
+  const [ref, api] = useSphere(() => ({ args: [1], mass: 1, angularDamping: 0.1, linearDamping: 0.65, position: [rfs(20), rfs(20), rfs(20) -9 ] }))
+  useFrame((state) => {
+    for (let i = 0; i < 40; i++) {
+      // Get current whereabouts of the instanced sphere
+      ref.current.getMatrixAt(i, mat)
+      // Normalize the position and multiply by a negative force.
+      // This is enough to drive it towards the center-point.
+      api.at(i).applyForce(vec.setFromMatrixPosition(mat).normalize().multiplyScalar(-40).toArray(), [0, 0, 0])
+    }
+  })
   return (
-    <>
-      <BallManager pointer={pointer} />
-      {/* <fog attach="fog" args={['green', 20, -5]} /> */}
-      {/* <color attach="background" args={['#000080']} /> */}
-      {/* <Environment preset='city' /> */}
-    </>
-  );
-};
+    <instancedMesh ref={ref} castShadow receiveShadow args={[sphereGeometry, baubleMaterial, 40]}  position={[0,-2,-12]}>
+      {/* <Outlines thickness={outlines} /> */}
+    </instancedMesh>
+  )
+}
 
-export default SceneTwo;
+function Pointer({pointer}) {
+  const viewport = useThree((state) => state.viewport)
+  const [, api] = useSphere(() => ({ type: "Kinematic", args: [3], position: [0, 0, 0] }))
+  return useFrame((state) => api.position.set((pointer.x * viewport.width) / 2, (pointer.y * viewport.height) / 2, 0))
+}
+
+export default SceneTwo

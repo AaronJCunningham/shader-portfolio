@@ -174,8 +174,8 @@ setInterval(() => {
         />
       </mesh>
       {createPortal(<SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />, scene1)}
-      {createPortal(<SceneThree pointer={pointer} />, scene2)}
-      {createPortal(<SceneTwo pointer={pointer}/>, scene3)}
+      {createPortal(<SceneTwo pointer={pointer} />, scene2)}
+      {createPortal(<SceneThree pointer={pointer}/>, scene3)}
       {createPortal(<SceneFour pointer={pointer}/>, scene4)}
     </>
   );

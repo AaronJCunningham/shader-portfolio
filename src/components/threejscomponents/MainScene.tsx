@@ -1,17 +1,24 @@
 
 import { Canvas } from "@react-three/fiber"
-import { Suspense } from "react"
+import { Suspense, useEffect, useState, useLayoutEffect } from "react"
 import ShaderScene from "./scenes/ShaderScene"
-import Loader from "../svg/Loader"
+import { useProgress, Loader} from "@react-three/drei"
+import { useLoadingProgress } from "@/store"
+import { ChromaticAberration, EffectComposer } from "@react-three/postprocessing"
+// import Loader from "../svg/Loader"
 
 const MainScene = () => {
-    return <div className="header_canvas">
-    <Suspense fallback={null}>
+
+  
+
+    
+ 
+    return (
+    <div className="header_canvas">
     <Canvas>
-    <ShaderScene />
+        <ShaderScene />  
     </Canvas>
-    </Suspense>
-    </div>
+    </div>)
 }
 
 export default MainScene;

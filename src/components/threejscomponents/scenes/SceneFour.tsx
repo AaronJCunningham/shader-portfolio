@@ -7,6 +7,8 @@ import vertexShader from "../shaders/displexRing/vertex"
 import fragmentShader from "../shaders/displexRing/fragment"
 
 import {Dragon }from "../meshes/Dragon"
+import {Island }from "../meshes/Island"
+import {Tavern }from "../meshes/Tavern"
 
 const SceneFour = ({pointer}: any) => {
   const shaderRef = useRef<THREE.ShaderMaterial>(null);
@@ -37,12 +39,15 @@ useEffect(() =>{
 
   return (
     <>
-    
-      <Dragon pointer={pointer}/>
+    {/* <Island /> */}
+    <Tavern pointer={pointer}/>/>
+      {/* <Dragon pointer={pointer}/> */}
       <color attach="background" args={['#001100']} />
-     {/* <Stars /> */}
-      <Environment preset='sunset' />
-    <spotLight color="red" lookAt={new THREE.Vector3(0,-1,-2.2)} intensity={10}/>
+     <Sky distance={100} inclination={-1} sunPosition={[5,5,10]}/>
+     <ambientLight intensity={0.8} />
+     
+      <Environment preset='park' />
+    <spotLight color="red" lookAt={new THREE.Vector3(0,-1,-2.2)} intensity={100}/>
     <spotLight color="blue" lookAt={new THREE.Vector3(0,1,-2.2)} intensity={10}/>
     </>
   );
