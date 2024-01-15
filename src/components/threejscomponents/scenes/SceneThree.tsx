@@ -2,8 +2,6 @@ import { InstancedMesh, MathUtils, Mesh } from 'three'
 import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Instances, Instance, Environment } from '@react-three/drei'
-import { EffectComposer, N8AO, TiltShift2 } from '@react-three/postprocessing'
-import { Any } from 'react-spring'
 
 interface BubbleProps {
   factor: number;
