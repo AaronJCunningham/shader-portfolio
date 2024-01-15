@@ -34,8 +34,8 @@ a:hover {
 }
 
 span {
-  color: transparent;
-  -webkit-text-stroke: 1px $light-color;
+  color: $accent-color;
+ 
 }
 
 .styled {

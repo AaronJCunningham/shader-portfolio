@@ -113,6 +113,13 @@
   }
 }
 
+.image_container {
+  width: 100%; /* Adjust the width as needed */
+  padding-top: 56.25%; /* For 16:9 aspect ratio */
+  position: relative;
+  overflow: hidden; /* To handle images that don't fit perfectly */
+}
+
 // .image-wrapper {
 //   width: 100%; // Full width of the parent
 //   // Define a fixed aspect ratio if needed, e.g., for a 16:9 aspect ratio:

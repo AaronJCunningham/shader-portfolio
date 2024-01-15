@@ -51,7 +51,7 @@ export default function DynamicNews({ post }:DynamicNewsProps) {
         image={post[0]?.better_featured_image?.source_url}
       />
       <Link href="/" passHref>
-        <h1 className="about_button">HOME</h1>
+        <h1 className="about_button">ABOUT</h1>
       </Link>
       <div className="about_container" ref={ref}>
         {previous && (

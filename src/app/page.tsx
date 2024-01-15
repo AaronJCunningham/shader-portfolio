@@ -8,9 +8,11 @@ import "../../styles/index.scss"
 import MainScene from "@/components/threejscomponents/MainScene";
 import { useProgress } from "@react-three/drei";
 import { useState } from "react";
+import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 
 const Bio = dynamic(() => import("../components/layout/Bio"), { ssr: false });
 // const MainScene = dynamic(() => import("../components/threejscomponents/MainScene"), { ssr: false });
+
 
 export default function Home() {
 
@@ -30,6 +32,7 @@ export default function Home() {
   // }, [progress])
 
   return (<>
+
    <div className="header_container" id="main_header">
     <Bio />
     <MainScene />

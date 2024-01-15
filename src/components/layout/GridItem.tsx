@@ -31,7 +31,7 @@ export const GridItem: FC<GridItemProps> = ({ post }) => {
   };
   const handleOut = () => {
     gsap.to(gridRef.current, { opacity: 1 });
-    gsap.to(bgRef.current, { "background-color": "#191919", duration: 0.3 });
+    gsap.to(bgRef.current, { "background-color": "#030303", duration: 0.3 });
     gsap.to(bgRef.current, { scale: 1, duration: 0.3 });
   };
 
@@ -40,7 +40,7 @@ export const GridItem: FC<GridItemProps> = ({ post }) => {
   };
 
   return (
-    <Link href={`/${post?.slug}`}>
+    <Link href={`/about/${post?.slug}`}>
     <div ref={bgRef} 
     className="grid-container"
     key={post?.slug}
@@ -50,17 +50,21 @@ export const GridItem: FC<GridItemProps> = ({ post }) => {
       <div className="title-container">
         <h4>{post?.title?.rendered || 'Default Title'}</h4>
       </div>
-     
+     <div className="image_container">
         <Image
           src={post?.better_featured_image?.source_url || "/images/default.jpg"}
-          layout="responsive"
-          width={post?.better_featured_image?.media_details?.width || 1920}
-          height={post?.better_featured_image?.media_details?.height || 1080}
+          layout="fill"
+          // width={post?.better_featured_image?.media_details?.width || 1920}
+          // height={post?.better_featured_image?.media_details?.height || 1080}
           alt={post?.title?.rendered || "Default Image"}
-        
+       
+        objectFit="cover" /* Ensures the image covers the area */
+        objectPosition="center" /* Adjust as needed */
         />
-  
+  </div>
+    <div className="description_container">
       <p>{post?.yoast_head_json?.og_description || 'Default Description'}</p>
+      </div>
     </div>
   </Link>
   );
