@@ -9,7 +9,7 @@ import { Grid } from "@/components/layout/Grid";
 
 import "../../styles/index.scss"
 
-const About = ({ posts }) => {
+const About = ({ posts }: any) => {
   return (
     <>
       <MetaDataHeader title={"Home"} />
