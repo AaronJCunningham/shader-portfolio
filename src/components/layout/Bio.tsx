@@ -51,6 +51,7 @@ const [normalizedValue, setNormalizedValue] = useState(0)
     <div className="header_title_container">
       <div className="header_content">
       <h2 ref={ref}>{texts[currentIndex]}</h2>
+      {phase == 1 && <div className="enter_link"><p>SCROLL DOWN TO BEGIN</p></div>}
       {phase == 4 && <div className="enter_link"><Link href="/about" >MORE ABOUT ME</Link></div>}
     </div>
     </div>
