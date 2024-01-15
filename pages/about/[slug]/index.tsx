@@ -8,11 +8,33 @@ import { Footer } from "@/components/about/Footer";
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 
 import "../../../styles/index.scss"
+import { toInteger } from "lodash";
 
-export default function DynamicNews({ post }) {
-  const [width, setWidth] = useState();
+interface Post {
+  title: { rendered: string };
+  content: { rendered: string };
+  yoast_head_json: { og_description: string };
+  better_featured_image: { source_url: string };
+  previous?: { slug: string };
+  next?: { slug: string };
+}
 
-  const ref = useRef(null);
+interface DynamicNewsProps {
+  post: Post[];
+}
+
+interface Params {
+  slug: string;
+}
+
+interface StaticPropsContext {
+  params: Params;
+}
+
+export default function DynamicNews({ post }:DynamicNewsProps) {
+  const [width, setWidth] = useState<Number>();
+
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if(!ref.current) return;
     setWidth(ref.current.offsetWidth);
@@ -82,7 +104,7 @@ export const getStaticPaths = async () => {
   const posts = await res.json();
 
   // generate the paths
-  const paths = posts.map((post) => {
+  const paths = posts.map((post: Params) => {
     return {
       params: { slug: `${post.slug}` },
     };
@@ -95,7 +117,7 @@ export const getStaticPaths = async () => {
 };
 
 // This also gets called at build time
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params }: StaticPropsContext) {
   // params contains the post `id`.
   // If the route is like /posts/1, then params.id is 1
   const res = await fetch(`${url}?slug=${params.slug}`);
