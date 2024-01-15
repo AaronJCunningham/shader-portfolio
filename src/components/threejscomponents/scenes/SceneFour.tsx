@@ -39,15 +39,17 @@ useEffect(() =>{
 
   return (
     <>
-    {/* <Island /> */}
-    <Tavern pointer={pointer}/>/>
+   
+    <Tavern pointer={pointer}/>
       {/* <Dragon pointer={pointer}/> */}
       <color attach="background" args={['#001100']} />
      <Sky distance={100} inclination={-1} sunPosition={[5,5,10]}/>
      <ambientLight intensity={5} />
      
       <Environment preset='park' />
+      {/*@ts-ignore */}
     <spotLight color="red" lookAt={new THREE.Vector3(0,-1,-2.2)} intensity={100}/>
+    {/*@ts-ignore */}
     <spotLight color="blue" lookAt={new THREE.Vector3(0,1,-2.2)} intensity={10}/>
     </>
   );

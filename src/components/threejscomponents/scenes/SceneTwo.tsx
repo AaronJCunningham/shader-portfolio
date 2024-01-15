@@ -10,7 +10,7 @@ const rfs = THREE.MathUtils.randFloatSpread
 const sphereGeometry = new THREE.SphereGeometry(1, 32, 32)
 const baubleMaterial = new THREE.MeshNormalMaterial()
 
-export const SceneTwo = ({pointer}) =>{
+export const SceneTwo = ({pointer}: any) =>{
 
 return (
  
@@ -29,12 +29,12 @@ return (
 )}
 
 function Clump({ mat = new THREE.Matrix4(), vec = new THREE.Vector3(), ...props }) {
-  // const { outlines } = useControls({ outlines: { value: 0.0, step: 0.01, min: 0, max: 0.05 } })
-  // const texture = useTexture("/images/cross.jpg")
+
   const [ref, api] = useSphere(() => ({ args: [1], mass: 1, angularDamping: 0.1, linearDamping: 0.65, position: [rfs(20), rfs(20), rfs(20) -9 ] }))
   useFrame((state) => {
     for (let i = 0; i < 40; i++) {
-      // Get current whereabouts of the instanced sphere
+      if(!ref.current) return;
+      //@ts-ignore
       ref.current.getMatrixAt(i, mat)
       // Normalize the position and multiply by a negative force.
       // This is enough to drive it towards the center-point.
@@ -42,13 +42,14 @@ function Clump({ mat = new THREE.Matrix4(), vec = new THREE.Vector3(), ...props 
     }
   })
   return (
+    /*@ts-ignore */
     <instancedMesh ref={ref} castShadow receiveShadow args={[sphereGeometry, baubleMaterial, 40]}  position={[0,-2,-12]}>
       {/* <Outlines thickness={outlines} /> */}
     </instancedMesh>
   )
 }
 
-function Pointer({pointer}) {
+function Pointer({pointer}: any) {
   const viewport = useThree((state) => state.viewport)
   const [, api] = useSphere(() => ({ type: "Kinematic", args: [3], position: [0, 0, 0] }))
   return useFrame((state) => api.position.set((pointer.x * viewport.width) / 2, (pointer.y * viewport.height) / 2, 0))

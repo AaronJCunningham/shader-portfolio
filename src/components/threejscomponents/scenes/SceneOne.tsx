@@ -16,9 +16,7 @@ pointer: any;
 const SceneOne: React.FC<SceneOneProps> = ({sceneCamera, pointer}) => {
   const ref = useRef<THREE.Mesh>(null);
 
-  const [hovered, setHovered] = useState(false);
-
-  const {nodes, scene} = useGLTF("/glbs/gyroidBall.glb")
+ 
 
 
 

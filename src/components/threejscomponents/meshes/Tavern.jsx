@@ -7,15 +7,32 @@ Source: https://sketchfab.com/3d-models/medieval-fantasy-tavern-eea5d10fea014045
 Title: Medieval Fantasy Tavern
 */
 
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import { MathUtils } from 'three'
 import { useFrame } from '@react-three/fiber'
+import { useLoaded } from '@/store';
 
 export function Tavern({pointer}) {
   const group = useRef()
-  const { nodes, materials, animations, scene } = useGLTF('/glbs/mill.glb')
-  const { actions } = useAnimations(animations, group)
+  const {  scene } = useGLTF('/glbs/mill.glb')
+
+//   const [loaded, setLoaded] = useLoaded((state) => [
+//     state.loaded,
+//     state.setLoaded,
+//   ]);
+
+
+
+// useEffect(() => {
+//   if( scene ){
+//    setTimeout(() =>{
+//     console.log("LOADED")
+//     setLoaded(true)
+//    },2000)
+//   }
+// },[])
+
   useFrame((state, delta) => {
   if(group.current && pointer){
   
