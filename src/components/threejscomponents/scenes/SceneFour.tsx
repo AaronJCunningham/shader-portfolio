@@ -44,7 +44,7 @@ useEffect(() =>{
       {/* <Dragon pointer={pointer}/> */}
       <color attach="background" args={['#001100']} />
      <Sky distance={100} inclination={-1} sunPosition={[5,5,10]}/>
-     <ambientLight intensity={0.8} />
+     <ambientLight intensity={5} />
      
       <Environment preset='park' />
     <spotLight color="red" lookAt={new THREE.Vector3(0,-1,-2.2)} intensity={100}/>

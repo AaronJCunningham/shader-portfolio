@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +26,7 @@ export const GridItem = ({ post }) => {
 
   // console.log(gridRef.current);
   return (
-    <Link href={`/${post?.slug}`}>
+    <Link href={`/about/${post?.slug}`}>
       <div
         ref={bgRef}
         className="grid-container"
