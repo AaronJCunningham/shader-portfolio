@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { Footer } from "@/components/about/Footer";
+import { Footer } from "@/components/layout/Footer";
 
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 

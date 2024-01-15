@@ -3,9 +3,9 @@
 import Script from "next/script";
 
 
-import { Footer } from "@/components/about/Footer";
+import { Footer } from "@/components/layout/Footer";
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
-import { Grid } from "@/components/about/Grid";
+import { Grid } from "@/components/layout/Grid";
 
 import "../../styles/index.scss"
 

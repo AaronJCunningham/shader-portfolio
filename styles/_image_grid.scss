@@ -113,6 +113,17 @@
   }
 }
 
+// .image-wrapper {
+//   width: 100%; // Full width of the parent
+//   // Define a fixed aspect ratio if needed, e.g., for a 16:9 aspect ratio:
+//   padding-top: 56.25%;
+//   position: relative; // Required for absolute positioning of the Image component
+
+//   img {
+//     object-fit: cover; // Adjusts the image to cover the container area
+//   }
+// }
+
 @media only screen and (max-width: 850px) {
   .items {
     grid-template-columns: repeat(2, 1fr);
