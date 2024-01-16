@@ -25,7 +25,7 @@ export const CV = () => {
       </p>
       <p>
       Throughout my career, I have been part of several prominent blockchain companies, including <a href="https://coinsquare.com" target="_blank" rel="noopener noreferrer">Coinsquare</a>
-, Canada's largest cryptocurrency exchange, and <a href="https://iost.io" target="_blank" rel="noopener noreferrer">IOST</a>
+, Canada&apos;s largest cryptocurrency exchange, and <a href="https://iost.io" target="_blank" rel="noopener noreferrer">IOST</a>
  in Asia.
       </p>
       <p>
