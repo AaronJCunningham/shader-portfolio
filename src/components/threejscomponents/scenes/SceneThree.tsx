@@ -59,7 +59,7 @@ function Bubbles({pointer}: BubblesProps) {
 
 function Bubble({ factor, speed, xFactor, yFactor, zFactor }: BubbleProps) {
   const ref = useRef<Mesh>()
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if(!ref.current) return;
     const t = factor + state.clock.elapsedTime * (speed / 2)
     ref.current.scale.setScalar(Math.max(0.5, Math.cos(t) * 1))
@@ -68,6 +68,8 @@ function Bubble({ factor, speed, xFactor, yFactor, zFactor }: BubbleProps) {
       Math.sin(t) + Math.cos(t * 2) / 10 + yFactor + Math.sin((t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
       Math.sin(t) + Math.cos(t * 2) / 10 + zFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 3) * factor) / -10
     )
+    ref.current.rotation.y = Math.sin(delta)
+    ref.current.rotation.x = Math.sin(delta)
   })
   return <Instance ref={ref} />
 }

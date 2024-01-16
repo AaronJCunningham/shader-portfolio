@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
-import useMouseWheel from "../hooks/useWheelEvent"; // Adjust the path as necessary
+import useMouseWheelandTouch from "../hooks/useWheelEvent"; // Adjust the path as necessary
 import Link from "next/link";
 
 
@@ -24,7 +24,7 @@ export default function Bio() {
   const [delta, setDelta] = useState(0)
 const [phase, setPhase] = useState(0)
 const [normalizedValue, setNormalizedValue] = useState(0)
-  const { currentPhaseRef, cumulativeDeltaRef, normalizedValueRef } = useMouseWheel(() => {
+  const { currentPhaseRef, cumulativeDeltaRef, normalizedValueRef } = useMouseWheelandTouch(() => {
     const newIndex = currentPhaseRef.current - 1;
     // console.log("OUTSIDE",newIndex, currentPhaseRef.current - 1, currentIndex )
     if ( newIndex !== currentIndex) {

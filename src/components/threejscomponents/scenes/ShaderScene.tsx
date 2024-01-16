@@ -16,7 +16,7 @@ import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js"
 
 import {useLoadingProgress} from "../../../store"
 
-import useMouseWheel from '@/components/hooks/useWheelEvent';
+import useMouseWheelandTouch from '@/components/hooks/useWheelEvent';
 import { lerp } from 'three/src/math/MathUtils.js';
 
   
@@ -72,7 +72,7 @@ const cameraSceneFour = new THREE.PerspectiveCamera(55, viewport.width / viewpor
 let normalizedScroll = 0; // Initialize outside the callback
 let currentPhase = 1;
 
-const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } = useMouseWheel(() => {
+const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } = useMouseWheelandTouch(() => {
   const uScroll = normalizedValueRef.current; // Cumulative scroll value
   currentPhase = currentPhaseRef.current; // Current phase number (1, 2, 3, 4)
 

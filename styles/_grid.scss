@@ -21,10 +21,16 @@
   text-transform: uppercase;
   color: $accent-color;
   margin: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .description_container{
 margin: 10%;
+display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button-container {
