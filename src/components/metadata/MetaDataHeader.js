@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 
 const MetaDataHeader = ({
@@ -6,11 +7,11 @@ const MetaDataHeader = ({
   image = "https://ik.imagekit.io/fx30u3wgcqib/desktop_J3mnPtJoj.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1675814941001",
   title = "home",
 }) => {
-  // const router = useRouter();
-  // const canonicalUrl = (
-  //   `https://aaronjcunningham.com` +
-  //   (router.asPath === "/" ? "" : router.asPath)
-  // ).split("?")[0];
+  const router = useRouter();
+  const canonicalUrl = (
+    `https://aaronjcunningham.com` +
+    (router.asPath === "/" ? "" : router.asPath)
+  ).split("?")[0];
 
   return (
     <Head>
@@ -25,7 +26,7 @@ const MetaDataHeader = ({
       <meta property="og:description" content={content} />
       <meta name="yandex-verification" content="b1955c77c853f21f" />
       <meta property="og:image" content={image} />
-      {/* <link rel="canonical" href={canonicalUrl} /> */}
+      <link rel="canonical" href={canonicalUrl} />
       <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png" />
       <link
         rel="icon"
