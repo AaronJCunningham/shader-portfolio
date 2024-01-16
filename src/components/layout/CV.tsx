@@ -16,7 +16,7 @@ export const CV = () => {
 , a web-based video editing startup.
       </p>
       <p>
-      Between 2020 and 2023, I was the lead developer at <a href="https://xeleven.tech" target="_blank" rel="noopener noreferrer">XELEVEN</a>, a metaverse development studio, where we undertook projects for notable clients like <a href="https://theface.com/tiffany-calvers-world" target="_blank" rel="noopener noreferrer">NIKE.</a> Our metaverse, <a href="https://www.spiritrealm.art" target="_blank" rel="noopener noreferrer">Spirit Realm,</a>
+      Between 2020 and 2023, I was the lead developer at <a href="https://xeleven.tech" target="_blank" rel="noopener noreferrer">XELEVEN</a>, a metaverse development studio, where we undertook projects for notable clients like <a href="https://theface.com/tiffany-calvers-world" target="_blank" rel="noopener noreferrer">NIKE.</a> Our metaverse, <a href="https://www.spiritrealm.art" target="_blank" rel="noopener noreferrer">Spirit Realm, </a>
  was featured at NFT NYC, Times Square NYC, and Red-Eye metaverse magazine.
       </p>
       <p>
