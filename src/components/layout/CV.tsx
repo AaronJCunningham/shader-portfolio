@@ -3,7 +3,7 @@ export const CV = () => {
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-      I am deeply inspired by the intersection of art and technology, particularly in emerging technologies.
+      I am deeply inspired by the intersection of art and emerging technologies.
       </p>
       <p>
       My main area of expertise as a frontend developer involves creating interactive, immersive websites, focusing on metaverses and 3D animations. My interest in web3 has been a significant part of my 10-year career in the blockchain industry.
