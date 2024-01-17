@@ -31,12 +31,14 @@ export function Footer({}) {
           <FaGithub />
         </a>
       </div>
+      <div className="footer_email">
       <p>
         contact me:
         <a className="email" href="mailto:hello@aaronjcunningham.com">
           hello@aaronjcunningham.com
         </a>
       </p>
+      </div>
       <p id="copyright">
         All Rights Reserved{" "}
         <a
