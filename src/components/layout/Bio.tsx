@@ -28,10 +28,10 @@ const [normalizedValue, setNormalizedValue] = useState(0)
     const newIndex = currentPhaseRef.current - 1;
     // console.log("OUTSIDE",newIndex, currentPhaseRef.current - 1, currentIndex )
     if ( newIndex !== currentIndex) {
-      // gsap.effects.swapText([ref.current], {
-      //   text: texts[newIndex],
-      //   duration: 0.25
-      // });
+      gsap.effects.swapText([ref.current], {
+        text: texts[newIndex],
+        duration: 1
+      });
       setCurrentIndex(newIndex);
      
       // console.log("inside",newIndex, currentPhaseRef.current - 1, currentIndex )
@@ -50,9 +50,9 @@ const [normalizedValue, setNormalizedValue] = useState(0)
   return (
     <div className="header_title_container">
       <div className="header_content">
-      <h2 ref={ref}>{texts[currentIndex]}</h2>
-      {phase == 1 && <div className="enter_link"><p>SCROLL DOWN TO BEGIN</p></div>}
-      {phase == 4 && <div className="enter_link"><Link href="/about" >MORE ABOUT ME</Link></div>}
+      <h2 ref={ref}>Aaron J. Cunningham</h2>
+      {phase == 1 && <div className="scroll_text"><p>SCROLL DOWN</p></div>}
+      {phase == 4 && <div className="enter_link"><Link href="/about" >CLICK TO ENTER</Link></div>}
     </div>
     </div>
   );

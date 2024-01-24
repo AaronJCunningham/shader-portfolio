@@ -33,21 +33,32 @@
 .header_title_container h2 {
     font-size: 3rem;
     // line-height: 8rem;
-    font-weight: 100;
+    font-weight: 900;
     text-align: center;
     margin: 0;
     padding: 0;
     // margin-bottom: 0.1rem; /* Adjust as needed */
 }
 
+
+.scroll_text{
+    p{
+        font-size: 1rem;
+    font-weight: 500;
+    }
+}
 .enter_link {
     /* Additional styling for your link */
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 1rem;
+    
     z-index: 10;
     margin: 0;
     // margin-top: 0.1rem; /* Adjust as needed */
     padding: 0;
     pointer-events: all !important;
     cursor: pointer;
+    a{
+        font-weight: 500;
+    }
 }
