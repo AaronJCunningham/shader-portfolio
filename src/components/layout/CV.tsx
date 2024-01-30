@@ -29,7 +29,7 @@ export const CV = () => {
  in Asia.
       </p>
       <p>
-      I have given talks and shared my insights on blockchain technology at venues like <a href="https://www.aaronjcunningham.com/about/chainlink-in-berlin" target="_blank" rel="noopener noreferrer">Chainlink HQ in Berlin</a>
+      I have given talks and shared my insights on blockchain technology at venues like <a href="https://www.aaronjcunningham.com/about/chainlink-in-berlin" target="_blank" rel="noopener noreferrer">Chainlink HQ in Berlin </a>
  and the Google Campus in Warsaw.
       </p>
       <p>
