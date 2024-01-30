@@ -22,7 +22,7 @@ void main() {
     vec4 mixColor;
     vec4 finalColor;
 
-    float softness = 0.05;
+    float softness = 0.005;
     // Determine which textures to mix based on the current phase
     if (uCurrentPhase == 1) {
          texOne = texture(uTextureTwo, vUv);
