@@ -4,7 +4,7 @@ import "../../../styles/index.scss";
 import MetaDataHeader from "../metadata/MetaDataHeader";
 
 export default function TarotReader() {
-  const [question, setQuestion] = useState("Ask Me ANYTHING!!!");
+  const [question, setQuestion] = useState("Type your question here");
   const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
   const [response, setResponse] = useState<string[]>([]);
   const [loading, setLoading] = useState(false); // State to manage loading indicator
@@ -56,8 +56,9 @@ export default function TarotReader() {
         <div id="bio" className="bio_content" style={{ color: "#d3d1d1" }}>
           <h2 className="bio-h2">AI TAROT READER</h2>
           <p>
-            Ask me any question and I will tell you the past, present, and
-            future.
+            I am an AI Tarot Reader. Pose your question; three cards will reveal
+            your past, present, and future. Unveil the truths hidden in the
+            symbols as you tread the path of discovery
           </p>
           <form className="input-container" onSubmit={handleSubmit}>
             <input
