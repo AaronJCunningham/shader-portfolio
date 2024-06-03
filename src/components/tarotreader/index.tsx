@@ -60,7 +60,7 @@ export default function TarotReader() {
             your past, present, and future. Unveil the truths hidden in the
             symbols as you tread the path of discovery. Made by{" "}
             <a
-              href="https://www.aaronjcunningham.com"
+              href="https://www.aaronjcunningham.com/about"
               target="_blank"
               rel="noreferrer"
             >
