@@ -6,17 +6,18 @@
 @import "news.scss";
 @import "thumbnail_container.scss";
 @import "tutorialHeader.scss";
+@import "tarot.scss";
 
 body,
 main,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 p {
-  font-family: 'Inter', sans-serif;
-  font-weight: 100;
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
 }
 
 a {
@@ -35,7 +36,6 @@ a:hover {
 
 span {
   color: $accent-color;
- 
 }
 
 .styled {
