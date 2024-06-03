@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { pickThreeUniqueCards } from "../../utilities/tarotCards";
+import { TarotCard, pickThreeUniqueCards } from "../../utilities/tarotCards";
 
 import "../../../styles/index.scss"
 
 
 export default function TarotReader() {
   const [question, setQuestion] = useState("");
-  const [tarotCards, setTarotCards] = useState([]);
-  const [response, setResponse] = useState([]);
+  const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
+  const [response, setResponse] = useState<string[]>([]);
 
   const handleSubmit = async () => {
     const cards = pickThreeUniqueCards();
