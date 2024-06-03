@@ -58,7 +58,15 @@ export default function TarotReader() {
           <p>
             I am an AI Tarot Reader. Pose your question; three cards will reveal
             your past, present, and future. Unveil the truths hidden in the
-            symbols as you tread the path of discovery
+            symbols as you tread the path of discovery. Made by{" "}
+            <a
+              href="https://www.aaronjcunningham.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Aaron J. Cunningham
+            </a>
+            .
           </p>
           <form className="input-container" onSubmit={handleSubmit}>
             <input
