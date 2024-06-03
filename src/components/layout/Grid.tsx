@@ -14,6 +14,7 @@ interface GridProps {
 }
 
 export const Grid: FC<GridProps> = ({ posts }) => {
+  
   const [select, setSelect] = useSelect((state) => [
     state.select,
     state.setSelect,
