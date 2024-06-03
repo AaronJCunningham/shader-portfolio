@@ -4,7 +4,7 @@ import "../../../styles/index.scss";
 import MetaDataHeader from "../metadata/MetaDataHeader";
 
 export default function TarotReader() {
-  const [question, setQuestion] = useState("Type your question here");
+  const [question, setQuestion] = useState("");
   const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
   const [response, setResponse] = useState<string[]>([]);
   const [loading, setLoading] = useState(false); // State to manage loading indicator
@@ -73,6 +73,7 @@ export default function TarotReader() {
               type="text"
               id="question"
               className="input-field"
+              placeholder="Type your question here"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
