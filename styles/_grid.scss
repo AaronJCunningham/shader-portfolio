@@ -1,6 +1,7 @@
 .project-grid {
   margin: 2rem 0;
-  animation: fadeIn 1s ease-in-out forwards; 
+  animation: fadeIn 1s ease-in-out forwards;
+  overflow: hidden;
 }
 .main-grid-container {
   display: grid;
@@ -26,9 +27,9 @@
   align-items: center;
 }
 
-.description_container{
-margin: 10%;
-display: flex;
+.description_container {
+  margin: 10%;
+  display: flex;
   justify-content: center;
   align-items: center;
 }

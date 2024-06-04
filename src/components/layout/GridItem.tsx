@@ -40,32 +40,37 @@ export const GridItem: FC<GridItemProps> = ({ post }) => {
   };
 
   return (
-    <Link href={`/about/${post?.slug}`}>
-    <div ref={bgRef} 
-    className="grid-container"
-    key={post?.slug}
-      onMouseEnter={handleIn}
-      onMouseLeave={handleOut}
-      onClick={handleClick}>
-      <div className="title-container">
-        <h4>{post?.title?.rendered || 'Default Title'}</h4>
+    <Link href={`/${post?.slug}`}>
+      <div
+        ref={bgRef}
+        className="grid-container"
+        key={post?.slug}
+        onMouseEnter={handleIn}
+        onMouseLeave={handleOut}
+        onClick={handleClick}
+      >
+        <div className="title-container">
+          <h4>{post?.title?.rendered || "Default Title"}</h4>
+        </div>
+        <div className="image_container">
+          <Image
+            src={
+              post?.better_featured_image?.source_url || "/images/default.jpg"
+            }
+            layout="fill"
+            // width={post?.better_featured_image?.media_details?.width || 1920}
+            // height={post?.better_featured_image?.media_details?.height || 1080}
+            alt={post?.title?.rendered || "Default Image"}
+            objectFit="cover" /* Ensures the image covers the area */
+            objectPosition="center" /* Adjust as needed */
+          />
+        </div>
+        <div className="description_container">
+          <p>
+            {post?.yoast_head_json?.og_description || "Default Description"}
+          </p>
+        </div>
       </div>
-     <div className="image_container">
-        <Image
-          src={post?.better_featured_image?.source_url || "/images/default.jpg"}
-          layout="fill"
-          // width={post?.better_featured_image?.media_details?.width || 1920}
-          // height={post?.better_featured_image?.media_details?.height || 1080}
-          alt={post?.title?.rendered || "Default Image"}
-       
-        objectFit="cover" /* Ensures the image covers the area */
-        objectPosition="center" /* Adjust as needed */
-        />
-  </div>
-    <div className="description_container">
-      <p>{post?.yoast_head_json?.og_description || 'Default Description'}</p>
-      </div>
-    </div>
-  </Link>
+    </Link>
   );
 };

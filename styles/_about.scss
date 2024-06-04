@@ -4,6 +4,7 @@ html {
   padding: 0;
   background-color: $base-color;
   height: 100%;
+  overflow-x: hidden;
 }
 
 #about {
@@ -65,7 +66,7 @@ html {
   position: relative;
   z-index: 200;
   pointer-events: none;
-  animation: fadeIn 1s ease-in-out forwards; 
+  animation: fadeIn 1s ease-in-out forwards;
 }
 .bio_content {
   display: flex;
@@ -78,7 +79,7 @@ html {
   max-width: 1200px;
   margin: auto;
   position: relative;
-  animation: fadeIn 1s ease-in-out forwards; 
+  animation: fadeIn 1s ease-in-out forwards;
 }
 
 .about-canvas {
@@ -112,6 +113,7 @@ h2 {
   padding-bottom: 10px;
   font-size: 2rem;
   font-weight: 500;
+  color: $light-color;
 }
 
 footer {
@@ -145,8 +147,7 @@ footer {
       padding: hpx;
     }
     p {
-      padding-bottom: 30px;;
-      
+      padding-bottom: 30px;
     }
   }
 

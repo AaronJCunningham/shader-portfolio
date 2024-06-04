@@ -1,65 +1,64 @@
 .header_canvas {
-    background-color: $accent-color;
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-    overflow: hidden;
+  background-color: $accent-color;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
 }
 
 .header_container {
-    height: 100vh;
-    overflow: hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .header_title_container {
-    display: flex;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    position: absolute;
-    z-index: 1;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .header_content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header_title_container h2 {
-    font-size: 3rem;
-    // line-height: 8rem;
-    font-weight: 900;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    color: white ;
-    // margin-bottom: 0.1rem; /* Adjust as needed */
+  font-size: 3rem;
+  // line-height: 8rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  color: white;
+  // margin-bottom: 0.1rem; /* Adjust as needed */
 }
 
-
-.scroll_text{
-    p{
-        font-size: 1rem;
+.scroll_text {
+  p {
+    font-size: 1rem;
     font-weight: 500;
-    }
+  }
 }
 .enter_link {
-    /* Additional styling for your link */
-    text-align: center;
-    font-size: 1rem;
-    
-    z-index: 10;
-    margin: 0;
-    // margin-top: 0.1rem; /* Adjust as needed */
-    padding: 0;
-    pointer-events: all !important;
-    cursor: pointer;
-    a{
-        font-weight: 500;
-    }
+  /* Additional styling for your link */
+  text-align: center;
+  font-size: 1rem;
+
+  z-index: 10;
+  margin: 0;
+  // margin-top: 0.1rem; /* Adjust as needed */
+  padding: 0;
+  pointer-events: all !important;
+  cursor: pointer;
+  a {
+    font-weight: 500;
+  }
 }

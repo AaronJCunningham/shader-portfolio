@@ -1,4 +1,4 @@
-import { create }from "zustand";
+import { create } from "zustand";
 
 const useStore = create(() => {
   return {
@@ -27,4 +27,9 @@ export const useScroll = create((set) => ({
 export const useSelect = create((set) => ({
   select: null,
   setSelect: (select) => set({ select }),
+}));
+
+export const useActivateScroll = create((set) => ({
+  activateScroll: false,
+  setActivateScroll: (activateScroll) => set({ activateScroll }),
 }));

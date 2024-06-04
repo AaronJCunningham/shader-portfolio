@@ -1,4 +1,5 @@
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { useActivateScroll } from "@/store";
+import { MutableRefObject, useEffect, useRef } from "react";
 
 const useMouseWheelAndTouch = (
   callback: (event: WheelEvent | TouchEvent, cumulativeDelta: number) => void
@@ -10,17 +11,34 @@ const useMouseWheelAndTouch = (
   const totalRange = 4000;
   const numScenes = 4;
 
+  const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
+    state.activateScroll,
+    state.setActivateScroll,
+  ]);
+
   const handleWheel = (event: WheelEvent) => {
+    if (!activateScroll) {
+      event.preventDefault();
+    }
+    console.log("event", event);
     cumulativeDeltaRef.current += event.deltaY;
     callback(event, cumulativeDeltaRef.current);
 
     // Update currentPhaseRef
-    const normalizedDelta = Math.floor((cumulativeDeltaRef.current % totalRange) / (totalRange / numScenes));
+    const normalizedDelta = Math.floor(
+      (cumulativeDeltaRef.current % totalRange) / (totalRange / numScenes)
+    );
     currentPhaseRef.current = normalizedDelta + 1;
 
     // Update normalizedValueRef
-    normalizedValueRef.current = (cumulativeDeltaRef.current % totalRange) / totalRange;
-    console.log("IMPORTANT>>>>>>", cumulativeDeltaRef.current, currentPhaseRef.current, normalizedValueRef.current);
+    normalizedValueRef.current =
+      (cumulativeDeltaRef.current % totalRange) / totalRange;
+    console.log(
+      "IMPORTANT>>>>>>",
+      cumulativeDeltaRef.current,
+      currentPhaseRef.current,
+      normalizedValueRef.current
+    );
   };
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -36,28 +54,36 @@ const useMouseWheelAndTouch = (
     callback(event, cumulativeDeltaRef.current);
 
     // Reuse existing logic for currentPhaseRef and normalizedValueRef
-    const normalizedDelta = Math.floor((cumulativeDeltaRef.current % totalRange) / (totalRange / numScenes));
+    const normalizedDelta = Math.floor(
+      (cumulativeDeltaRef.current % totalRange) / (totalRange / numScenes)
+    );
     currentPhaseRef.current = normalizedDelta + 1;
-    normalizedValueRef.current = (cumulativeDeltaRef.current % totalRange) / totalRange;
-    console.log("TOUCH MOVE>>>>>>", cumulativeDeltaRef.current, currentPhaseRef.current, normalizedValueRef.current);
+    normalizedValueRef.current =
+      (cumulativeDeltaRef.current % totalRange) / totalRange;
+    console.log(
+      "TOUCH MOVE>>>>>>",
+      cumulativeDeltaRef.current,
+      currentPhaseRef.current,
+      normalizedValueRef.current
+    );
   };
 
   useEffect(() => {
-    window.addEventListener('wheel', handleWheel);
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, [callback]);
 
   return {
     cumulativeDeltaRef,
     currentPhaseRef,
-    normalizedValueRef
+    normalizedValueRef,
   };
 };
 
