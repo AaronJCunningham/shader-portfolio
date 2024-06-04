@@ -76,7 +76,7 @@ export const CV = () => {
         I have given talks and shared my insights on blockchain technology at
         venues like{" "}
         <a
-          href="https://www.aaronjcunningham.com/about/chainlink-in-berlin"
+          href="https://www.aaronjcunningham.com/chainlink-in-berlin"
           target="_blank"
           rel="noopener noreferrer"
         >
