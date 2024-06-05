@@ -49,7 +49,7 @@ export const CV = () => {
         >
           Spirit Realm,{" "}
         </a>
-        was featured at NFT NYC, Times Square NYC, and Red-Eye metaverse
+        was featured at NFT NYC, Times Square NYC, and in Red-Eye metaverse
         magazine.
       </p>
       {/* <p>
@@ -68,7 +68,7 @@ export const CV = () => {
         </a>
         , Canada&apos;s largest cryptocurrency exchange, and{" "}
         <a href="https://iost.io" target="_blank" rel="noopener noreferrer">
-          IOST
+          IOST{" "}
         </a>
         in Asia.
       </p>
