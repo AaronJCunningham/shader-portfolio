@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import "../styles/index.scss";
+
 // import Bio from "@/components/layout/Bio";
 import MainScene from "@/components/threejscomponents/MainScene";
 import { Loader, useProgress } from "@react-three/drei";
@@ -43,11 +43,11 @@ export default function Home({ posts }: { posts: any }) {
       />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'GA_MEASUREMENT_ID');
-        `}
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-363JP1BQ7R');
+  `}
       </Script>
       <Cookie />
       {!activateScroll && (
