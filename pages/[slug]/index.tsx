@@ -6,8 +6,6 @@ import { Footer } from "@/components/layout/Footer";
 
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 
-import "../../styles/index.scss";
-
 interface Post {
   title: { rendered: string };
   content: { rendered: string };

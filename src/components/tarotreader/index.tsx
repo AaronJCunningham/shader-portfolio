@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { TarotCard, pickThreeUniqueCards } from "../../utilities/tarotCards";
-import "../../../styles/index.scss";
 import MetaDataHeader from "../metadata/MetaDataHeader";
 
 export default function TarotReader() {
