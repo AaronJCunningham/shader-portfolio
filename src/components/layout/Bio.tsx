@@ -3,19 +3,20 @@ import React, { useEffect, useRef, useState } from "react";
 import useMouseWheelandTouch from "../hooks/useWheelEvent"; // Adjust the path as necessary
 import Link from "next/link";
 import { useActivateScroll } from "@/store";
+import AnimatedTitle from "./AnimatedTitle";
 
-gsap.registerEffect({
-  name: "swapText",
-  effect: (targets: any, config: any) => {
-    let tl = gsap.timeline();
-    tl.to(targets, { opacity: 0, duration: config.duration / 2 });
-    tl.add(() => (targets[0].innerText = config.text));
-    tl.to(targets, { opacity: 1, duration: config.duration / 2 });
-    return tl;
-  },
-  defaults: { duration: 1 },
-  extendTimeline: true,
-});
+// gsap.registerEffect({
+//   name: "swapText",
+//   effect: (targets: any, config: any) => {
+//     let tl = gsap.timeline();
+//     tl.to(targets, { opacity: 0, duration: config.duration / 2 });
+//     tl.add(() => (targets[0].innerText = config.text));
+//     tl.to(targets, { opacity: 1, duration: config.duration / 2 });
+//     return tl;
+//   },
+//   defaults: { duration: 1 },
+//   extendTimeline: true,
+// });
 
 export default function Bio() {
   const ref = useRef<HTMLHeadingElement | null>(null);
@@ -41,10 +42,10 @@ export default function Bio() {
       newIndex = Math.max(0, Math.min(newIndex, texts.length - 1)); // Ensure newIndex is within bounds
 
       if (newIndex !== currentIndex) {
-        gsap.effects.swapText([ref.current], {
-          text: texts[newIndex],
-          duration: 1,
-        });
+        // gsap.effects.swapText([ref.current], {
+        //   text: texts[newIndex],
+        //   duration: 1,
+        // });
         setCurrentIndex(newIndex);
       }
     });
@@ -60,22 +61,38 @@ export default function Bio() {
   };
 
   return (
-    <div className="header_title_container">
-      <div className="header_content">
-        <h2 ref={ref}>Aaron J. Cunningham</h2>
-        {phase === 1 && (
-          <div className="scroll_text">
-            <div className="enter_link" onClick={handleClick}>
-              <p>SCROLL DOWN TO INTERACT OR CLICK TO SKIP</p>
-            </div>
+    <>
+      {/* <div className="ticker-container">
+        <div className="ticker">
+          <span className="ticker-text">
+            This is a sample news ticker text that scrolls from left to right.
+            This is a sample news ticker text that scrolls from left to right.
+            This is a sample news ticker text that scrolls from left to right.
+          </span>
+        </div>
+      </div> */}
+      <div className="header_title_container">
+        <div className="border-1">
+          <h4>scroll & mouse to interact</h4>
+        </div>
+        <div className="border-2">
+          <div className="row-1">
+            <AnimatedTitle words={["ABOUT ME", "自己紹介", "ÜBER MICH"]} />
           </div>
-        )}
-        {phase === 4 && (
-          <div className="enter_link" onClick={handleClick}>
-            CLICK TO ENTER
+          <div className="row-2">
+            <AnimatedTitle
+              words={["PROJECTS", "事業", "PROJEKTE"]}
+              id={"/#projects"}
+            />
           </div>
-        )}
+          <div className="row-3">
+            <AnimatedTitle
+              words={["CONTACT", "接触", "KONTAKT"]}
+              id={"/#contact"}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

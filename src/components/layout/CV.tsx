@@ -1,10 +1,12 @@
+import Link from "next/link";
+
 export const CV = () => {
   return (
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-        I am deeply inspired by the intersection of art and emerging
-        technologies.
+        I am <Link href="#projects">deeply</Link> inspired by the intersection
+        of art and emerging technologies.
       </p>
       <p>
         My main area of expertise as a frontend developer involves creating
