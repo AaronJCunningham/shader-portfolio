@@ -6,8 +6,8 @@ export const CV = () => {
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
         As a <strong>three.js developer</strong>, I love pushing the boundaries
-        of browser-based experiences, crafting immersive websites and pioneering
-        metaverse projects.
+        of browser-based experiences, crafting immersive websites and metaverse
+        projects.
       </p>
 
       <p>
