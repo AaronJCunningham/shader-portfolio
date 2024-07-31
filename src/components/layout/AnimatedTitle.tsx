@@ -46,7 +46,7 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ words, id }) => {
         ref={titleRef}
         style={{
           display: "inline-block",
-          fontSize: "3rem",
+          fontSize: "2.5rem",
           pointerEvents: "all",
           cursor: "pointer",
         }}

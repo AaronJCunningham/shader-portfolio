@@ -50,7 +50,7 @@ export default function Bio() {
 
   useEffect(() => {
     if (loadingProgress >= 100) {
-      gsap.to(".fade-in", { opacity: 1, duration: 2, ease: "power2.inOut" });
+      gsap.to(".fade-in", { opacity: 1, duration: 3, ease: "power2.inOut" });
     }
   }, [loadingProgress]);
 
