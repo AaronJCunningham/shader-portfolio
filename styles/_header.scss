@@ -87,6 +87,10 @@
   pointer-events: none;
 }
 
+.header-title-container {
+  animation: fadeIn 10s ease-in-out forwards; // Apply the fade-in animation
+}
+
 .header_title_container h2 {
   font-size: 3rem;
   // line-height: 8rem;
@@ -150,5 +154,14 @@
   }
   100% {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

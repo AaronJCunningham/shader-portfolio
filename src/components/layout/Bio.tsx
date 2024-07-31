@@ -48,6 +48,12 @@ export default function Bio() {
     setNormalizedValue(normalizedValueRef.current);
   }, [currentPhaseRef, cumulativeDeltaRef, normalizedValueRef.current]);
 
+  useEffect(() => {
+    if (loadingProgress >= 100) {
+      gsap.to(".fade-in", { opacity: 1, duration: 2, ease: "power2.inOut" });
+    }
+  }, [loadingProgress]);
+
   const handleClick = () => {
     setActivateScroll(true);
   };
@@ -56,7 +62,10 @@ export default function Bio() {
     <>
       {loadingProgress >= 100 && (
         <div>
-          <div className="header_title_container">
+          <div
+            className="header_title_container fade-in"
+            style={{ opacity: 0 }}
+          >
             <div className="border-1">
               <h4>scroll & mouse to interact</h4>
             </div>
