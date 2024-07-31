@@ -4,6 +4,10 @@ $accent-color: #00adfd;
 
 //scroll bar
 
+strong {
+  font-weight: 600;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }

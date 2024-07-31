@@ -5,19 +5,18 @@ export const CV = () => {
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-        I am deeply inspired by the intersection of art and emerging
-        technologies.
+        As a <strong>three.js developer</strong>, I love pushing the boundaries
+        of browser-based experiences, crafting immersive websites and pioneering
+        metaverse projects.
       </p>
+
       <p>
-        My main area of expertise as a frontend developer involves creating
-        interactive, immersive websites, focusing on metaverses and 3D
-        animations. My interest in web3 has been a significant part of my
-        10-year career in the blockchain industry.
+        I build fullstack web applications, primarily using TypeScript, Next.js,
+        React, and Supabase. However, I am always eager to learn and adapt to
+        new technologies to expand my capabilities and stay at the forefront of
+        web development.
       </p>
-      <p>
-        My primary tech stack includes TypeScript, Next.js, React, and Three.js,
-        but I am flexible and excited to learn other technologies.
-      </p>
+
       <p>
         In 2023, I served as the lead Three.js developer at{" "}
         <a href="https://montra.com" target="_blank" rel="noopener noreferrer">
@@ -54,13 +53,20 @@ export const CV = () => {
         was featured at NFT NYC, Times Square NYC, and in Red-Eye metaverse
         magazine.
       </p>
-      {/* <p>
-      In 2022, I contributed to <a href="https://ravespace.io" target="_blank" rel="noopener noreferrer">RaveSpace&apos;s </a>
- launch of the Musee Dezentral project, a museum dedicated to NFTs.
-      </p> */}
       <p>
-        Throughout my career, I have been part of several prominent blockchain
-        companies, including{" "}
+        In 2022, I contributed to{" "}
+        <a
+          href="https://ravespace.io"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          RaveSpace&apos;s{" "}
+        </a>
+        launch of the Musee Dezentral project, a museum dedicated to NFTs.
+      </p>
+      <p>
+        I first became interested in blockchian in 2014. I have been part of
+        several prominent blockchain companies, including{" "}
         <a
           href="https://coinsquare.com"
           target="_blank"
