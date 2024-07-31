@@ -6,8 +6,8 @@ import { Physics, useSphere } from "@react-three/cannon";
 const rfs = THREE.MathUtils.randFloatSpread;
 const sphereGeometry = new THREE.IcosahedronGeometry(1, 0);
 const baubleMaterial = new THREE.MeshPhysicalMaterial({
-  reflectivity: 1,
-  roughness: 0,
+  reflectivity: 0.5,
+  roughness: 0.5,
 });
 
 export const SceneTwo = ({ pointer }: any) => {

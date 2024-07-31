@@ -27,9 +27,9 @@ const WarpedBall: React.FC<WarpedBallProps> = ({ pointer }) => {
 
   useEffect(() => {
     const material = new MeshStandardMaterial({
-      color: 0x00adfd,
-      emissive: 0x00adfd,
-      roughness: 0.2,
+      color: 0x444444,
+      emissive: 0x222222,
+      roughness: 0.4,
     });
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = { value: 0 };

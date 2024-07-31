@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
-import { useActivateScroll } from "@/store";
+import { useActivateScroll, useLoadingProgress } from "@/store";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
