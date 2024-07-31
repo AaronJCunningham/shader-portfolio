@@ -12,9 +12,19 @@ const Particles = () => {
 
   const { size } = useThree();
 
+  const getRenderTarget = () => {
+    const renderTarget = new THREE.WebGLRenderTarget(5, 5, {
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+      format: THREE.RGBAFormat,
+      type: THREE.FloatType,
+    });
+    return renderTarget;
+  };
+
   const fboSize = 128;
-  const fbo1 = useFBO();
-  const fbo2 = useFBO();
+  const fbo1 = getRenderTarget();
+  const fbo2 = getRenderTarget();
   const fboScene = new THREE.Scene();
   const fboCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
   fboCamera.position.set(0, 0, 0.5);
