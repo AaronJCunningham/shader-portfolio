@@ -1,30 +1,28 @@
-import React, { MutableRefObject, useEffect, useRef } from "react";
-import Lottie, { LottieComponentProps, LottieRefCurrentProps } from "lottie-react";
-import loadingAnimation from "./loading.json";
-import { useLoadingProgress } from "@/store";
+import dynamic from "next/dynamic";
+import React from "react";
+
+const Lottie = dynamic(() => import("lottie-react"), {
+  ssr: false,
+});
+
+import loaderAnimation from "./loader.json"; // Adjust the path to your actual file location
 
 const Loader = () => {
-    const lottieRef = useRef<MutableRefObject<LottieRefCurrentProps | null>>(null)
-    
-    const [loadingProgress, setLoadingProgress] = useLoadingProgress((state) => [
-        state.loadingProgress,
-        state.setLoadingProgress,
-      ]);
-      
-    useEffect(() => {
-        if(!lottieRef.current) return;
-        //@ts-ignore
-        // lottieRef.current.goToAndStop(loadingProgress);
-    },[loadingProgress])
+  const style = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+  };
 
-
-
-    return (
-        <div className="fixed inset-0 z-50 flex justify-center items-center w-[50%] m-auto h-full bg-black">
-            {/* @ts-ignore */}
-            <Lottie lottieRef={lottieRef} animationData={loadingAnimation} loop={false}   />
-        </div>
-    );
+  return (
+    <div style={style}>
+      <Lottie
+        animationData={loaderAnimation}
+        style={{ width: 500, height: 500 }}
+      />
+    </div>
+  );
 };
 
 export default Loader;
