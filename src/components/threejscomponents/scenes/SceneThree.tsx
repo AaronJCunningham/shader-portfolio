@@ -16,8 +16,8 @@ interface BubblesProps {
 }
 
 const particles = Array.from({ length: 150 }, () => ({
-  factor: MathUtils.randInt(20, 100),
-  speed: MathUtils.randFloat(0.01, 0.75),
+  factor: MathUtils.randInt(30, 100),
+  speed: MathUtils.randFloat(0.03, 0.75),
   xFactor: MathUtils.randFloatSpread(40),
   yFactor: MathUtils.randFloatSpread(10),
   zFactor: MathUtils.randFloatSpread(10),
@@ -62,8 +62,8 @@ function Bubbles({ pointer }: BubblesProps) {
       receiveShadow
       position={[0, 2.5, -15]}
     >
-      <torusKnotGeometry args={[1, 0.35, 100, 16]} />
-      <meshNormalMaterial />
+      <sphereGeometry args={[3, 32, 30]} />
+      <meshNormalMaterial wireframe={true} />
       {particles.map((data, i) => (
         <Bubble key={i} {...data} />
       ))}
