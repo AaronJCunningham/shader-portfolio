@@ -70,7 +70,7 @@
   }
 
   img {
-    width: 80%;
+    width: 100%;
     max-width: 700px;
     height: auto;
     align-self: center;
@@ -97,6 +97,11 @@
   h2 {
     font-weight: 900;
   }
+}
+
+.wp-block-image,
+.wp-block-embed {
+  margin: 0;
 }
 
 blockquote {
