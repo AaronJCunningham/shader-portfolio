@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // import Bio from "@/components/layout/Bio";
 import MainScene from "@/components/threejscomponents/MainScene";
-import { useProgress } from "@react-three/drei";
+import { Loader, useProgress } from "@react-three/drei";
 import { Suspense, useEffect, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 
@@ -15,7 +15,6 @@ import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 import { Grid } from "@/components/layout/Grid";
 import { Footer } from "@/components/layout/Footer";
 import { useActivateScroll } from "@/store";
-import Loader from "@/components/svg/Loader";
 
 const Bio = dynamic(() => import("../src/components/layout/Bio"), {
   ssr: false,
