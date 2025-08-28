@@ -69,8 +69,11 @@ export default function Home({ posts }: { posts: any }) {
 
 export async function getStaticProps() {
   // Call an external API endpoint to get posts
-  const res = await fetch("https://xeleven.space/wp-json/wp/v2/initiatives");
+  // per_page=100 ensures we get all posts (default is 10)
+  const res = await fetch("https://xeleven.space/wp-json/wp/v2/initiatives?per_page=100");
   const posts = await res.json();
+
+  console.log("All posts from WordPress API:", posts);
 
   // By returning { props: { posts } }, the Blog component
   // will receive `posts` as a prop at build time
