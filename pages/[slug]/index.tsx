@@ -93,10 +93,10 @@ export default function DynamicNews({ post }: DynamicNewsProps) {
   );
 }
 
-const url = "https://xeleven.space/wp-json/wp/v2/initiatives?per_page=100";
+const url = "https://xeleven.space/wp-json/wp/v2/initiatives";
 
 export const getStaticPaths = async () => {
-  const res = await fetch(url);
+  const res = await fetch(`${url}?per_page=100`);
   const posts = await res.json();
 
   // generate the paths
