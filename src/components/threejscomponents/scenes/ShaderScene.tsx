@@ -142,15 +142,17 @@ const ShaderScene = () => {
     // updateClearColorOnScroll(gl)
   });
 
-  const glitchIntensity = 0.5; // Example intensity value
-  // Randomly trigger the glitch effect
-  setInterval(() => {
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uGlitchIntensity.value =
-        Math.random() < 0.1 ? glitchIntensity : 0;
-    }
-  }, 1000); // Check every 100ms
-  // console.log(shaderRef.current)
+  useEffect(() => {
+    const glitchIntensity = 0.5;
+    const interval = setInterval(() => {
+      if (shaderRef.current) {
+        shaderRef.current.uniforms.uGlitchIntensity.value =
+          Math.random() < 0.1 ? glitchIntensity : 0;
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <mesh position={[0, 0, 0]}>
