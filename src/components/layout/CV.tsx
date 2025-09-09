@@ -5,27 +5,23 @@ export const CV = () => {
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-        As a <strong>three.js developer</strong>, I love pushing the boundaries
-        of browser-based experiences, crafting immersive websites and
-        metaverses.
+        As a full-stack developer specializing in Three.js, Web3, and AI, I lead projects that push the boundaries of browser-based experiences, from immersive websites to metaverses.
       </p>
 
       <p>
-        I build fullstack web applications, primarily using TypeScript, Next.js,
-        React, and Supabase. However, I am always eager to learn and adapt to
-        new technologies to expand my capabilities and stay at the forefront of
-        web development.
+        I build applications with TypeScript, Next.js, React, and Supabase, always adapting to new technologies to stay at the forefront of web development.
       </p>
 
       <p>
-        In 2023, I served as the lead Three.js developer at{" "}
+        Since 2023, I have been the lead developer for three anonymous Web3 projects backed by major blockchain organizations. While details remain undisclosed, inquiries are welcome.
+      </p>
+
+      <p>
+        Previously, I was lead Three.js developer at{" "}
         <a href="https://montra.com" target="_blank" rel="noopener noreferrer">
           Montra
         </a>
-        , a web-based video editing startup.
-      </p>
-      <p>
-        Between 2020 and 2023, I was the lead developer at{" "}
+        , a web-based video editing startup. From 2020–2023, I served as lead developer at{" "}
         <a
           href="https://xeleven.tech"
           target="_blank"
@@ -33,40 +29,35 @@ export const CV = () => {
         >
           XELEVEN
         </a>
-        , a metaverse development studio, where we undertook projects for
-        notable clients like{" "}
+        , a metaverse studio working with clients like{" "}
         <a
           href="https://theface.com/tiffany-calvers-world"
           target="_blank"
           rel="noopener noreferrer"
         >
-          NIKE.
-        </a>{" "}
-        Our metaverse,{" "}
+          NIKE
+        </a>
+        . Our project{" "}
         <a
           href="https://www.spiritrealm.art"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Spirit Realm,{" "}
+          Spirit Realm
         </a>
-        was featured at NFT NYC, Times Square NYC, and in Red-Eye metaverse
-        magazine.
-      </p>
-      <p>
-        In 2022, I contributed to{" "}
+        {" "}was featured at NFT NYC in Times Square and in Red-Eye magazine. In 2022, I contributed to{" "}
         <a
           href="https://ravespace.io"
           target="_blank"
           rel="noopener noreferrer"
         >
-          RaveSpace&apos;s{" "}
+          RaveSpace&apos;s
         </a>
-        launch of the Musee Dezentral project, a museum dedicated to NFTs.
+        {" "}Musée Dezentral, the first NFT museum.
       </p>
+
       <p>
-        I first became interested in blockchian in 2014. I have been part of
-        several prominent blockchain companies, including{" "}
+        My blockchain journey began in 2014 with roles at{" "}
         <a
           href="https://coinsquare.com"
           target="_blank"
@@ -74,29 +65,23 @@ export const CV = () => {
         >
           Coinsquare
         </a>
-        , Canada&apos;s largest cryptocurrency exchange, and{" "}
+        , Canada&apos;s largest crypto exchange, and{" "}
         <a href="https://iost.io" target="_blank" rel="noopener noreferrer">
-          IOST{" "}
+          IOST
         </a>
-        in Asia.
-      </p>
-      <p>
-        I have given talks and shared my insights on blockchain technology at
-        venues like{" "}
+        {" "}in Asia. I&apos;ve given talks at{" "}
         <a
           href="https://www.aaronjcunningham.com/chainlink-in-berlin"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Chainlink HQ in Berlin{" "}
+          Chainlink HQ in Berlin
         </a>
-        and the Google Campus in Warsaw.
+        {" "}and Google Campus in Warsaw.
       </p>
+
       <p>
-        I also have a passion for music. I have co-written 5 songs that reached
-        the top 20 on the Billboard charts and have been featured in VICE,
-        BoilerRoom, and BlogTO. I am also a three-time Prism Prize Award
-        nominee.
+        Beyond tech, my background in music includes five Billboard Top-20 tracks, features in VICE and BoilerRoom, and nominations at the Oberhausen Film Festival and Prism Prize Awards.
       </p>
     </div>
   );
