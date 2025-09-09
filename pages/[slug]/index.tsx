@@ -9,6 +9,7 @@ import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 interface Post {
   title: { rendered: string };
   content: { rendered: string };
+  date: string;
   yoast_head_json: { og_description: string };
   better_featured_image: { source_url: string };
   previous?: { slug: string };
@@ -87,6 +88,9 @@ export default function DynamicNews({ post }: DynamicNewsProps) {
             <p>next</p>
           </Link>
         )}
+      </div>
+      <div className="article-meta">
+        <p>By Aaron J. Cunningham • Date Published: {post[0]?.date && new Date(post[0].date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
       </div>
       <Footer />
     </>
