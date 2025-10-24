@@ -15,7 +15,7 @@ import vertexMain from "../shaders/warpedBall/vertex_main.glsl";
 import fragmentPars from "../shaders/warpedBall/fragment_pars.glsl";
 import fragmentMain from "../shaders/warpedBall/fragment_main.glsl";
 import { OrbitControls, Sky } from "@react-three/drei";
-import { throttle } from "lodash";
+import throttle from "lodash/throttle";
 import { lerp } from "@/utilities";
 
 interface WarpedBallProps {

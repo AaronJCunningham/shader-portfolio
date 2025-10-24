@@ -18,9 +18,10 @@ interface Post {
 
 interface GridItemProps {
   post: Post;
+  priority?: boolean;
 }
 
-export const GridItem: FC<GridItemProps> = ({ post }) => {
+export const GridItem: FC<GridItemProps> = ({ post, priority = false }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +64,8 @@ export const GridItem: FC<GridItemProps> = ({ post }) => {
             alt={post?.title?.rendered || "Default Image"}
             objectFit="cover" /* Ensures the image covers the area */
             objectPosition="center" /* Adjust as needed */
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
           />
         </div>
         <div className="description_container">

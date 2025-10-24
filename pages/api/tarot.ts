@@ -31,7 +31,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     console.error(error);
     res.status(500).json({
       error: "An error occurred while processing your request.",
-      apiKey: process.env.OPENAI_API_KEY,
     });
   }
 };

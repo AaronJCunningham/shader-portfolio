@@ -66,8 +66,8 @@ export const Grid: FC<GridProps> = ({ posts }) => {
         </button>
       </div>
       <div className="main-grid-container">
-        {newPosts.map((post) => {
-          return <GridItem post={post} key={post?.slug} />;
+        {newPosts.map((post, index) => {
+          return <GridItem post={post} key={post?.slug} priority={index < 3} />;
         })}
       </div>
     </div>
