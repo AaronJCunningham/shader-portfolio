@@ -32,6 +32,12 @@ export default function Home({ posts }: { posts: any }) {
     if (isMobile) {
       setActivateScroll(true);
     }
+
+    // Check if page was refreshed while scrolled down (not on the 3D scene)
+    // This happens when users refresh after clicking "projects" and scrolling
+    if (window.scrollY > 0 || window.location.hash) {
+      setActivateScroll(true);
+    }
   }, []);
 
   return (
