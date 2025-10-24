@@ -33,7 +33,7 @@ export const Grid: FC<GridProps> = ({ posts }) => {
     <div className="project-grid" id="grid">
       <CV />
       <div id="projects" className="about_content">
-        <h2 className="bio-h2">PROJECTS & NEW</h2>
+        <h2 className="bio-h2">PROJECTS & NEWS</h2>
         <p>
           Here are a few of my recent projects, as well as some of my thoughts
           that I write for my blog.
