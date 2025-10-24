@@ -1,5 +1,5 @@
 const config = {
-  siteUrl: "https://aaronjcunningham.com/",
+  siteUrl: "https://www.aaronjcunningham.com/",
   generateRobotsTxt: true, // (optional)
   generateIndexSitemap: false,
   exclude: "*/header",
