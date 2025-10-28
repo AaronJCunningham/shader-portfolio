@@ -70,21 +70,13 @@ export const CV = () => {
           IOST
         </a>
         {" "}in Asia. I&apos;ve given talks at{" "}
-        <a
-          href="https://www.aaronjcunningham.com/chainlink-in-berlin"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href="https://www.aaronjcunningham.com/chainlink-in-berlin">
           Chainlink HQ in Berlin
-        </a>
+        </Link>
         {" "}and{" "}
-        <a
-          href="https://www.aaronjcunningham.com/google-campus-warsaw"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href="https://www.aaronjcunningham.com/google-campus-warsaw">
           Google Campus in Warsaw
-        </a>
+        </Link>
         .
       </p>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TarotCard, pickThreeUniqueCards } from "../../utilities/tarotCards";
 import MetaDataHeader from "../metadata/MetaDataHeader";
+import Link from "next/link";
 
 export default function TarotReader() {
   const [question, setQuestion] = useState("");
@@ -58,13 +59,9 @@ export default function TarotReader() {
             I am an AI Tarot Reader. Pose your question; three cards will reveal
             your past, present, and future. Unveil the truths hidden in the
             symbols as you tread the path of discovery. Made by{" "}
-            <a
-              href="https://www.aaronjcunningham.com"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link href="https://www.aaronjcunningham.com">
               Aaron J. Cunningham
-            </a>
+            </Link>
             .
           </p>
           <form className="input-container" onSubmit={handleSubmit}>
