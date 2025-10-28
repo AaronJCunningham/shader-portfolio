@@ -77,7 +77,15 @@ export const CV = () => {
         >
           Chainlink HQ in Berlin
         </a>
-        {" "}and Google Campus in Warsaw.
+        {" "}and{" "}
+        <a
+          href="https://www.aaronjcunningham.com/google-campus-warsaw"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google Campus in Warsaw
+        </a>
+        .
       </p>
 
       <p>
