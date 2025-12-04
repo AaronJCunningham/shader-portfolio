@@ -8,12 +8,12 @@ interface AudioControlsProps {
 
 const SONGS = [
   {
-    title: "Messerangriff - Jung Sterben (Fentanyl Remix)",
-    path: "/songs/Messerangriff - Jung Sterben (Fentanyl Remix).mp3"
-  },
-  {
     title: "Messerangriff - Toeten im Namen Gottes (SINS Remix)",
     path: "/songs/Messerangriff_Toten_im_Namen_Gottes_SINS_Remix.mp3"
+  },
+  {
+    title: "Messerangriff - Jung Sterben (Fentanyl Remix)",
+    path: "/songs/Messerangriff - Jung Sterben (Fentanyl Remix).mp3"
   }
 ];
 
