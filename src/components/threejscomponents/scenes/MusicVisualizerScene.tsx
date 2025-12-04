@@ -49,19 +49,6 @@ const MusicVisualizerScene: React.FC<MusicVisualizerSceneProps> = ({ audioRef })
     const audioData = getFrequencyData();
     
     if (audioData.frequencyBands) {
-        // Update Bars
-        if (groupRef.current) {
-            groupRef.current.children.forEach((child, i) => {
-                if (child instanceof THREE.Mesh) {
-                    const value = audioData.frequencyBands![i];
-                    const multiplier = 2.5;
-                    const targetHeight = 0.1 + value * multiplier; 
-                    child.scale.y = THREE.MathUtils.lerp(child.scale.y, targetHeight, 0.3);
-                    child.position.y = -viewport.height / 3 + (targetHeight * 0.5) / 2; 
-                }
-            });
-        }
-
         // Update Shader Uniforms
         if (shaderRef.current) {
             shaderRef.current.uniforms.uTime.value = clock.getElapsedTime();
@@ -109,6 +96,7 @@ const MusicVisualizerScene: React.FC<MusicVisualizerSceneProps> = ({ audioRef })
       />
     </mesh>
     
+    {/* Bars removed as requested
     <group ref={groupRef}>
         {bars.map((bar) => (
             <mesh key={bar.key} position={bar.position}>
@@ -116,7 +104,8 @@ const MusicVisualizerScene: React.FC<MusicVisualizerSceneProps> = ({ audioRef })
                 <meshBasicMaterial color="white" transparent opacity={0.8} />
             </mesh>
         ))}
-    </group>
+    </group> 
+    */}
     </>
   );
 };

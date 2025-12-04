@@ -78,9 +78,20 @@ void main() {
          texColor.a = texture2D(uTexture, newUv).a;
          
          // Color manipulations keyed ONLY to effectiveBass
-         if (effectiveBass > 0.3) {
+         // Lowered threshold from 0.3 to 0.2 to make it trigger more often (approx 15-20% boost in frequency)
+         if (effectiveBass > 0.2) {
              texColor.rgb += vec3(effectiveBass * 0.2); 
              texColor.rgb = mix(texColor.rgb, vec3(1.0) - texColor.rgb, effectiveBass * 0.5); 
+             
+             // WIREFRAME PULSE EFFECT
+             float gridSize = 50.0;
+             vec2 grid = fract(newUv * gridSize);
+             float lineThickness = 0.1;
+             
+             if (grid.x < lineThickness || grid.y < lineThickness) {
+                 // Mix in green wireframe based on intensity
+                 texColor.rgb = mix(texColor.rgb, vec3(0.0, 1.0, 0.0), effectiveBass * 0.8);
+             }
          }
          
          gl_FragColor = texColor;

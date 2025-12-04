@@ -81,7 +81,7 @@ export const CV = () => {
       </p>
 
       <p>
-        Beyond tech, my background in music includes five Billboard Top-20 tracks, features in VICE and BoilerRoom, and nominations at the Oberhausen Film Festival and Prism Prize Awards.
+        Beyond tech, my background in music includes five Billboard Top-20 tracks, features in VICE and BoilerRoom, and nominations at the Oberhausen Film Festival and Prism Prize Awards. I built a <Link href="/music-visualizer">music visualizer</Link> for my new album using three.js and GLSL.
       </p>
     </div>
   );

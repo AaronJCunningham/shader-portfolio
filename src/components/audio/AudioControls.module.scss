@@ -1,30 +1,77 @@
 .container {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 20px;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
   mix-blend-mode: difference; /* Ensures visibility on both dark and light */
 }
 
+.controlsRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .playButton {
   background: transparent;
-  border: 1px solid white;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.selectContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.selectIcon {
+  color: white;
+  font-size: 10px;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.songSelect {
+  background: transparent;
+  border: none; /* Minimalist: No border */
   color: white;
   font-family: "Inter", sans-serif;
   font-size: 12px;
-  padding: 8px 16px;
+  padding: 4px 15px 4px 0; /* Right padding for icon */
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: white;
-    color: black;
+  outline: none;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  appearance: none; /* Hides default arrow */
+  z-index: 1;
+  
+  option {
+    background: black;
+    color: white;
+    padding: 10px;
   }
 }
 

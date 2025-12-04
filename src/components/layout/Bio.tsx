@@ -85,6 +85,14 @@ export default function Bio() {
                   id={"/#contact"}
                 />
               </div>
+              <div className="row-4" style={{ marginTop: '20px', fontSize: '0.8rem', textAlign: 'center' }}>
+                <p style={{ color: '#888', marginBottom: '5px' }}>
+                  I am also a musician. Check out the
+                </p>
+                <Link href="/music-visualizer" className="reverse-link" style={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
+                  Music Visualizer for my new album
+                </Link>
+              </div>
             </div>
           </div>
         </div>
