@@ -60,7 +60,8 @@ void main() {
              effectiveHigh = pow(effectiveHigh, 2.0);
          }
          
-         float aberration = effectiveHigh * 0.05; 
+         // Reduced intensity by 5x (0.05 -> 0.01)
+         float aberration = effectiveHigh * 0.01; 
          
          vec4 texColor;
          
