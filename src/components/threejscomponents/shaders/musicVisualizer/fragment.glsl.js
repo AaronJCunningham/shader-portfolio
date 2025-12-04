@@ -17,7 +17,7 @@ void main() {
     
     // Bass Valve for Scale
     // Ensure intro is calm by using a valve
-    float bassValve = 0.5;
+    float bassValve = 0.2; // Lowered to match vertex shader so it actually triggers
     float effectiveBass = 0.0;
     
     if (uBass > bassValve) {
@@ -48,7 +48,33 @@ void main() {
     if (newUv.x < 0.0 || newUv.x > 1.0 || newUv.y < 0.0 || newUv.y > 1.0) {
          gl_FragColor = vec4(0.05, 0.05, 0.05, 1.0); 
     } else {
-         vec4 texColor = texture2D(uTexture, newUv);
+         // Chromatic Aberration Logic
+         // Map to uHigh (High frequency bands 8-9)
+         // Use valve logic to keep intro clean if needed, or just let it shimmer
+         
+         float highValve = 0.2;
+         float effectiveHigh = 0.0;
+         
+         if (uHigh > highValve) {
+             effectiveHigh = (uHigh - highValve) / (1.0 - highValve);
+             effectiveHigh = pow(effectiveHigh, 2.0);
+         }
+         
+         float aberration = effectiveHigh * 0.05; 
+         
+         vec4 texColor;
+         
+         // Sample Red channel shifted LEFT
+         texColor.r = texture2D(uTexture, newUv + vec2(aberration, 0.0)).r;
+         
+         // Sample Green channel CENTERED
+         texColor.g = texture2D(uTexture, newUv).g;
+         
+         // Sample Blue channel shifted RIGHT
+         texColor.b = texture2D(uTexture, newUv - vec2(aberration, 0.0)).b;
+         
+         // Alpha remains same
+         texColor.a = texture2D(uTexture, newUv).a;
          
          // Color manipulations keyed ONLY to effectiveBass
          if (effectiveBass > 0.3) {

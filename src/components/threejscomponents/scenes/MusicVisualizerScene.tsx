@@ -75,21 +75,23 @@ const MusicVisualizerScene: React.FC<MusicVisualizerSceneProps> = ({ audioRef })
                 audioData.frequencyBands[5] + 
                 audioData.frequencyBands[6]
             ) / 5.0;
-
-            // We feed this mid-range energy into uBass to trigger the "breaking apart" effect
-            // Since the shader uses a valve/threshold on uBass, we need to make sure this signal is strong enough
-            // or adjust the valve. Let's just pass it directly and let the shader handle the threshold.
             
+            // Map 2nd band from left (index 1) to Chromatic Aberration
+            // Multiply it so it triggers strongly
+            const kickForAberration = audioData.frequencyBands[1] * 2.0;
+
             shaderRef.current.uniforms.uBass.value = THREE.MathUtils.lerp(
                 shaderRef.current.uniforms.uBass.value,
                 midRangeEnergy,
                 0.1
             );
             
-            // We can also map Highs if we want, but you asked for 3-7 specifically.
-            // Let's zero out the others to be safe or map them subtly.
-            shaderRef.current.uniforms.uMid.value = 0;
-            shaderRef.current.uniforms.uHigh.value = 0;
+            // Pass Kick to uHigh (which controls aberration in shader)
+            shaderRef.current.uniforms.uHigh.value = THREE.MathUtils.lerp(
+                shaderRef.current.uniforms.uHigh.value,
+                kickForAberration,
+                0.1
+            );
         }
     }
   });
