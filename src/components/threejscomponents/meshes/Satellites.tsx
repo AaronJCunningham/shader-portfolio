@@ -20,6 +20,7 @@ const Satellites: React.FC = () => {
         // Calculate initial positions
         const positions = await calculateMultipleSatellitePositions(tles);
         setSatellites(positions);
+        console.log(`Loaded ${positions.length} satellites`);
       } catch (error) {
         console.error('Failed to load satellites:', error);
       }
@@ -42,7 +43,7 @@ const Satellites: React.FC = () => {
 
     // Create new meshes for each satellite
     satellites.forEach((sat) => {
-      const geometry = new THREE.SphereGeometry(0.015, 8, 8);
+      const geometry = new THREE.SphereGeometry(0.012, 8, 8);
       
       // Color based on altitude
       const hueValue = Math.min(sat.altitude / 1000, 1);
@@ -51,9 +52,9 @@ const Satellites: React.FC = () => {
       const material = new THREE.MeshStandardMaterial({
         color,
         emissive: color,
-        emissiveIntensity: 0.6,
-        metalness: 0.2,
-        roughness: 0.4,
+        emissiveIntensity: 0.7,
+        metalness: 0.3,
+        roughness: 0.3,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
@@ -62,8 +63,11 @@ const Satellites: React.FC = () => {
       const phi = (90 - sat.lat) * (Math.PI / 180);
       const theta = (sat.lng + 180) * (Math.PI / 180);
 
-      const altitudeScale = sat.altitude / 1000;
-      const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3);
+      // Earth radius = 0.5 (in scene units)
+      // Scale altitude: 400km real = 0.063 units (400/6371 * 0.5)
+      const earthRadiusUnits = 0.5;
+      const altitudeScale = sat.altitude / 6371; // Convert km to Earth radii
+      const radius = earthRadiusUnits * (1 + altitudeScale);
 
       mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
       mesh.position.y = radius * Math.cos(phi);
@@ -74,26 +78,19 @@ const Satellites: React.FC = () => {
       groupRef.current?.add(mesh);
       meshesRef.current.set(sat.noradId, mesh);
     });
-
-    return () => {
-      meshesRef.current.forEach((mesh) => {
-        mesh.geometry.dispose();
-        (mesh.material as THREE.Material).dispose();
-      });
-    };
   }, [satellites]);
 
-  // Update positions every frame (but only recalculate every 100ms to save CPU)
+  // Update positions every frame
   useFrame(({ clock }) => {
     const now = clock.getElapsedTime() * 1000;
     
-    // Only update every 100ms
+    // Update every 100ms
     if (now - lastUpdateRef.current < 100) return;
     lastUpdateRef.current = now;
 
     if (tleDataRef.current.length === 0) return;
 
-    // Async update (don't await to keep frame smooth)
+    // Async update
     calculateMultipleSatellitePositions(tleDataRef.current).then((updatedPositions) => {
       updatedPositions.forEach((sat) => {
         const mesh = meshesRef.current.get(sat.noradId);
@@ -102,8 +99,9 @@ const Satellites: React.FC = () => {
         const phi = (90 - sat.lat) * (Math.PI / 180);
         const theta = (sat.lng + 180) * (Math.PI / 180);
 
-        const altitudeScale = sat.altitude / 1000;
-        const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3);
+        const earthRadiusUnits = 0.5;
+        const altitudeScale = sat.altitude / 6371;
+        const radius = earthRadiusUnits * (1 + altitudeScale);
 
         mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
         mesh.position.y = radius * Math.cos(phi);

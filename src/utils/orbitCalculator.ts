@@ -45,14 +45,10 @@ const parseTLEData = (text: string): TLELine[] => {
   return tles;
 };
 
-/**
- * Parse TLE epoch to JavaScript Date
- */
 const parseTLEEpoch = (epochStr: string): Date => {
   const year = parseInt(epochStr.substring(0, 2));
   const dayOfYear = parseFloat(epochStr.substring(2));
   
-  // Determine full year (00-56 = 2000-2056, 57-99 = 1957-1999)
   const fullYear = year < 57 ? 2000 + year : 1900 + year;
   
   const date = new Date(fullYear, 0, 1);
@@ -62,17 +58,17 @@ const parseTLEEpoch = (epochStr: string): Date => {
 };
 
 /**
- * Calculate mean anomaly at given time using Kepler's equation (simplified)
+ * Calculate Kepler orbital elements from TLE mean motion
+ * Mean motion (n) is in revolutions per day
+ * Semi-major axis a = (GM/n^2)^(1/3) where GM = 398600.4418 km^3/s^2
  */
-const getMeanAnomaly = (M0: number, n: number, minutesSinceEpoch: number): number => {
-  // M = M0 + n * t (where t is in minutes, n is mean motion in revolutions per day)
-  const M = M0 + (n * minutesSinceEpoch / 1440); // Convert to days
-  return (M % 360 + 360) % 360;
+const calculateSemiMajorAxis = (meanMotionRevsPerDay: number): number => {
+  const GMkm3s2 = 398600.4418;
+  const n = meanMotionRevsPerDay * (2 * Math.PI) / 86400; // Convert to rad/s
+  const a = Math.pow(GMkm3s2 / (n * n), 1/3);
+  return a;
 };
 
-/**
- * Simplified position calculation based on TLE orbital elements
- */
 export const calculateSatellitePosition = async (
   tle: TLELine,
   date: Date = new Date()
@@ -81,53 +77,54 @@ export const calculateSatellitePosition = async (
     const line1 = tle.line1;
     const line2 = tle.line2;
 
-    // Extract NORAD ID
     const noradIdMatch = line1.match(/1\s+(\d+)/);
     const noradId = noradIdMatch ? noradIdMatch[1] : 'unknown';
 
-    // Parse Line 1: epoch
     const epochStr = line1.substring(18, 32);
     const epochDate = parseTLEEpoch(epochStr);
 
-    // Parse Line 2: orbital elements
+    // Parse orbital elements
     const inclination = parseFloat(line2.substring(8, 16));
-    const raan = parseFloat(line2.substring(17, 25)); // Right ascension of ascending node
+    const raan = parseFloat(line2.substring(17, 25));
     const eccentricity = parseFloat('0.' + line2.substring(26, 33));
-    const argOfPerigee = parseFloat(line2.substring(34, 42)); // Argument of perigee
-    const meanAnomaly = parseFloat(line2.substring(43, 51)); // Mean anomaly at epoch
-    const meanMotion = parseFloat(line2.substring(52, 63)); // Revolutions per day
+    const argOfPerigee = parseFloat(line2.substring(34, 42));
+    const meanAnomaly = parseFloat(line2.substring(43, 51));
+    const meanMotion = parseFloat(line2.substring(52, 63)); // revolutions per day
 
-    // Calculate time since epoch in minutes
+    // Calculate semi-major axis in km
+    const semiMajorAxis = calculateSemiMajorAxis(meanMotion);
+
+    // Time since epoch in minutes
     const minutesSinceEpoch = (date.getTime() - epochDate.getTime()) / (1000 * 60);
 
-    // Calculate current mean anomaly
-    const currentMeanAnomaly = getMeanAnomaly(meanAnomaly, meanMotion, minutesSinceEpoch);
-
-    // Convert mean anomaly to radians
+    // Current mean anomaly (revolutions per day -> degrees per minute)
+    const degreesPerMinute = meanMotion * 360; // 360 degrees per revolution
+    const currentMeanAnomaly = (meanAnomaly + degreesPerMinute * minutesSinceEpoch) % 360;
     const M = (currentMeanAnomaly * Math.PI) / 180;
 
-    // Solve Kepler's equation using Newton-Raphson (simplified)
-    // E = M + e * sin(E) -> iterate to find eccentric anomaly E
+    // Solve Kepler's equation: E = M + e*sin(E)
     let E = M;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       E = M + eccentricity * Math.sin(E);
     }
 
-    // Calculate true anomaly from eccentric anomaly
+    // True anomaly
     const cosE = Math.cos(E);
     const sinE = Math.sin(E);
-    const k = Math.sqrt(1 - eccentricity * eccentricity);
-    const nu = Math.atan2(k * sinE, cosE - eccentricity);
+    const nu = Math.atan2(
+      Math.sqrt(1 - eccentricity * eccentricity) * sinE,
+      cosE - eccentricity
+    );
 
-    // Calculate distance from Earth center (in Earth radii, where a = semi-major axis)
-    // For simplicity, assume a = 1 + altitude/6371
-    const r = (1 * (1 - eccentricity * eccentricity)) / (1 + eccentricity * Math.cos(nu));
+    // Distance from Earth center in km
+    const r = (semiMajorAxis * (1 - eccentricity * eccentricity)) / 
+              (1 + eccentricity * Math.cos(nu));
 
-    // Orbital coordinates
-    const orbitX = r * Math.cos(nu);
-    const orbitY = r * Math.sin(nu);
+    // Orbital coordinates (perifocal)
+    const rcos = r * Math.cos(nu);
+    const rsin = r * Math.sin(nu);
 
-    // Convert to Earth-fixed coordinates using RAAN and argument of perigee
+    // Rotation matrices
     const raanRad = (raan * Math.PI) / 180;
     const argPeriRad = (argOfPerigee * Math.PI) / 180;
     const inclRad = (inclination * Math.PI) / 180;
@@ -139,25 +136,29 @@ export const calculateSatellitePosition = async (
     const cosIncl = Math.cos(inclRad);
     const sinIncl = Math.sin(inclRad);
 
-    // Perifocal to orbital plane
-    const x = orbitX * (cosRaan * cosArg - sinRaan * sinArg * cosIncl) - orbitY * (cosRaan * sinArg + sinRaan * cosArg * cosIncl);
-    const y = orbitX * (sinRaan * cosArg + cosRaan * sinArg * cosIncl) - orbitY * (sinRaan * sinArg - cosRaan * cosArg * cosIncl);
-    const z = orbitX * sinArg * sinIncl + orbitY * cosArg * sinIncl;
+    // Transform to ECI coordinates
+    const x = rcos * (cosRaan * cosArg - sinRaan * sinArg * cosIncl) 
+            - rsin * (cosRaan * sinArg + sinRaan * cosArg * cosIncl);
+    const y = rcos * (sinRaan * cosArg + cosRaan * sinArg * cosIncl) 
+            - rsin * (sinRaan * sinArg - cosRaan * cosArg * cosIncl);
+    const z = rcos * sinArg * sinIncl + rsin * cosArg * sinIncl;
 
-    // Convert to lat/lng
-    const lat = (Math.atan2(z, Math.sqrt(x * x + y * y)) * 180) / Math.PI;
+    // Convert to lat/lng/altitude
+    const earthRadius = 6371; // km
+    const lat = (Math.asin(z / r) * 180) / Math.PI;
     let lng = (Math.atan2(y, x) * 180) / Math.PI;
 
-    // Account for Earth rotation (simplified)
-    const earthRotationRate = 360 / (24 * 60); // degrees per minute
-    lng -= earthRotationRate * minutesSinceEpoch;
+    // Account for Earth rotation (15 degrees/hour = 0.25 degrees/minute)
+    const earthRotation = 0.25 * minutesSinceEpoch;
+    lng = lng - earthRotation;
     lng = ((lng + 180) % 360) - 180;
 
-    // Altitude calculation (semi-major axis assumption for LEO ~6.6 Earth radii)
-    const altitude = Math.max((r - 1) * 6371, 300);
+    // Altitude above Earth surface
+    const altitude = Math.max(r - earthRadius, 200);
 
-    // Velocity approximation
-    const velocity = Math.sqrt(398600 / (r * 6371)); // vis-viva equation, simplified
+    // Velocity (vis-viva equation: v = sqrt(GM * (2/r - 1/a)))
+    const GM = 398600.4418;
+    const velocity = Math.sqrt(GM * (2 / r - 1 / semiMajorAxis));
 
     return {
       name: tle.name.trim(),
