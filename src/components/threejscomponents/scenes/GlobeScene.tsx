@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import Globe from '../meshes/Globe';
 import Satellites from '../meshes/Satellites';
 import SatelliteInfoPanel from '../SatelliteInfoPanel';
 import { SatellitePosition } from '@/utils/orbitCalculator';
+import { getRandomPalette } from '@/utils/cosmicPalette';
 
 interface GlobeSceneProps {
   width?: string | number;
@@ -18,16 +19,18 @@ const GlobeSceneInner: React.FC<{
   const { camera, scene } = useThree();
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
+  const palette = useRef(getRandomPalette());
 
   useEffect(() => {
     camera.position.z = 2;
-  }, [camera]);
+    // Set dark background
+    scene.background = new THREE.Color(palette.current.background);
+    scene.fog = new THREE.Fog(palette.current.background, 5, 10);
+  }, [camera, scene]);
 
   useFrame(() => {
-    // Update raycaster from mouse position
     raycasterRef.current.setFromCamera(mouseRef.current, camera);
 
-    // Get all satellite meshes
     const satellites: THREE.Mesh[] = [];
     scene.traverse((obj) => {
       if (obj instanceof THREE.Mesh && (obj.userData as any).satellite) {
@@ -37,7 +40,6 @@ const GlobeSceneInner: React.FC<{
 
     if (satellites.length === 0) return;
 
-    // Check intersections
     const intersects = raycasterRef.current.intersectObjects(satellites);
 
     if (intersects.length > 0) {
@@ -61,13 +63,32 @@ const GlobeSceneInner: React.FC<{
 
   return (
     <>
+      <Stars count={5000} radius={100} />
       <OrbitControls
         enableZoom={true}
         enablePan={true}
         enableRotate={true}
+        autoRotate={false}
       />
-      <ambientLight intensity={0.5} />
-      <pointLight position={[1, 0.3, 1]} intensity={1.5} />
+      
+      {/* Multi-directional lighting */}
+      <ambientLight intensity={0.4} color={palette.current.secondary} />
+      <pointLight 
+        position={[2, 1.5, 2]} 
+        intensity={1.2} 
+        color={palette.current.primary}
+      />
+      <pointLight 
+        position={[-2, -1, 1]} 
+        intensity={0.6} 
+        color={palette.current.accent}
+      />
+      <pointLight 
+        position={[0, 2, 0]} 
+        intensity={0.5} 
+        color={palette.current.secondary}
+      />
+      
       <Globe />
       <Satellites />
     </>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { fetchTLEData, calculateMultipleSatellitePositions, type SatellitePosition } from '@/utils/orbitCalculator';
+import { generateSatelliteColor, getRandomPalette } from '@/utils/cosmicPalette';
 
 const Satellites: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
@@ -9,6 +10,7 @@ const Satellites: React.FC = () => {
   const meshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
   const tleDataRef = useRef<any[]>([]);
   const lastUpdateRef = useRef<number>(0);
+  const paletteRef = useRef(getRandomPalette());
 
   // Fetch TLE data on mount
   useEffect(() => {
@@ -20,7 +22,7 @@ const Satellites: React.FC = () => {
         // Calculate initial positions
         const positions = await calculateMultipleSatellitePositions(tles);
         setSatellites(positions);
-        console.log(`Loaded ${positions.length} satellites`);
+        console.log(`🛰️ Loaded ${positions.length} satellites`);
       } catch (error) {
         console.error('Failed to load satellites:', error);
       }
@@ -42,19 +44,20 @@ const Satellites: React.FC = () => {
     meshesRef.current.clear();
 
     // Create new meshes for each satellite
-    satellites.forEach((sat) => {
-      const geometry = new THREE.SphereGeometry(0.012, 8, 8);
+    satellites.forEach((sat, index) => {
+      const geometry = new THREE.SphereGeometry(0.015, 8, 8);
       
-      // Color based on altitude
-      const hueValue = Math.min(sat.altitude / 1000, 1);
-      const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5);
+      // Abstract cosmic color
+      const colorHex = generateSatelliteColor(index, satellites.length, paletteRef.current);
+      const color = new THREE.Color(colorHex);
 
       const material = new THREE.MeshStandardMaterial({
         color,
         emissive: color,
-        emissiveIntensity: 0.7,
-        metalness: 0.3,
-        roughness: 0.3,
+        emissiveIntensity: 1.0,
+        metalness: 0.8,
+        roughness: 0.2,
+        toneMapped: false,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
@@ -63,10 +66,8 @@ const Satellites: React.FC = () => {
       const phi = (90 - sat.lat) * (Math.PI / 180);
       const theta = (sat.lng + 180) * (Math.PI / 180);
 
-      // Earth radius = 0.5 (in scene units)
-      // Scale altitude: 400km real = 0.063 units (400/6371 * 0.5)
       const earthRadiusUnits = 0.5;
-      const altitudeScale = sat.altitude / 6371; // Convert km to Earth radii
+      const altitudeScale = sat.altitude / 6371;
       const radius = earthRadiusUnits * (1 + altitudeScale);
 
       mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
@@ -84,15 +85,13 @@ const Satellites: React.FC = () => {
   useFrame(({ clock }) => {
     const now = clock.getElapsedTime() * 1000;
     
-    // Update every 100ms
     if (now - lastUpdateRef.current < 100) return;
     lastUpdateRef.current = now;
 
     if (tleDataRef.current.length === 0) return;
 
-    // Async update
     calculateMultipleSatellitePositions(tleDataRef.current).then((updatedPositions) => {
-      updatedPositions.forEach((sat) => {
+      updatedPositions.forEach((sat, index) => {
         const mesh = meshesRef.current.get(sat.noradId);
         if (!mesh) return;
 
@@ -106,12 +105,6 @@ const Satellites: React.FC = () => {
         mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
         mesh.position.y = radius * Math.cos(phi);
         mesh.position.z = radius * Math.sin(phi) * Math.sin(theta);
-
-        const hueValue = Math.min(sat.altitude / 1000, 1);
-        const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5);
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.color.copy(color);
-        mat.emissive.copy(color);
       });
 
       setSatellites(updatedPositions);
