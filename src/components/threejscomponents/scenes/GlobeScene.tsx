@@ -20,10 +20,11 @@ const GlobeSceneInner: React.FC<{
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
   const palette = useRef(getRandomPalette());
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSatRef = useRef<string | null>(null);
 
   useEffect(() => {
     camera.position.z = 2;
-    // Set dark background
     scene.background = new THREE.Color(palette.current.background);
     scene.fog = new THREE.Fog(palette.current.background, 5, 10);
   }, [camera, scene]);
@@ -40,14 +41,44 @@ const GlobeSceneInner: React.FC<{
 
     if (satellites.length === 0) return;
 
+    // Use larger raycaster radius to prevent flickering
+    raycasterRef.current.params.Points.threshold = 0.05;
     const intersects = raycasterRef.current.intersectObjects(satellites);
 
     if (intersects.length > 0) {
       const obj = intersects[0].object as THREE.Mesh;
       const sat = (obj.userData as any).satellite as SatellitePosition;
-      onSatelliteHover(sat, mouseRef.current.x * window.innerWidth * 0.5, mouseRef.current.y * window.innerHeight * 0.5);
+      const satId = sat.noradId;
+
+      // Only trigger hover update if satellite changed
+      if (satId !== lastSatRef.current) {
+        lastSatRef.current = satId;
+        
+        // Clear any pending debounce
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        
+        // Debounce the hover callback
+        debounceRef.current = setTimeout(() => {
+          // Convert world position to screen position
+          const screenPos = new THREE.Vector3();
+          screenPos.copy(obj.position);
+          screenPos.project(camera);
+          
+          const x = (screenPos.x * window.innerWidth) / 2;
+          const y = -(screenPos.y * window.innerHeight) / 2;
+          
+          onSatelliteHover(sat, x, y);
+        }, 50);
+      }
     } else {
-      onSatelliteHover(null, 0, 0);
+      if (lastSatRef.current !== null) {
+        lastSatRef.current = null;
+        
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+          onSatelliteHover(null, 0, 0);
+        }, 50);
+      }
     }
   });
 
@@ -58,7 +89,10 @@ const GlobeSceneInner: React.FC<{
 
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, []);
 
   return (
@@ -71,7 +105,6 @@ const GlobeSceneInner: React.FC<{
         autoRotate={false}
       />
       
-      {/* Multi-directional lighting */}
       <ambientLight intensity={0.4} color={palette.current.secondary} />
       <pointLight 
         position={[2, 1.5, 2]} 
@@ -104,7 +137,9 @@ const GlobeScene: React.FC<GlobeSceneProps> = ({
 
   const handleSatelliteHover = (sat: SatellitePosition | null, x: number, y: number) => {
     setHoveredSatellite(sat);
-    setMousePos({ x: x + window.innerWidth * 0.5, y: y + window.innerHeight * 0.5 });
+    if (sat) {
+      setMousePos({ x: x + window.innerWidth * 0.5, y: y + window.innerHeight * 0.5 });
+    }
   };
 
   return (
