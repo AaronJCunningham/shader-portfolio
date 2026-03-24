@@ -8,6 +8,7 @@ const Satellites: React.FC = () => {
   const [satellites, setSatellites] = useState<SatellitePosition[]>([]);
   const meshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
   const tleDataRef = useRef<any[]>([]);
+  const lastUpdateRef = useRef<number>(0);
 
   // Fetch TLE data on mount
   useEffect(() => {
@@ -17,7 +18,7 @@ const Satellites: React.FC = () => {
         tleDataRef.current = tles;
 
         // Calculate initial positions
-        const positions = calculateMultipleSatellitePositions(tles);
+        const positions = await calculateMultipleSatellitePositions(tles);
         setSatellites(positions);
       } catch (error) {
         console.error('Failed to load satellites:', error);
@@ -43,9 +44,9 @@ const Satellites: React.FC = () => {
     satellites.forEach((sat) => {
       const geometry = new THREE.SphereGeometry(0.015, 8, 8);
       
-      // Color based on altitude (lower = red, higher = blue)
-      const hueValue = Math.min(sat.altitude / 1000, 1); // Normalize altitude
-      const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5); // Hue range: red to blue
+      // Color based on altitude
+      const hueValue = Math.min(sat.altitude / 1000, 1);
+      const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5);
 
       const material = new THREE.MeshStandardMaterial({
         color,
@@ -61,15 +62,13 @@ const Satellites: React.FC = () => {
       const phi = (90 - sat.lat) * (Math.PI / 180);
       const theta = (sat.lng + 180) * (Math.PI / 180);
 
-      // Scale altitude to globe radius for visualization (Earth radius ≈ 6371 km)
-      const altitudeScale = sat.altitude / 1000; // km to units (1 unit = 1000 km roughly)
-      const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3); // Cap visualization at 0.3 units above surface
+      const altitudeScale = sat.altitude / 1000;
+      const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3);
 
       mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
       mesh.position.y = radius * Math.cos(phi);
       mesh.position.z = radius * Math.sin(phi) * Math.sin(theta);
 
-      // Store metadata
       (mesh.userData as any).satellite = sat;
 
       groupRef.current?.add(mesh);
@@ -84,48 +83,46 @@ const Satellites: React.FC = () => {
     };
   }, [satellites]);
 
-  // Update positions every frame
-  useFrame(() => {
+  // Update positions every frame (but only recalculate every 100ms to save CPU)
+  useFrame(({ clock }) => {
+    const now = clock.getElapsedTime() * 1000;
+    
+    // Only update every 100ms
+    if (now - lastUpdateRef.current < 100) return;
+    lastUpdateRef.current = now;
+
     if (tleDataRef.current.length === 0) return;
 
-    // Recalculate positions
-    const updatedPositions = calculateMultipleSatellitePositions(tleDataRef.current);
+    // Async update (don't await to keep frame smooth)
+    calculateMultipleSatellitePositions(tleDataRef.current).then((updatedPositions) => {
+      updatedPositions.forEach((sat) => {
+        const mesh = meshesRef.current.get(sat.noradId);
+        if (!mesh) return;
 
-    updatedPositions.forEach((sat) => {
-      const mesh = meshesRef.current.get(sat.noradId);
-      if (!mesh) return;
+        const phi = (90 - sat.lat) * (Math.PI / 180);
+        const theta = (sat.lng + 180) * (Math.PI / 180);
 
-      // Convert lat/lng/altitude to 3D position
-      const phi = (90 - sat.lat) * (Math.PI / 180);
-      const theta = (sat.lng + 180) * (Math.PI / 180);
+        const altitudeScale = sat.altitude / 1000;
+        const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3);
 
-      const altitudeScale = sat.altitude / 1000;
-      const radius = 0.5 + Math.min(altitudeScale * 0.0001, 0.3);
+        mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
+        mesh.position.y = radius * Math.cos(phi);
+        mesh.position.z = radius * Math.sin(phi) * Math.sin(theta);
 
-      mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
-      mesh.position.y = radius * Math.cos(phi);
-      mesh.position.z = radius * Math.sin(phi) * Math.sin(theta);
+        const hueValue = Math.min(sat.altitude / 1000, 1);
+        const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5);
+        const mat = mesh.material as THREE.MeshStandardMaterial;
+        mat.color.copy(color);
+        mat.emissive.copy(color);
+      });
 
-      // Update mesh color based on current altitude
-      const hueValue = Math.min(sat.altitude / 1000, 1);
-      const color = new THREE.Color().setHSL(hueValue * 0.6, 0.8, 0.5);
-      const mat = mesh.material as THREE.MeshStandardMaterial;
-      mat.color.copy(color);
-      mat.emissive.copy(color);
-    });
-
-    // Update state for UI (e.g., satellite count)
-    if (updatedPositions.length > 0) {
       setSatellites(updatedPositions);
-    }
+    }).catch((error) => {
+      console.error('Error updating satellite positions:', error);
+    });
   });
 
-  return (
-    <group ref={groupRef}>
-      {/* Debug info: show satellite count */}
-      <ambientLight intensity={0.1} />
-    </group>
-  );
+  return <group ref={groupRef} />;
 };
 
 export default Satellites;
