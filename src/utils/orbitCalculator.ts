@@ -58,9 +58,7 @@ const parseTLEEpoch = (epochStr: string): Date => {
 };
 
 /**
- * Calculate Kepler orbital elements from TLE mean motion
- * Mean motion (n) is in revolutions per day
- * Semi-major axis a = (GM/n^2)^(1/3) where GM = 398600.4418 km^3/s^2
+ * Calculate semi-major axis from mean motion
  */
 const calculateSemiMajorAxis = (meanMotionRevsPerDay: number): number => {
   const GMkm3s2 = 398600.4418;
@@ -94,12 +92,12 @@ export const calculateSatellitePosition = async (
     // Calculate semi-major axis in km
     const semiMajorAxis = calculateSemiMajorAxis(meanMotion);
 
-    // Time since epoch in minutes
-    const minutesSinceEpoch = (date.getTime() - epochDate.getTime()) / (1000 * 60);
+    // Time since epoch in days (not minutes!)
+    const daysSinceEpoch = (date.getTime() - epochDate.getTime()) / (1000 * 60 * 60 * 24);
 
-    // Current mean anomaly (revolutions per day -> degrees per minute)
-    const degreesPerMinute = meanMotion * 360; // 360 degrees per revolution
-    const currentMeanAnomaly = (meanAnomaly + degreesPerMinute * minutesSinceEpoch) % 360;
+    // Current mean anomaly in degrees
+    // meanMotion is revolutions per day, so multiply by 360 to get degrees per day
+    const currentMeanAnomaly = (meanAnomaly + meanMotion * 360 * daysSinceEpoch) % 360;
     const M = (currentMeanAnomaly * Math.PI) / 180;
 
     // Solve Kepler's equation: E = M + e*sin(E)
@@ -148,15 +146,16 @@ export const calculateSatellitePosition = async (
     const lat = (Math.asin(z / r) * 180) / Math.PI;
     let lng = (Math.atan2(y, x) * 180) / Math.PI;
 
-    // Account for Earth rotation (15 degrees/hour = 0.25 degrees/minute)
-    const earthRotation = 0.25 * minutesSinceEpoch;
+    // Account for Earth rotation (360 degrees per 24 hours)
+    const earthRotationDegreesPerDay = 360;
+    const earthRotation = earthRotationDegreesPerDay * daysSinceEpoch;
     lng = lng - earthRotation;
     lng = ((lng + 180) % 360) - 180;
 
     // Altitude above Earth surface
     const altitude = Math.max(r - earthRadius, 200);
 
-    // Velocity (vis-viva equation: v = sqrt(GM * (2/r - 1/a)))
+    // Velocity (vis-viva equation)
     const GM = 398600.4418;
     const velocity = Math.sqrt(GM * (2 / r - 1 / semiMajorAxis));
 
