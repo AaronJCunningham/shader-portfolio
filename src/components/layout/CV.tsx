@@ -83,6 +83,10 @@ export const CV = () => {
       <p>
         Beyond tech, my background in music includes five Billboard Top-20 tracks, features in VICE and BoilerRoom, and nominations at the Oberhausen Film Festival and Prism Prize Awards. I built a <Link href="/music-visualizer">music visualizer</Link> for my new album using three.js and GLSL.
       </p>
+
+      <p>
+        I started a project with my AI agent Hex to see if it can learn to be creative on its own. Every day, it creates — no prompts, no intervention. We call it the <Link href="https://aaronjcunningham.com/mauve-zone" target="_blank" rel="noopener noreferrer">Mauve Zone</Link>. The question: where does it go from here?
+      </p>
     </div>
   );
 };
