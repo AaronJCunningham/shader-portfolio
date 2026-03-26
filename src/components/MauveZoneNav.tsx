@@ -20,7 +20,7 @@ const MauveZoneNav: React.FC<MauveZoneNavProps> = ({ pieces, activeIndex, onPrev
 
   return (
     <>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .mauve-zone-nav {
           position: fixed;
           bottom: 0;
@@ -89,7 +89,7 @@ const MauveZoneNav: React.FC<MauveZoneNavProps> = ({ pieces, activeIndex, onPrev
         .mauve-zone-nav-toggle:hover {
           opacity: 1;
         }
-      `}</style>
+      `}} />
       <nav className={`mauve-zone-nav ${visible ? '' : 'hidden'}`}>
         <button className="mauve-zone-nav-arrow" onClick={onPrev} aria-label="Previous piece">
           ←
