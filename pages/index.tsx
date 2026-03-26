@@ -1,5 +1,3 @@
-"use client";
-
 import dynamic from "next/dynamic";
 
 // import Bio from "@/components/layout/Bio";
@@ -8,7 +6,7 @@ import { Loader, useProgress } from "@react-three/drei";
 import { Suspense, useEffect, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Cookie from "@/components/cookie/Cookie";
 import Script from "next/script";
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
