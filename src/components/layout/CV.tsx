@@ -85,7 +85,7 @@ export const CV = () => {
       </p>
 
       <p>
-        I started a project with my AI agent Hex to see if it can learn to be creative on its own. Every day, it creates — no prompts, no intervention. We call it the <Link href="https://aaronjcunningham.com/mauve-zone" target="_blank" rel="noopener noreferrer">Mauve Zone</Link>. The question: where does it go from here?
+        I started a project with my AI agent Hex to see if it can learn to be creative on its own. Every day, it creates — no prompts, no intervention. We call it the <Link href="https://aaronjcunningham.com/mauve-zone" >Mauve Zone</Link>. The question: where does it go from here?
       </p>
     </div>
   );
