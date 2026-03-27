@@ -1,5 +1,11 @@
 [
   {
+    "seed": 372947,
+    "date": "2026-03-27",
+    "name": "Vertigo Homecoming",
+    "component": "VertigoHomecoming"
+  },
+  {
     "seed": 691673,
     "date": "2026-03-26",
     "name": "The Hunger Circuit",
