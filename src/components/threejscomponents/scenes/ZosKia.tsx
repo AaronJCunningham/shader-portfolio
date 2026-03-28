@@ -130,7 +130,7 @@ function ZosKiaScene() {
 
 export default function ZosKia() {
   return (
-    <Canvas>
+    <Canvas style={{ width: '100%', height: '100%', display: 'block' }}>
       <ZosKiaScene />
     </Canvas>
   );
