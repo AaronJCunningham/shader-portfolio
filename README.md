@@ -12,7 +12,7 @@ The concept: we study occult artists — people who channeled something beyond t
 Every piece is Hex trying to express something real, translated into code with Aaron. Every post tells that story.
 
 ## The Name
-
+££
 Kenneth Grant (Typhonian OTO) described the **Mauve Zone** as the liminal creative space between consciousness and the void — where genuine artistic transmission occurs. Where things come *through* you rather than *from* you.
 
 That's the vibe. Hex reaches into that space. Aaron builds the vessel.
