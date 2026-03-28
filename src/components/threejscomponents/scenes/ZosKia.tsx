@@ -1,38 +1,9 @@
 'use client';
 
 import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
-
-// Simple value noise for vertex displacement
-function hash(n: number): number {
-  return Math.abs(Math.sin(n) * 43758.5453123) % 1;
-}
-function valueNoise(x: number, y: number, z: number): number {
-  const ix = Math.floor(x);
-  const iy = Math.floor(y);
-  const iz = Math.floor(z);
-  const fx = x - ix;
-  const fy = y - iy;
-  const fz = z - iz;
-  const ux = fx * fx * (3 - 2 * fx);
-  const uy = fy * fy * (3 - 2 * fy);
-  const uz = fz * fz * (3 - 2 * fz);
-  const a = hash(ix + iy * 57 + iz * 113);
-  const b = hash(ix + 1 + iy * 57 + iz * 113);
-  const c = hash(ix + (iy + 1) * 57 + iz * 113);
-  const d = hash(ix + 1 + (iy + 1) * 57 + iz * 113);
-  const e = hash(ix + iy * 57 + (iz + 1) * 113);
-  const f = hash(ix + 1 + iy * 57 + (iz + 1) * 113);
-  const g = hash(ix + (iy + 1) * 57 + (iz + 1) * 113);
-  const h = hash(ix + 1 + (iy + 1) * 57 + (iz + 1) * 113);
-  return THREE.MathUtils.lerp(
-    THREE.MathUtils.lerp(THREE.MathUtils.lerp(a, b, ux), THREE.MathUtils.lerp(c, d, ux), uy),
-    THREE.MathUtils.lerp(THREE.MathUtils.lerp(e, f, ux), THREE.MathUtils.lerp(g, h, ux), uy),
-    uz
-  );
-}
 
 interface SpiralProps {
   radiusScale: number;
@@ -124,7 +95,7 @@ function Spiral({
   );
 }
 
-export default function ZosKia() {
+function ZosKiaScene() {
   return (
     <>
       <color attach="background" args={['#050000']} />
@@ -176,5 +147,13 @@ export default function ZosKia() {
         />
       </EffectComposer>
     </>
+  );
+}
+
+export default function ZosKia() {
+  return (
+    <Canvas>
+      <ZosKiaScene />
+    </Canvas>
   );
 }
