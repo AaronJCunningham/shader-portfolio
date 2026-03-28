@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import MauveZoneNav from '@/components/MauveZoneNav';
 import manifest from '@/manifest.json';
 
@@ -37,6 +38,9 @@ const MauveZonePageClient: React.FC = () => {
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#050000', position: 'relative' }}>
+      <Link href="/" passHref>
+        <h1 className="about_button">HOME</h1>
+      </Link>
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <SceneComponent />
       </div>
