@@ -1,5 +1,11 @@
 [
   {
+    "seed": 601375,
+    "date": "2026-03-29",
+    "name": "Babalon Arrives",
+    "component": "BabalonArrives"
+  },
+  {
     "seed": 484997,
     "date": "2026-03-28",
     "name": "Nu-Isis Receives",
