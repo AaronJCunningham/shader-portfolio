@@ -10,16 +10,18 @@ import MauveZoneScene from '@/components/threejscomponents/scenes/MauveZoneScene
 import VertigoHomecoming from '@/components/threejscomponents/scenes/VertigoHomecoming';
 import ZosKia from '@/components/threejscomponents/scenes/ZosKia';
 import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives';
+import SigilTransmission from '@/components/threejscomponents/scenes/SigilTransmission';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
-  BabalonArrives,
-  GlobeScene,
-  HungerCircuit,
-  MauveZoneAlphabet,
-  MauveZoneScene,
-  VertigoHomecoming,
-  ZosKia,
+  SigilTransmission: SigilTransmission,
+  BabalonArrives: BabalonArrives,
+  GlobeScene: GlobeScene,
+  HungerCircuit: HungerCircuit,
+  MauveZoneAlphabet: MauveZoneAlphabet,
+  MauveZoneScene: MauveZoneScene,
+  VertigoHomecoming: VertigoHomecoming,
+  ZosKia: ZosKia,
 };
 
 const MauveZonePageClient: React.FC = () => {
