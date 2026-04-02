@@ -3,6 +3,7 @@ import Link from 'next/link';
 import MauveZoneNav from '@/components/MauveZoneNav';
 import manifest from '@/manifest.json';
 
+import FoldedDesire from '@/components/threejscomponents/scenes/FoldedDesire';
 import GlobeScene from '@/components/threejscomponents/scenes/GlobeScene';
 import HungerCircuit from '@/components/threejscomponents/scenes/HungerCircuit';
 import MauveZoneAlphabet from '@/components/threejscomponents/scenes/MauveZoneAlphabet';
@@ -14,6 +15,7 @@ import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  FoldedDesire,
   StillArrival,
   BabalonArrives,
   GlobeScene,
