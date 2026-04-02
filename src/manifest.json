@@ -1,5 +1,11 @@
 [
   {
+    "seed": 20260402,
+    "date": "2026-04-02",
+    "name": "Folded Desire",
+    "component": "FoldedDesire"
+  },
+  {
     "seed": 958586,
     "date": "2026-03-31",
     "name": "Still Arrival",
