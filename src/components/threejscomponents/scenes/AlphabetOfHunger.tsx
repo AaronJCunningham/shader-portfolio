@@ -1,21 +1,20 @@
 'use client';
 
-import { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── Palette: Bone and Void ───────────────────────────────────────────────────
+// ─── Palette ─────────────────────────────────────────────────────────────────
 const BONE = new THREE.Color('#c8b8a2');
 const PALE = new THREE.Color('#e8ddd0');
 const DEEP = new THREE.Color('#111111');
-const VOID = new THREE.Color('#000000');
+const VOID_COL = new THREE.Color('#000000');
 
-// ─── GPGPU: evolves a signal field (ping-pong) ────────────────────────────────
+// ─── GPGPU ping-pong shaders ─────────────────────────────────────────────────
 const gpgpuVert = /* glsl */`
   varying vec2 vUv;
   void main(){ vUv = uv; gl_Position = vec4(position,1.0); }
 `;
-
 const gpgpuFrag = /* glsl */`
   precision highp float;
   uniform sampler2D uPrev;
@@ -44,7 +43,6 @@ const gpgpuFrag = /* glsl */`
     vec3 g; g.x=a0.x*x0.x+h.x*x0.y; g.yz=a0.yz*x12.xz+h.yz*x12.yw;
     return 130.*dot(m,g);
   }
-
   float fbm(vec2 p, float t){
     float f=0.;
     f+=.500*snoise(p+t*.07); p*=2.02;
@@ -52,63 +50,48 @@ const gpgpuFrag = /* glsl */`
     f+=.125*snoise(p+t*.17);
     return f;
   }
-
   void main(){
-    vec2 uv = vUv;
-
-    // Domain warp — Spare automatic drawing flow
-    float wx = fbm(uv*2.+vec2(0.,uTime*.04), uTime);
-    float wy = fbm(uv*2.+vec2(3.7,uTime*.04), uTime);
-    vec2 warped = uv + vec2(wx,wy)*0.08;
-    warped = clamp(warped, 0.0, 1.0);
-
-    // Attractor toward center during arrival
-    float attract = smoothstep(0.0,0.5,uState) * smoothstep(1.0,0.55,uState);
-    vec2 toCenter = vec2(0.5) - uv;
-    warped += toCenter * attract * 0.015;
-    warped = clamp(warped, 0.0, 1.0);
-
-    vec4 prev = texture2D(uPrev, warped);
-
-    // New signal injection
-    float signal = 0.0;
-    if(uState > 0.05 && uState < 0.92){
-      float n = snoise(uv*6.+uTime*0.2)*0.5+0.5;
-      signal = n * attract * 0.18;
-    }
-
-    float fade = 0.968;
-    vec3 col = prev.rgb * fade;
-    col += signal * vec3(0.784, 0.722, 0.635); // bone tint
-
-    // Void — drain fast
-    if(uState < 0.04) col *= 0.0;
-
-    gl_FragColor = vec4(clamp(col,0.0,1.0), 1.0);
+    vec2 uv=vUv;
+    float wx=fbm(uv*2.+vec2(0.,uTime*.04),uTime);
+    float wy=fbm(uv*2.+vec2(3.7,uTime*.04),uTime);
+    vec2 warped=clamp(uv+vec2(wx,wy)*.08,0.,1.);
+    float attract=smoothstep(0.0,.5,uState)*smoothstep(1.0,.55,uState);
+    warped+=clamp(warped+(vec2(0.5)-uv)*attract*.015,0.,1.)-warped;
+    warped=clamp(warped,0.,1.);
+    vec4 prev=texture2D(uPrev,warped);
+    float signal=0.;
+    if(uState>.05&&uState<.92) signal=(snoise(uv*6.+uTime*.2)*.5+.5)*attract*.18;
+    vec3 col=prev.rgb*.968+signal*vec3(0.784,0.722,0.635);
+    if(uState<.04) col*=0.;
+    gl_FragColor=vec4(clamp(col,0.,1.),1.);
   }
 `;
 
-// ─── Main fullscreen raymarcher + post ───────────────────────────────────────
-const mainVert = /* glsl */`
+// ─── SDF raymarcher (on a box, camera shoots rays through it) ─────────────────
+const sdfVert = /* glsl */`
   varying vec2 vUv;
-  void main(){ vUv = uv; gl_Position = vec4(position,1.0); }
+  varying vec3 vWorldPos;
+  void main(){
+    vUv = uv;
+    vec4 wp = modelMatrix * vec4(position,1.0);
+    vWorldPos = wp.xyz;
+    gl_Position = projectionMatrix * viewMatrix * wp;
+  }
 `;
-
-const mainFrag = /* glsl */`
+const sdfFrag = /* glsl */`
   precision highp float;
-
   uniform float uTime;
   uniform float uState;
-  uniform vec2 uRes;
-  uniform sampler2D uGpgpu;
   uniform vec3 uBone;
   uniform vec3 uPale;
   uniform vec3 uDeep;
   uniform vec3 uVoid;
-
+  uniform sampler2D uGpgpu;
+  uniform vec2 uRes;
   varying vec2 vUv;
+  varying vec3 vWorldPos;
 
-  // ── Noise ──
+  // 3D simplex noise
   vec3 mod289v3(vec3 x){return x-floor(x*(1./289.))*289.;}
   vec4 mod289v4(vec4 x){return x-floor(x*(1./289.))*289.;}
   vec4 permute4(vec4 x){return mod289v4((x*34.+1.)*x);}
@@ -149,9 +132,8 @@ const mainFrag = /* glsl */`
     p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
     vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);
     m=m*m;
-    return 42.*dot(m*m,vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+    return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
   }
-
   float fbm3(vec3 p){
     float f=0.;
     f+=.500*snoise3(p); p*=2.01;
@@ -160,67 +142,48 @@ const mainFrag = /* glsl */`
     return f;
   }
 
-  // ── SDF primitives ──
   float sdSphere(vec3 p,float r){return length(p)-r;}
   float sdCapsule(vec3 p,vec3 a,vec3 b,float r){
     vec3 pa=p-a,ba=b-a;
-    float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);
-    return length(pa-ba*h)-r;
+    return length(pa-ba*clamp(dot(pa,ba)/dot(ba,ba),0.,1.))-r;
   }
-  float sdTorus(vec3 p,vec2 t){
-    return length(vec2(length(p.xz)-t.x,p.y))-t.y;
-  }
+  float sdTorus(vec3 p,vec2 t){return length(vec2(length(p.xz)-t.x,p.y))-t.y;}
   mat2 rot2(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
 
-  // ── Broken-axis sigil ──
   float sigil(vec3 p, float t){
-    // Broken 3-fold symmetry
+    // 3-fold symmetry, deliberately broken
     for(float i=0.;i<3.;i++){
-      float ang=i*2.09440+t*0.04;
+      float ang=i*2.09440+t*.04;
       vec3 n=vec3(cos(ang),0.,sin(ang));
       float d=dot(p,n);
       if(d<0.) p-=2.*d*n;
     }
-    // THE BREAK — asymmetric Y, this is intentional
-    p.y += 0.14+sin(t*0.17)*0.04;
-    p.x += sin(p.y*2.+t*0.19)*0.07;
-    p.xz *= rot2(sin(t*0.09)*0.12);
+    p.y+=.14+sin(t*.17)*.04;
+    p.x+=sin(p.y*2.+t*.19)*.07;
+    p.xz*=rot2(sin(t*.09)*.12);
 
-    // Core sphere with atavistic noise
-    float core = sdSphere(p, 0.72);
-    core += fbm3(p*2.+t*0.12)*0.11;
+    float core=sdSphere(p,.72)+fbm3(p*2.+t*.12)*.11;
 
-    // Capsule arms — sigil letter strokes
     for(float i=0.;i<4.;i++){
-      float a=i*1.5708+t*0.03+sin(i*1.5+t*0.07)*0.3;
+      float a=i*1.5708+t*.03+sin(i*1.5+t*.07)*.3;
       vec3 s=vec3(cos(a)*.45,0.,sin(a)*.45);
-      vec3 e=s+vec3(cos(a),0.,sin(a))*0.55;
-      float arm=sdCapsule(p,s,e,.032+sin(t+i)*.01);
-      core=min(core,arm);
+      core=min(core,sdCapsule(p,s,s+vec3(cos(a),0.,sin(a))*.55,.032+sin(t+i)*.01));
     }
 
-    // Twisted torus ring
-    vec3 tp=p;
-    tp.xz*=rot2(t*0.07);
-    tp.y+=sin(t*0.13)*0.1;
-    float torus=sdTorus(tp,vec2(1.15,.014));
-    torus=abs(torus)-.005;
+    vec3 tp=p; tp.xz*=rot2(t*.07); tp.y+=sin(t*.13)*.1;
+    float torus=abs(sdTorus(tp,vec2(1.15,.014)))-.005;
 
-    // Alphabet nodes — irregular orbit
     for(float i=0.;i<6.;i++){
-      float a=i*1.0472+t*0.035+sin(i*2.3+t*0.05)*0.4;
-      vec3 np=vec3(cos(a)*0.95,sin(a*1.7)*0.09,sin(a)*0.95);
+      float a=i*1.0472+t*.035+sin(i*2.3+t*.05)*.4;
+      vec3 np=vec3(cos(a)*.95,sin(a*1.7)*.09,sin(a)*.95);
       core=min(core,sdSphere(p-np,.038+sin(i+t)*.014));
     }
-
     return min(core,torus);
   }
 
   float sceneSDF(vec3 p){
     float s=sigil(p,uTime);
-    // Dissolve at end of cycle
-    float diss=smoothstep(0.78,0.96,uState);
-    s+=fbm3(p*3.+uTime)*.28*diss;
+    s+=fbm3(p*3.+uTime)*.28*smoothstep(.78,.96,uState);
     return s;
   }
 
@@ -233,144 +196,122 @@ const mainFrag = /* glsl */`
     ));
   }
 
-  // ── Hash / grain ──
   float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 
   void main(){
-    vec2 uv = vUv; // 0..1
-    vec2 ndc = uv * 2. - 1.;
-    ndc.x *= uRes.x / uRes.y; // correct aspect
+    // Camera inside the box — ray from camera to fragment world position
+    vec3 ro = cameraPosition;
+    vec3 rd = normalize(vWorldPos - cameraPosition);
 
-    // Camera — fixed, slightly elevated
-    vec3 ro = vec3(0., 0.4, 3.8);
-    vec3 rd = normalize(vec3(ndc.x, ndc.y, -2.2));
+    // Screen UV for textures/post (from gl_FragCoord)
+    vec2 uv = gl_FragCoord.xy / uRes;
 
-    // Background: deep void gradient
-    float bgGrad = 1. - dot(uv-0.5, uv-0.5)*1.4;
-    vec3 col = mix(uVoid, uDeep, clamp(bgGrad,0.,1.));
+    // Background
+    float bgGrad=1.-dot(uv-.5,uv-.5)*1.4;
+    vec3 col=mix(uVoid,uDeep,clamp(bgGrad,0.,1.));
 
-    // GPGPU texture bleeds into background
-    vec4 gpSample = texture2D(uGpgpu, uv);
-    col += gpSample.rgb * 0.22 * smoothstep(0.05,0.5,uState);
-
-    // Arrive/disperse
-    float arrive = smoothstep(0.0, 0.45, uState);
-    float hold   = smoothstep(0.45,0.65,uState)*smoothstep(1.0,0.68,uState);
-    float leave  = smoothstep(0.78,1.0, uState);
+    // GPGPU bleed into background
+    vec4 gpSample=texture2D(uGpgpu,uv);
+    float arrive=smoothstep(0.,.45,uState);
+    col+=gpSample.rgb*.22*smoothstep(.05,.5,uState);
 
     // Raymarch
-    float dist = 0.0;
-    float hit  = -1.0;
+    float dist=0.;float hit=-1.;
     for(int i=0;i<96;i++){
-      vec3 p = ro + rd*dist;
-      float h = sceneSDF(p);
-      if(h < 0.001){ hit = dist; break; }
-      if(dist > 20.0) break;
-      dist += h * 0.72;
+      vec3 p=ro+rd*dist;
+      float h=sceneSDF(p);
+      if(h<.001){hit=dist;break;}
+      if(dist>20.) break;
+      dist+=h*.72;
     }
 
-    if(hit > 0.0){
-      vec3 p = ro + rd*hit;
-      vec3 n = calcNormal(p);
-
-      // Lighting
-      vec3 L1 = normalize(vec3(1.8,2.5,3.));
-      float diff  = max(0.,dot(n,L1));
-      vec3 L2 = normalize(vec3(-1.5,-0.8,2.));
-      float diff2 = max(0.,dot(n,L2))*.2;
-      float rim   = pow(1.-max(0.,dot(n,-rd)),4.);
-
-      // GPGPU bleed on surface
-      vec2 surfUV = mod(uv*.25+0.5+uTime*.006,1.);
-      float gpuBleed = texture2D(uGpgpu,surfUV).r;
-
-      vec3 surfCol = mix(uDeep, uBone, diff*0.85+rim*0.55+diff2);
-      surfCol = mix(surfCol, uPale, rim*0.28*hold);
-      surfCol = mix(surfCol, uBone, gpuBleed*0.18*hold);
-
-      // Clarity peak mid-cycle
-      float clarity = smoothstep(0.48,0.56,uState)*smoothstep(0.74,0.64,uState);
-      surfCol = mix(surfCol, uPale, clarity*0.12);
-
-      surfCol *= arrive * (1.-leave);
-
-      col = mix(col, surfCol, step(0.0,hit));
+    if(hit>0.){
+      vec3 p=ro+rd*hit;
+      vec3 n=calcNormal(p);
+      float hold=smoothstep(.45,.65,uState)*smoothstep(1.,.68,uState);
+      float diff=max(0.,dot(n,normalize(vec3(1.8,2.5,3.))));
+      float diff2=max(0.,dot(n,normalize(vec3(-1.5,-.8,2.))))*.2;
+      float rim=pow(1.-max(0.,dot(n,-rd)),4.);
+      vec2 surfUV=mod(uv*.25+.5+uTime*.006,1.);
+      float gpuBleed=texture2D(uGpgpu,surfUV).r;
+      vec3 surfCol=mix(uDeep,uBone,diff*.85+rim*.55+diff2);
+      surfCol=mix(surfCol,uPale,rim*.28*hold);
+      surfCol=mix(surfCol,uBone,gpuBleed*.18*hold);
+      float clarity=smoothstep(.48,.56,uState)*smoothstep(.74,.64,uState);
+      surfCol=mix(surfCol,uPale,clarity*.12);
+      float leave=smoothstep(.78,1.,uState);
+      surfCol*=arrive*(1.-leave);
+      col=surfCol;
     }
 
-    // ── Post ──
-    // Chromatic aberration
-    float ca = length(uv-0.5)*0.006;
-    float r = texture2D(uGpgpu, uv+vec2(ca,0.)).r * 0.06;
-    float b = texture2D(uGpgpu, uv-vec2(ca,0.)).b * 0.06;
-    col.r += r * arrive;
-    col.b += b * arrive;
+    // Post
+    float ca=length(uv-.5)*.006;
+    col.r+=texture2D(uGpgpu,uv+vec2(ca,0.)).r*.06*arrive;
+    col.b+=texture2D(uGpgpu,uv-vec2(ca,0.)).b*.06*arrive;
+    float vig=1.-dot(uv-.5,uv-.5)*1.8;
+    col*=smoothstep(0.,1.,vig);
+    col+=hash(uv+fract(uTime*.73))*.04-.02;
+    float lum=dot(col,vec3(.299,.587,.114));
+    col=mix(col,vec3(lum*1.04+.015),.12);
 
-    // Vignette
-    float vig = 1. - dot(uv-0.5, uv-0.5)*1.8;
-    vig = smoothstep(0.,1.,vig);
-    col *= vig;
-
-    // Film grain
-    float grain = hash(uv + fract(uTime*.73))*.04-.02;
-    col += grain;
-
-    // Bone-white grade
-    float lum = dot(col,vec3(.299,.587,.114));
-    col = mix(col, vec3(lum*1.04+.015), .12);
-
-    gl_FragColor = vec4(clamp(col,0.,1.),1.);
+    gl_FragColor=vec4(clamp(col,0.,1.),1.);
   }
 `;
 
-// ─── Inner scene ─────────────────────────────────────────────────────────────
-function Inner(): React.ReactElement | null {
-  const { gl, size } = useThree();
+// ─── Post quad just composites scene RT to screen ────────────────────────────
+const postVert = /* glsl */`varying vec2 vUv; void main(){vUv=uv;gl_Position=vec4(position,1.0);}`;
+const postFrag = /* glsl */`
+  precision highp float;
+  uniform sampler2D uScene;
+  varying vec2 vUv;
+  void main(){ gl_FragColor = texture2D(uScene, vUv); }
+`;
+
+// ─── Inner Component ─────────────────────────────────────────────────────────
+function Inner() {
+  const { gl, size, camera } = useThree();
 
   // GPGPU ping-pong
   const pingRef = useRef<THREE.WebGLRenderTarget | null>(null);
   const pongRef = useRef<THREE.WebGLRenderTarget | null>(null);
-  const gpgpuCam = useMemo(() => new THREE.OrthographicCamera(-1,1,1,-1,0,1),[]);
-  const gpgpuScene = useMemo(() => {
-    const s = new THREE.Scene();
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: gpgpuVert,
-      fragmentShader: gpgpuFrag,
-      uniforms: {
-        uPrev:  { value: null },
-        uTime:  { value: 0 },
-        uState: { value: 0 },
-      },
-    });
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat);
-    s.add(mesh);
-    return { scene: s, mat };
-  }, []);
+  const gpgpuMeshRef = useRef<THREE.Mesh>(null!);
+  const gpgpuMatRef  = useRef<THREE.ShaderMaterial>(null!);
+  const gpgpuCam = useMemo(() => new THREE.OrthographicCamera(-1,1,1,-1,0,1), []);
 
-  // Main fullscreen quad
-  const mainScene = useMemo(() => {
-    const s = new THREE.Scene();
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: mainVert,
-      fragmentShader: mainFrag,
-      uniforms: {
-        uTime:  { value: 0 },
-        uState: { value: 0 },
-        uRes:   { value: new THREE.Vector2(size.width, size.height) },
-        uGpgpu: { value: null },
-        uBone:  { value: BONE },
-        uPale:  { value: PALE },
-        uDeep:  { value: DEEP },
-        uVoid:  { value: VOID },
-      },
-    });
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat);
-    s.add(mesh);
-    return { scene: s, mat };
-  }, [size]);
+  // SDF mesh (box, camera inside at z=3.8 looking through it)
+  const sdfMeshRef = useRef<THREE.Mesh>(null!);
+  const sdfMat = useMemo(() => new THREE.ShaderMaterial({
+    vertexShader: sdfVert,
+    fragmentShader: sdfFrag,
+    uniforms: {
+      uTime:  { value: 0 },
+      uState: { value: 0 },
+      uRes:   { value: new THREE.Vector2(size.width, size.height) },
+      uGpgpu: { value: null },
+      uBone:  { value: BONE },
+      uPale:  { value: PALE },
+      uDeep:  { value: DEEP },
+      uVoid:  { value: VOID_COL },
+    },
+    side: THREE.BackSide, // camera is inside the box
+  }), []); // eslint-disable-line
 
-  const screenCam = useMemo(() => new THREE.OrthographicCamera(-1,1,1,-1,0,1),[]);
+  // Scene RT + post quad
+  const sceneRT = useMemo(() => new THREE.WebGLRenderTarget(size.width, size.height, {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat,
+  }), [size]);
 
-  // Init GPGPU render targets
+  const postMeshRef = useRef<THREE.Mesh>(null!);
+  const postMat = useMemo(() => new THREE.ShaderMaterial({
+    vertexShader: postVert,
+    fragmentShader: postFrag,
+    uniforms: { uScene: { value: null } },
+  }), []);
+  const postCam = useMemo(() => new THREE.OrthographicCamera(-1,1,1,-1,0,1), []);
+
+  // Init GPGPU targets
   useEffect(() => {
     const opts = {
       minFilter: THREE.LinearFilter,
@@ -380,62 +321,90 @@ function Inner(): React.ReactElement | null {
     };
     pingRef.current = new THREE.WebGLRenderTarget(512, 512, opts);
     pongRef.current = new THREE.WebGLRenderTarget(512, 512, opts);
-    return () => {
-      pingRef.current?.dispose();
-      pongRef.current?.dispose();
-    };
-  }, []);
+    return () => { pingRef.current?.dispose(); pongRef.current?.dispose(); sceneRT.dispose(); };
+  }, []); // eslint-disable-line
 
-  // Resize main res uniform
+  // Resize
   useEffect(() => {
-    mainScene.mat.uniforms.uRes.value.set(size.width, size.height);
-  }, [size, mainScene]);
+    sdfMat.uniforms.uRes.value.set(size.width, size.height);
+    sceneRT.setSize(size.width, size.height);
+  }, [size, sdfMat, sceneRT]);
 
-  // 60s cycle
   const CYCLE = 60;
-  function smoothstep(e0: number, e1: number, x: number) {
+  function ss(e0: number, e1: number, x: number) {
     const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
     return t * t * (3 - 2 * t);
   }
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    const cycleT = t % CYCLE;
-
+    const ct = t % CYCLE;
     let state = 0;
-    if (cycleT < 20)      state = smoothstep(0, 20, cycleT) * 0.5;
-    else if (cycleT < 30) state = 0.5 + smoothstep(20, 30, cycleT) * 0.15;
-    else if (cycleT < 50) state = 0.65 + smoothstep(30, 50, cycleT) * 0.25;
-    else                  state = 0.9 * smoothstep(60, 50, cycleT);
+    if (ct < 20)      state = ss(0,20,ct)*0.5;
+    else if (ct < 30) state = 0.5 + ss(20,30,ct)*0.15;
+    else if (ct < 50) state = 0.65 + ss(30,50,ct)*0.25;
+    else              state = 0.9 * ss(60,50,ct);
 
     const ping = pingRef.current;
     const pong = pongRef.current;
-
     if (ping && pong) {
-      // GPGPU step
-      gpgpuScene.mat.uniforms.uTime.value  = t;
-      gpgpuScene.mat.uniforms.uState.value = state;
-      gpgpuScene.mat.uniforms.uPrev.value  = pong.texture;
-
+      // GPGPU step → write to ping
+      const mat = gpgpuMatRef.current;
+      mat.uniforms.uTime.value  = t;
+      mat.uniforms.uState.value = state;
+      mat.uniforms.uPrev.value  = pong.texture;
       gl.setRenderTarget(ping);
-      gl.render(gpgpuScene.scene, gpgpuCam);
+      gl.render(gpgpuMeshRef.current, gpgpuCam);
       gl.setRenderTarget(null);
-
-      // Swap
+      // swap
       pingRef.current = pong;
       pongRef.current = ping;
-
-      // Main quad
-      mainScene.mat.uniforms.uTime.value  = t;
-      mainScene.mat.uniforms.uState.value = state;
-      mainScene.mat.uniforms.uGpgpu.value = pingRef.current!.texture;
     }
 
-    // Render to screen
-    gl.render(mainScene.scene, screenCam);
-  }, 1);
+    // Update SDF uniforms
+    sdfMat.uniforms.uTime.value  = t;
+    sdfMat.uniforms.uState.value = state;
+    sdfMat.uniforms.uGpgpu.value = pingRef.current?.texture ?? null;
 
-  return null;
+    // Render SDF scene to RT
+    gl.setRenderTarget(sceneRT);
+    gl.clear();
+    gl.render(sdfMeshRef.current, camera);
+    gl.setRenderTarget(null);
+
+    // Post to screen
+    postMat.uniforms.uScene.value = sceneRT.texture;
+    gl.render(postMeshRef.current, postCam);
+  }, 0);
+
+  return (
+    <>
+      {/* SDF box — camera at z=3.8 shoots into BackSide */}
+      <mesh ref={sdfMeshRef} material={sdfMat}>
+        <boxGeometry args={[10, 10, 10]} />
+      </mesh>
+
+      {/* GPGPU quad — invisible, rendered imperatively */}
+      <mesh ref={gpgpuMeshRef} visible={false}>
+        <planeGeometry args={[2, 2]} />
+        <shaderMaterial
+          ref={gpgpuMatRef}
+          vertexShader={gpgpuVert}
+          fragmentShader={gpgpuFrag}
+          uniforms={{
+            uPrev:  { value: null },
+            uTime:  { value: 0 },
+            uState: { value: 0 },
+          }}
+        />
+      </mesh>
+
+      {/* Post quad — rendered imperatively to screen */}
+      <mesh ref={postMeshRef} material={postMat}>
+        <planeGeometry args={[2, 2]} />
+      </mesh>
+    </>
+  );
 }
 
 // ─── Export ──────────────────────────────────────────────────────────────────
@@ -444,7 +413,7 @@ export default function AlphabetOfHunger() {
     <Canvas
       style={{ width: '100%', height: '100%', display: 'block' }}
       gl={{ antialias: false, alpha: false }}
-      frameloop="always"
+      camera={{ position: [0, 0, 3.8], fov: 60 }}
     >
       <Inner />
     </Canvas>
