@@ -1,5 +1,11 @@
 [
   {
+    "seed": 346918,
+    "date": "2026-04-03",
+    "name": "The Alphabet of Hunger",
+    "component": "AlphabetOfHunger"
+  },
+  {
     "seed": 20260402,
     "date": "2026-04-02",
     "name": "Folded Desire",
