@@ -5,10 +5,14 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
-const BONE = new THREE.Color('#c8b8a2');
-const PALE = new THREE.Color('#e8ddd0');
-const DEEP = new THREE.Color('#111111');
-const VOID_COL = new THREE.Color('#000000');
+// Primary: electric cyan-green sigil body
+// Secondary: blood orange rim / displacement
+// Accent: acid violet nodes / torus
+// Bg: deep indigo void
+const BONE    = new THREE.Color('#00ffcc'); // electric cyan-green — sigil body
+const PALE    = new THREE.Color('#ff6a00'); // blood orange — rim light / clarity peak
+const DEEP    = new THREE.Color('#0d0020'); // deep indigo — background
+const VOID_COL= new THREE.Color('#000008'); // near-black void
 
 // ─── GPGPU ping-pong shaders ─────────────────────────────────────────────────
 const gpgpuVert = /* glsl */`
@@ -90,6 +94,11 @@ const sdfFrag = /* glsl */`
   uniform vec2 uRes;
   varying vec2 vUv;
   varying vec3 vWorldPos;
+
+  // Extra accent colors inline
+  vec3 VIOLET = vec3(0.55, 0.0, 1.0);   // acid violet — nodes / torus
+  vec3 GREEN2 = vec3(0.2,  1.0, 0.4);   // acid green — deep diffuse glow
+  vec3 WHITE  = vec3(1.0,  1.0, 1.0);   // pure white flash at clarity peak
 
   // 3D simplex noise
   vec3 mod289v3(vec3 x){return x-floor(x*(1./289.))*289.;}
@@ -234,11 +243,16 @@ const sdfFrag = /* glsl */`
       float rim=pow(1.-max(0.,dot(n,-rd)),4.);
       vec2 surfUV=mod(uv*.25+.5+uTime*.006,1.);
       float gpuBleed=texture2D(uGpgpu,surfUV).r;
-      vec3 surfCol=mix(uDeep,uBone,diff*.85+rim*.55+diff2);
-      surfCol=mix(surfCol,uPale,rim*.28*hold);
-      surfCol=mix(surfCol,uBone,gpuBleed*.18*hold);
+      // Base: deep indigo → cyan-green body
+      vec3 surfCol = mix(uDeep, GREEN2, diff2*0.6);
+      surfCol = mix(surfCol, uBone,  diff*0.85);
+      // Rim: blood orange
+      surfCol = mix(surfCol, uPale,  rim*0.7*hold);
+      // Nodes / torus violet tint from GPGPU bleed
+      surfCol = mix(surfCol, VIOLET, gpuBleed*0.35*hold);
+      // Clarity peak — white flash
       float clarity=smoothstep(.48,.56,uState)*smoothstep(.74,.64,uState);
-      surfCol=mix(surfCol,uPale,clarity*.12);
+      surfCol=mix(surfCol,WHITE,clarity*.25);
       float leave=smoothstep(.78,1.,uState);
       surfCol*=arrive*(1.-leave);
       col=surfCol;
@@ -246,13 +260,17 @@ const sdfFrag = /* glsl */`
 
     // Post
     float ca=length(uv-.5)*.006;
-    col.r+=texture2D(uGpgpu,uv+vec2(ca,0.)).r*.06*arrive;
-    col.b+=texture2D(uGpgpu,uv-vec2(ca,0.)).b*.06*arrive;
+    // Chromatic aberration — cyan/orange split for more drama
+    col.r+=texture2D(uGpgpu,uv+vec2(ca,0.)).r*.15*arrive;
+    col.g+=texture2D(uGpgpu,uv+vec2(0.,ca*.5)).g*.08*arrive;
+    col.b+=texture2D(uGpgpu,uv-vec2(ca,0.)).b*.12*arrive;
     float vig=1.-dot(uv-.5,uv-.5)*1.8;
     col*=smoothstep(0.,1.,vig);
     col+=hash(uv+fract(uTime*.73))*.04-.02;
+    // Slight saturation boost — lean into vivid
     float lum=dot(col,vec3(.299,.587,.114));
-    col=mix(col,vec3(lum*1.04+.015),.12);
+    col=mix(col,col*1.15,.4); // punch saturation
+    col=clamp(col,0.,1.);
 
     gl_FragColor=vec4(clamp(col,0.,1.),1.);
   }
@@ -338,7 +356,9 @@ function Inner() {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    const ct = t % CYCLE;
+    // Start at hold phase (0.55) so scene is fully visible immediately.
+    // After one CYCLE the loop naturally passes through arrival/dispersal.
+    const ct = (t + 25) % CYCLE; // +25 offsets into hold phase at t=0
     let state = 0;
     if (ct < 20)      state = ss(0,20,ct)*0.5;
     else if (ct < 30) state = 0.5 + ss(20,30,ct)*0.15;
