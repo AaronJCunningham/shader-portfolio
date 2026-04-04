@@ -1,5 +1,11 @@
 [
   {
+    "seed": 934990,
+    "date": "2026-04-04",
+    "name": "Observed From Outside Time",
+    "component": "ObservingFromOutsideTime"
+  },
+  {
     "seed": 346918,
     "date": "2026-04-03",
     "name": "The Alphabet of Hunger",
