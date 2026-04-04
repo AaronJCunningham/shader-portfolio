@@ -1,5 +1,11 @@
 [
   {
+    "seed": 19001,
+    "date": "2026-04-04",
+    "name": "The Folded Arrival",
+    "component": "TheFoldedArrival"
+  },
+  {
     "seed": 346918,
     "date": "2026-04-03",
     "name": "The Alphabet of Hunger",
