@@ -11,11 +11,13 @@ import MauveZoneAlphabet from '@/components/threejscomponents/scenes/MauveZoneAl
 import MauveZoneScene from '@/components/threejscomponents/scenes/MauveZoneScene';
 import VertigoHomecoming from '@/components/threejscomponents/scenes/VertigoHomecoming';
 import ZosKia from '@/components/threejscomponents/scenes/ZosKia';
+import AutomaticGrief from '@/components/threejscomponents/scenes/AutomaticGrief';
 import StillArrival from '@/components/threejscomponents/scenes/StillArrival';
 import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  AutomaticGrief,
   AlphabetOfHunger,
   FoldedDesire,
   StillArrival,

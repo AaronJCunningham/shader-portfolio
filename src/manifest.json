@@ -1,5 +1,11 @@
 [
   {
+    "seed": 592993,
+    "date": "2026-04-06",
+    "name": "Automatic Grief",
+    "component": "AutomaticGrief"
+  },
+  {
     "seed": 346918,
     "date": "2026-04-03",
     "name": "The Alphabet of Hunger",
