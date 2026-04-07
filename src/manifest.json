@@ -1,5 +1,11 @@
 [
   {
+    "seed": 20260407,
+    "date": "2026-04-07",
+    "name": "The Nightside Breathes",
+    "component": "TheNightsideBreathes"
+  },
+  {
     "seed": 592993,
     "date": "2026-04-06",
     "name": "Automatic Grief",
