@@ -1,7 +1,7 @@
 # The Mauve Zone
 
 > *"The Mauve Zone is the region of consciousness at the furthest remove from the normal waking state — the place where dreams touch the void, where art comes from."*
-> — Kenneth Grant
+> — Kenneth Grant -
 
 ## What This Is
 
