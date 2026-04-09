@@ -15,9 +15,11 @@ import AutomaticGrief from '@/components/threejscomponents/scenes/AutomaticGrief
 import StillArrival from '@/components/threejscomponents/scenes/StillArrival';
 import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives';
 import TheNightsideBreathes from '@/components/threejscomponents/scenes/TheNightsideBreathes';
+import GriefStillRings from '@/components/threejscomponents/scenes/GriefStillRings';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  GriefStillRings,
   TheNightsideBreathes,
   AutomaticGrief,
   AlphabetOfHunger,
