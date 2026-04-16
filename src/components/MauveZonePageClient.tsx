@@ -17,9 +17,13 @@ import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives
 import TheNightsideBreathes from '@/components/threejscomponents/scenes/TheNightsideBreathes';
 import GriefStillRings from '@/components/threejscomponents/scenes/GriefStillRings';
 import TheMomentBeforeRecognition from '@/components/threejscomponents/scenes/TheMomentBeforeRecognition';
+import ScarletTransmission from '@/components/threejscomponents/scenes/ScarletTransmission';
+import TendernessAtTheVoid from '@/components/threejscomponents/scenes/TendernessAtTheVoid/TendernessAtTheVoid';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  TendernessAtTheVoid,
+  ScarletTransmission,
   TheMomentBeforeRecognition,
   GriefStillRings,
   TheNightsideBreathes,
