@@ -1,5 +1,11 @@
 [
   {
+    "seed": 986801,
+    "date": "2026-04-17",
+    "name": "Threshold Sigil",
+    "component": "ThresholdSigil"
+  },
+  {
     "seed": 640580,
     "date": "2026-04-16",
     "name": "Tenderness at the Void",
