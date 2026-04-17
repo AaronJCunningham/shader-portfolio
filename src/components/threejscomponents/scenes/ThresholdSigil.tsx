@@ -5,173 +5,182 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 40000
-const ATOM_COUNT = 16
-const CYCLE_DURATION = 18.0
+const PARTICLE_COUNT = 20000
+const CYCLE_DURATION = 20.0
 
-// Broken axis sigil atoms — two half-sigils with offset
-const ATOMS = [
-  // left half (atoms 0–7)
-  { x: -0.9, y: 0.6, z: 0 },
-  { x: -1.2, y: 0.1, z: 0 },
-  { x: -0.7, y: -0.4, z: 0 },
-  { x: -1.1, y: -0.7, z: 0 },
-  { x: -0.4, y: 0.85, z: 0 },
-  { x: -1.5, y: -0.2, z: 0 },
-  { x: -0.6, y: -1.0, z: 0 },
-  { x: -1.3, y: 0.5, z: 0 },
-  // right half — same relative shape, shifted X by AXIS_BREAK (0.22)
-  { x: -0.9 + 0.22, y: 0.6, z: 0 },
-  { x: -1.2 + 0.22, y: 0.1, z: 0 },
-  { x: -0.7 + 0.22, y: -0.4, z: 0 },
-  { x: -1.1 + 0.22, y: -0.7, z: 0 },
-  { x: -0.4 + 0.22, y: 0.85, z: 0 },
-  { x: -1.5 + 0.22, y: -0.2, z: 0 },
-  { x: -0.6 + 0.22, y: -1.0, z: 0 },
-  { x: -1.3 + 0.22, y: 0.5, z: 0 },
+// Two half-sigils — left and right offset by BREAK on X
+const BREAK = 0.22
+const LEFT: [number, number][] = [[0, 1.1], [-0.65, 0.4], [-1.0, -0.1], [-0.55, -0.55], [0, -0.9]]
+const RIGHT: [number, number][] = LEFT.map(([x, y]) => [x + BREAK, y] as [number, number])
+const NODES: [number, number][] = [...LEFT, ...RIGHT]
+const NODE_COUNT = NODES.length
+
+const SIGIL_EDGES: [number, number][] = [
+  [0, 1], [0, 2], [0, 4],
+  [5, 6], [5, 7], [5, 9],
+  [1, 3], [6, 8],
+  [2, 3], [7, 8],
 ]
 
-const AXIS_BREAK = 0.22
+// Flatten node positions for shader uniforms: [x0,y0, x1,y1, ...]
+const NODE_POS_DATA = new Float32Array(NODES.flatMap(([x, y]) => [x, y]))
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
-  uniform float uCyclePos;
+  uniform vec2 uNodes[${NODE_COUNT}];
   attribute float aSeed;
-  attribute float aSpeed;
-  attribute float aOffset;
-  varying float vProgress;
-  varying float vAlpha;
+  attribute float aNode;
+  attribute float aPhase;
+  varying float vBright;
+  varying float vNode;
 
   void main() {
-    float t = mod(uTime * aSpeed + aOffset, CYCLE_DURATION);
-    float cycleT = t / CYCLE_DURATION;
-    float breath = sin(uCyclePos * 3.14159) * 0.5 + 0.5;
+    float t = mod(uTime * 0.85 + aPhase * ${CYCLE_DURATION.toFixed(1)}, ${CYCLE_DURATION.toFixed(1)});
+    float cycleT = t / ${CYCLE_DURATION.toFixed(1)};
 
-    // chaos stage: scatter
-    vec3 pos = position * (1.8 + sin(aSeed * 7.3) * 0.6);
+    float form = smoothstep(0.0, 0.45, cycleT);
+    float dissolve = smoothstep(0.65, 1.0, cycleT);
 
-    // attractor: pull toward atom based on seed
-    int atomIdx = int(mod(aSeed * float(ATOM_COUNT), float(ATOM_COUNT)));
-    vec3 atom = vec3(ATOMS[atomIdx].x, ATOMS[atomIdx].y, 0.0);
+    // Target node position
+    int nid = int(mod(aNode * ${NODE_COUNT}.0, ${NODE_COUNT}.0));
+    vec2 nodePos = uNodes[nid];
 
-    // pull toward atom — stronger in mid cycle
-    float pullStrength = smoothstep(0.1, 0.5, cycleT) * (1.0 - smoothstep(0.85, 1.0, cycleT));
-    pos = mix(pos, atom * (1.5 + breath * 0.3), pullStrength * 0.85);
+    // Start position: wide disc scatter
+    float angle = aSeed * 6.2832;
+    float rad = 3.5 + aSeed * 2.5;
+    vec3 startPos = vec3(cos(angle) * rad, sin(angle) * rad, (aSeed - 0.5) * 0.5);
 
-    // drift
-    pos.x += sin(uTime * 0.3 + aSeed * 12.7) * 0.12;
-    pos.y += cos(uTime * 0.2 + aSeed * 9.1) * 0.12;
-    pos.z += sin(uTime * 0.25 + aSeed * 5.5) * 0.08;
+    // Target with tiny jitter
+    float jx = (fract(aSeed * 43.1) - 0.5) * 0.1;
+    float jy = (fract(aSeed * 97.3) - 0.5) * 0.1;
+    vec3 target = vec3(nodePos.x + jx, nodePos.y + jy, 0.0);
 
-    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = (2.5 + breath * 2.0) * (300.0 / -mvPosition.z);
+    // Form from scatter into sigil, then dissolve back out
+    float formStr = form * (1.0 - dissolve * dissolve);
+    vec3 pos = mix(startPos, target, formStr);
 
-    // progress drives color
-    vProgress = smoothstep(0.0, 0.3, cycleT) * (1.0 - smoothstep(0.8, 1.0, cycleT));
-    vAlpha = 0.75 + vProgress * 0.25;
+    // Permanent gentle drift
+    pos.x += sin(uTime * 0.35 + aSeed * 8.1) * 0.05;
+    pos.y += cos(uTime * 0.28 + aSeed * 5.9) * 0.05;
+
+    // Breath at form peak
+    float breath = sin(uTime * 1.2 + aSeed * 6.28) * 0.03;
+    pos.x += breath;
+    pos.y += breath * 0.8;
+
+    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * mv;
+
+    float proxToNode = 1.0 - clamp(length(pos - target) * 4.0, 0.0, 1.0);
+    vBright = mix(0.35, 1.0, proxToNode) * (1.0 - dissolve * 0.92);
+    vNode = aNode;
+
+    float ptSize = (2.5 + sin(uTime * 1.0 + aSeed * 3.14) * 0.5) * (300.0 / -mv.z);
+    gl_PointSize = ptSize;
   }
 `
 
 const fragmentShader = /* glsl */ `
-  varying float vProgress;
-  varying float vAlpha;
+  varying float vBright;
+  varying float vNode;
 
   void main() {
-    float dist = length(gl_PointCoord - 0.5);
-    float alpha = smoothstep(0.5, 0.0, dist) * vAlpha;
+    float d = length(gl_PointCoord - 0.5);
+    float alpha = smoothstep(0.5, 0.05, d);
     if (alpha < 0.01) discard;
 
-    vec3 c1 = vec3(0.220, 0.020, 0.360); // #380534 — visible dark violet
-    vec3 c2 = vec3(0.520, 0.040, 0.520); // #850a85 — richer purple
-    vec3 c3 = vec3(0.769, 0.302, 1.0);   // #c44dff
-    vec3 c4 = vec3(1.0, 0.6, 1.0);        // #ff99ff
-    vec3 c5 = vec3(1.0, 1.0, 1.0);        // #ffffff
+    // Color clusters by node assignment
+    float ni = fract(vNode * 7.3);
 
-    vec3 color;
-    if (vProgress < 0.3) {
-      color = mix(c1, c2, vProgress / 0.3);
-    } else if (vProgress < 0.6) {
-      color = mix(c2, c3, (vProgress - 0.3) / 0.3);
-    } else if (vProgress < 0.85) {
-      color = mix(c3, c4, (vProgress - 0.6) / 0.25);
+    vec3 cv = vec3(0.50, 0.04, 0.88);  // #800fe0 violet
+    vec3 cm = vec3(0.92, 0.08, 0.72);  // #eb14b8 magenta
+    vec3 cc = vec3(0.04, 0.88, 1.00); // #0ee0ff cyan
+    vec3 cw = vec3(1.00, 0.96, 1.00); // white
+
+    vec3 col;
+    if (ni < 0.33) {
+      col = mix(cv, cm, ni / 0.33);
+    } else if (ni < 0.66) {
+      col = mix(cm, cc, (ni - 0.33) / 0.33);
     } else {
-      color = mix(c4, c5, (vProgress - 0.85) / 0.15);
+      col = mix(cc, cw, (ni - 0.66) / 0.34);
     }
 
-    gl_FragColor = vec4(color, alpha);
+    gl_FragColor = vec4(col * vBright, alpha * vBright);
   }
 `
 
+function SigilLine({ from, to }: { from: [number, number]; to: [number, number] }) {
+  const line = useMemo(() => {
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+      from[0], from[1], 0,
+      to[0], to[1], 0,
+    ]), 3))
+    const mat = new THREE.LineBasicMaterial({ color: '#c44dff', transparent: true, opacity: 0.18 })
+    return new THREE.Line(geo, mat)
+  }, [from, to])
+  return <primitive object={line} />
+}
+
+function SigilNode({ pos }: { pos: [number, number] }) {
+  return (
+    <mesh position={[pos[0], pos[1], 0]}>
+      <sphereGeometry args={[0.035, 8, 8]} />
+      <meshBasicMaterial color="#ff99ff" />
+    </mesh>
+  )
+}
+
 function ParticleField() {
-  const pointsRef = useRef<THREE.Points>(null)
-  const materialRef = useRef<THREE.ShaderMaterial>(null)
+  const matRef = useRef<THREE.ShaderMaterial>(null)
 
-  const { positions, seeds, speeds, offsets } = useMemo(() => {
-    const positions = new Float32Array(PARTICLE_COUNT * 3)
-    const seeds = new Float32Array(PARTICLE_COUNT)
-    const speeds = new Float32Array(PARTICLE_COUNT)
-    const offsets = new Float32Array(PARTICLE_COUNT)
-
+  const { pos, seed, node, phase } = useMemo(() => {
+    const pos = new Float32Array(PARTICLE_COUNT * 3)
+    const seed = new Float32Array(PARTICLE_COUNT)
+    const node = new Float32Array(PARTICLE_COUNT)
+    const phase = new Float32Array(PARTICLE_COUNT)
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const r = Math.random() * 8
+      const r = 3.5 + Math.random() * 2.5
       const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(2 * Math.random() - 1)
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
-      positions[i * 3 + 2] = r * Math.cos(phi)
-      seeds[i] = Math.random()
-      speeds[i] = 0.6 + Math.random() * 0.8
-      offsets[i] = Math.random() * CYCLE_DURATION
+      pos[i * 3] = Math.cos(theta) * r
+      pos[i * 3 + 1] = Math.sin(theta) * r
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5
+      seed[i] = Math.random()
+      node[i] = Math.random()
+      phase[i] = Math.random()
     }
+    return { pos, seed, node, phase }
+  }, [])
 
-    return { positions, seeds, speeds, offsets }
+  // Build node uniform array
+  const nodeUniforms = useMemo(() => {
+    const arr: THREE.Vector2[] = []
+    for (let i = 0; i < NODE_COUNT; i++) {
+      arr.push(new THREE.Vector2(NODES[i][0], NODES[i][1]))
+    }
+    return arr
   }, [])
 
   useFrame(({ clock }) => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = clock.getElapsedTime()
-      const t = clock.getElapsedTime()
-      materialRef.current.uniforms.uCyclePos.value = (t % CYCLE_DURATION) / CYCLE_DURATION
+    if (matRef.current) {
+      matRef.current.uniforms.uTime.value = clock.getElapsedTime()
     }
   })
 
   return (
-    <points ref={pointsRef}>
+    <points>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={positions}
-          count={PARTICLE_COUNT}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-aSeed"
-          array={seeds}
-          count={PARTICLE_COUNT}
-          itemSize={1}
-        />
-        <bufferAttribute
-          attach="attributes-aSpeed"
-          array={speeds}
-          count={PARTICLE_COUNT}
-          itemSize={1}
-        />
-        <bufferAttribute
-          attach="attributes-aOffset"
-          array={offsets}
-          count={PARTICLE_COUNT}
-          itemSize={1}
-        />
+        <bufferAttribute attach="attributes-position" array={pos} count={PARTICLE_COUNT} itemSize={3} />
+        <bufferAttribute attach="attributes-aSeed" array={seed} count={PARTICLE_COUNT} itemSize={1} />
+        <bufferAttribute attach="attributes-aNode" array={node} count={PARTICLE_COUNT} itemSize={1} />
+        <bufferAttribute attach="attributes-aPhase" array={phase} count={PARTICLE_COUNT} itemSize={1} />
       </bufferGeometry>
       <shaderMaterial
-        ref={materialRef}
+        ref={matRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        uniforms={{
-          uTime: { value: 0 },
-          uCyclePos: { value: 0 },
-        }}
+        uniforms={{ uTime: { value: 0 }, uNodes: { value: nodeUniforms } }}
         transparent
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -183,10 +192,14 @@ function ParticleField() {
 function Scene() {
   return (
     <>
-      <color attach="background" args={['#050010']} />
+      <color attach="background" args={['#020006']} />
+      {SIGIL_EDGES.map(([a, b], i) => (
+        <SigilLine key={i} from={NODES[a]} to={NODES[b]} />
+      ))}
+      {NODES.map((n, i) => <SigilNode key={i} pos={n} />)}
       <ParticleField />
       <EffectComposer>
-        <Bloom luminanceThreshold={0.3} intensity={1.4} radius={0.8} />
+        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.25} intensity={1.6} radius={0.7} />
       </EffectComposer>
     </>
   )
@@ -194,11 +207,7 @@ function Scene() {
 
 export default function ThresholdSigil() {
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 60 }}
-      gl={{ antialias: false, alpha: false }}
-      dpr={[1, 1.5]}
-    >
+    <Canvas camera={{ position: [0, 0, 3.2], fov: 52 }} gl={{ antialias: false, alpha: false }} dpr={[1, 1.5]}>
       <Scene />
     </Canvas>
   )
