@@ -132,24 +132,28 @@ void main(){
 
   vec3 finalPos = vec3(finalPos2d, z);
 
-  // Color by proximity
+  // Color by proximity — ALWAYS visible, brighter when scattered
   float proximity = 1.0 - clamp(distToAtt / 3.0, 0.0, 1.0);
   float formation = converge * proximity;
 
-  vec3 col = uVoid;
-  col = mix(col, uEmber, formation * 0.6 + 0.1);
-  col = mix(col, uFlame, formation * formation * 0.8);
-  col = mix(col, uGold, pow(formation, 3.0) * converge);
+  // Base color: scattered particles are ember-red, formed particles flame-gold
+  vec3 col = mix(uEmber, uFlame, formation);
+  col = mix(col, uGold, pow(formation, 2.0) * converge);
 
-  float birthFade = smoothstep(0.0, 0.06, uPhase);
-  float deathFade = 1.0 - smoothstep(0.92, 1.0, uPhase);
+  // Always visible — no fade-in, just fade-out at cycle end
+  float deathFade = 1.0 - smoothstep(0.94, 1.0, uPhase);
+
+  // Higher base alpha + brighter when scattered (chaos is beautiful too)
+  float baseAlpha = 0.7 + (1.0 - formation) * 0.3;
 
   vColor = col;
-  vAlpha = birthFade * deathFade * (0.3 + formation * 0.7);
+  vAlpha = deathFade * baseAlpha;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
-  gl_PointSize = (1.5 + formation * 4.0) * (5.0 / gl_Position.w);
-  gl_PointSize = clamp(gl_PointSize, 0.8, 8.0);
+  // Larger points when scattered so chaos is visible, smaller when formed for density
+  float sizeMix = 2.5 + (1.0 - formation) * 2.0 + formation * 3.0;
+  gl_PointSize = sizeMix * (5.0 / gl_Position.w);
+  gl_PointSize = clamp(gl_PointSize, 1.5, 10.0);
 }
 `;
 
