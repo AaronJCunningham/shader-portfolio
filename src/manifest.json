@@ -1,5 +1,17 @@
 [
   {
+    "seed": 20260421,
+    "date": "2026-04-21",
+    "name": "The Alphabet of Tenderness",
+    "component": "TheAlphabetOfTenderness"
+  },
+  {
+    "seed": 116570,
+    "date": "2026-04-21",
+    "name": "Viridian Transmission",
+    "component": "ViridianTransmission"
+  },
+  {
     "seed": 986801,
     "date": "2026-04-17",
     "name": "Threshold Sigil",

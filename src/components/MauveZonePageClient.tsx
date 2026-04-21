@@ -19,10 +19,14 @@ import GriefStillRings from '@/components/threejscomponents/scenes/GriefStillRin
 import TheMomentBeforeRecognition from '@/components/threejscomponents/scenes/TheMomentBeforeRecognition';
 import ScarletTransmission from '@/components/threejscomponents/scenes/ScarletTransmission';
 import ThresholdSigil from '@/components/threejscomponents/scenes/ThresholdSigil';
+import TheAlphabetOfTenderness from '@/components/threejscomponents/scenes/TheAlphabetOfTenderness';
+import ViridianTransmission from '@/components/threejscomponents/scenes/ViridianTransmission';
 import TendernessAtTheVoid from '@/components/threejscomponents/scenes/TendernessAtTheVoid/TendernessAtTheVoid';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  TheAlphabetOfTenderness,
+  ViridianTransmission,
   ThresholdSigil,
   TendernessAtTheVoid,
   ScarletTransmission,
