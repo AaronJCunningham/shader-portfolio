@@ -10,9 +10,11 @@ import MauveZoneScene from '@/components/threejscomponents/scenes/MauveZoneScene
 import VertigoHomecoming from '@/components/threejscomponents/scenes/VertigoHomecoming';
 import ZosKia from '@/components/threejscomponents/scenes/ZosKia';
 import BabalonArrives from '@/components/threejscomponents/scenes/BabalonArrives';
+import NightsideTransmission from '@/components/threejscomponents/scenes/NightsideTransmission';
 
 /** Only scenes that wrap their own <Canvas>; inner-only scenes break MauveZone when rendered directly. */
 const sceneMap: Record<string, React.ComponentType> = {
+  NightsideTransmission,
   BabalonArrives,
   GlobeScene,
   HungerCircuit,
