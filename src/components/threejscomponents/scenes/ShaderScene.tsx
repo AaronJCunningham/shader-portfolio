@@ -199,9 +199,9 @@ const ShaderScene = () => {
         <SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />,
         scene1
       )}
-      {createPortal(<SceneTwo pointer={pointer} />, scene2)}
+      {createPortal(<SceneFour pointer={pointer} />, scene2)}
       {createPortal(<SceneThree pointer={pointer} />, scene3)}
-      {createPortal(<SceneFour pointer={pointer} />, scene4)}
+      {createPortal(<SceneTwo pointer={pointer} />, scene4)}
     </>
   );
 };

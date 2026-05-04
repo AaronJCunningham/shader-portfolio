@@ -1,63 +1,67 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import {
-  Cloud,
-  Clouds,
-  Environment,
-  MeshDistortMaterial,
-  Sky,
-  Stars,
-} from "@react-three/drei";
 
-import vertexShader from "../shaders/displexRing/vertex";
-import fragmentShader from "../shaders/displexRing/fragment";
+import vertexShader from "../shaders/metaballs/vertex.glsl.js";
+import fragmentShader from "../shaders/metaballs/fragment.glsl.js";
 
-import { Dragon } from "../meshes/Dragon";
-import { Island } from "../meshes/Island";
-import { Tavern } from "../meshes/Tavern";
+const TRAIL_LENGTH = 15;
 
 const SceneFour = ({ pointer }: any) => {
   const shaderRef = useRef<THREE.ShaderMaterial>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const { size, clock } = useThree();
+  const { size, viewport } = useThree();
 
-  const animate = () => {
-    const time = clock.getElapsedTime();
+  const pointerTrail = useMemo(
+    () =>
+      Array.from({ length: TRAIL_LENGTH }, () => new THREE.Vector2(0.0, 0.0)),
+    []
+  );
 
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uDisplace.value = time;
-      // shaderRef.current.parent[0].rotation.x = Math.sin(delta)
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0.0 },
+      uResolution: {
+        value: new THREE.Vector2(
+          size.width * viewport.dpr,
+          size.height * viewport.dpr
+        ),
+      },
+      uPointerTrail: { value: pointerTrail },
+    }),
+    []
+  );
+
+  useFrame((state) => {
+    if (!shaderRef.current) return;
+
+    // Shift trail: each position follows the one before it
+    for (let i = TRAIL_LENGTH - 1; i > 0; i--) {
+      pointerTrail[i].copy(pointerTrail[i - 1]);
     }
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.2;
-    }
+    // Head tracks mouse with slight smoothing
+    pointerTrail[0].lerp(
+      new THREE.Vector2(pointer.x, pointer.y),
+      0.45
+    );
 
-    requestAnimationFrame(animate);
-  };
-
-  useEffect(() => {
-    animate();
-  }, []);
+    // Update uniforms
+    shaderRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    shaderRef.current.uniforms.uResolution.value.set(
+      state.size.width * state.viewport.dpr,
+      state.size.height * state.viewport.dpr
+    );
+  });
 
   return (
-    <>
-      <Tavern pointer={pointer} />
-      {/* <Dragon pointer={pointer}/> */}
-      <color attach="background" args={["#226666"]} />
-      {/* <Sky distance={100} inclination={-1} sunPosition={[5,5,10]}/> */}
-
-      <ambientLight intensity={5} />
-
-      <Environment preset="park" />
-
-      <spotLight
-        color="blue"
-        //@ts-ignore
-        lookAt={new THREE.Vector3(0, 1, -2.2)}
-        intensity={10}
+    <mesh>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={shaderRef}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms}
       />
-    </>
+    </mesh>
   );
 };
 
