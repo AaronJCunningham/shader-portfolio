@@ -13,7 +13,15 @@ export const CV = () => {
       </p>
 
       <p>
-        Since 2023, I have been the lead developer for three anonymous Web3 projects backed by major blockchain organizations. While details remain undisclosed, inquiries are welcome.
+        Most recently, I was the lead Three.js and Web3 developer at BASEDAI, where I single-handedly built{" "}
+        <a href="https://basedai-nexus.vercel.app/" target="_blank" rel="noopener noreferrer">
+          The NEXUS
+        </a>
+        {" "}— a 3D visualization of live blockchain data. I created the design thesis, engineered the full stack from top to bottom, and worked directly with a 3D artist to design the assets.
+      </p>
+
+      <p>
+        Since 2023, I have been the lead developer for two additional anonymous Web3 projects backed by major blockchain organizations. While details remain undisclosed, inquiries are welcome.
       </p>
 
       <p>
