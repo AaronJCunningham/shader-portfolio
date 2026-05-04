@@ -5,20 +5,21 @@ export const CV = () => {
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-        As a full-stack developer specializing in Three.js, Web3, and AI, I lead
-        projects that push the boundaries of browser-based experiences, from
-        immersive websites to metaverses.
+        As a Creative Technologist & Full-stack Three.js Developer specializing
+        in Web3 and AI, I lead projects that push the boundaries of
+        browser-based experiences — from immersive 3D platforms to fully
+        realized metaverses.
       </p>
 
       <p>
-        I build applications with TypeScript, Next.js, React, and Supabase,
-        always adapting to new technologies to stay at the forefront of web
-        development.
+        I build production applications with TypeScript, Next.js, React, and
+        Supabase, and I own the full lifecycle: design, architecture, frontend,
+        backend, and smart contracts.
       </p>
 
       <p>
-        Most recently, I was the lead Three.js and Web3 developer at BASEDAI,
-        where I single-handedly built{" "}
+        Most recently, I was lead developer at BASEDAI, where I single-handedly
+        built{" "}
         <a
           href="https://basedai-nexus.vercel.app/"
           target="_blank"
@@ -26,15 +27,15 @@ export const CV = () => {
         >
           The NEXUS
         </a>{" "}
-        — a 3D visualization of live blockchain data. I created the design
-        thesis, engineered the full stack from top to bottom, and worked
-        directly with a 3D artist to design the assets.
+        — a real-time 3D visualization of live blockchain data. I defined the
+        design thesis, architected and built the full stack, and directed a 3D
+        artist to produce the assets.
       </p>
 
       <p>
-        Since 2023, I have been the lead developer for two additional anonymous
-        Web3 projects backed by major blockchain organizations. While details
-        remain undisclosed, inquiries are welcome.
+        Since 2023, I have been lead developer for two additional Web3 projects
+        backed by major blockchain organizations. Details remain under NDA —
+        inquiries are welcome.
       </p>
 
       <p>
@@ -42,8 +43,8 @@ export const CV = () => {
         <a href="https://montra.com" target="_blank" rel="noopener noreferrer">
           Montra
         </a>
-        , a web-based video editing startup. From 2020–2023, I served as lead
-        developer at{" "}
+        , a browser-based video editing platform built with React Three Fiber.
+        From 2020–2023, I led development at{" "}
         <a
           href="https://xeleven.tech"
           target="_blank"
@@ -51,7 +52,8 @@ export const CV = () => {
         >
           XELEVEN
         </a>
-        , a metaverse studio working with clients like{" "}
+        , a metaverse studio delivering immersive experiences for clients
+        including{" "}
         <a
           href="https://theface.com/tiffany-calvers-world"
           target="_blank"
@@ -80,7 +82,7 @@ export const CV = () => {
       </p>
 
       <p>
-        My blockchain journey began in 2014 with roles at{" "}
+        My blockchain career began in 2014 at{" "}
         <a
           href="https://coinsquare.com"
           target="_blank"
@@ -88,11 +90,11 @@ export const CV = () => {
         >
           Coinsquare
         </a>
-        , Canada&apos;s largest crypto exchange, and{" "}
+        , Canada&apos;s largest crypto exchange, followed by{" "}
         <a href="https://iost.io" target="_blank" rel="noopener noreferrer">
           IOST
         </a>{" "}
-        in Asia. I&apos;ve given talks at{" "}
+        in Asia. I&apos;ve spoken at{" "}
         <Link href="https://www.aaronjcunningham.com/chainlink-in-berlin">
           Chainlink HQ in Berlin
         </Link>{" "}
@@ -106,15 +108,13 @@ export const CV = () => {
       <p>
         Beyond tech, my background in music includes five Billboard Top-20
         tracks, features in VICE and BoilerRoom, and nominations at the
-        Oberhausen Film Festival and Prism Prize Awards. I built a{" "}
-        <Link href="/music-visualizer">music visualizer</Link> for my new album
-        using three.js and GLSL.
+        Oberhausen Film Festival and Prism Prize Awards.
       </p>
 
       <p>
-        I started a project with my AI agent Hex to see if it can learn to be
-        creative on its own. Every day, it creates — no prompts, no
-        intervention. We call it the{" "}
+        I started a project with my AI agent Hex to explore whether an AI can
+        learn to be creative autonomously. Every day, it creates — no prompts,
+        no intervention. We call it the{" "}
         <Link href="https://aaronjcunningham.com/mauve-zone">Mauve Zone</Link>.
         The question: where does it go from here?
       </p>
