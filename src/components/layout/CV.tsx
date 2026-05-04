@@ -118,17 +118,6 @@ export const CV = () => {
         <Link href="https://aaronjcunningham.com/mauve-zone">Mauve Zone</Link>.
         The question: where does it go from here?
       </p>
-
-      <p style={{ color: "#888", marginBottom: "5px" }}>
-        I am also a musician. Check out the
-      </p>
-      <Link
-        href="/music-visualizer"
-        className="reverse-link"
-        style={{ textTransform: "uppercase", fontWeight: "bold" }}
-      >
-        Music Visualizer for my new album
-      </Link>
     </div>
   );
 };
