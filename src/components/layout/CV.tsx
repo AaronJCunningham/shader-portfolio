@@ -18,7 +18,7 @@ export const CV = () => {
       </p>
 
       <p>
-        Most recently, I was lead developer at BASEDAI, where I single-handedly
+        From 2024-2026, I was lead developer at BASEDAI, where I single-handedly
         built{" "}
         <a
           href="https://basedai-nexus.vercel.app/"
@@ -30,12 +30,6 @@ export const CV = () => {
         — a real-time 3D visualization of live blockchain data. I defined the
         design thesis, architected and built the full stack, and directed a 3D
         artist to produce the assets.
-      </p>
-
-      <p>
-        Since 2023, I have been lead developer for two additional Web3 projects
-        backed by major blockchain organizations. Details remain under NDA —
-        inquiries are welcome.
       </p>
 
       <p>
