@@ -31,7 +31,7 @@ export const CV = () => {
         >
           DeFi Launchpad
         </a>{" "}
-        — a decentralized incubation platform with 41 Solidity smart contracts
+        — a decentralized incubation platform with a large system of interconnected Solidity smart contracts
         using EIP-1167 cloneable factories, escrow funding, milestone
         governance, and a staking position marketplace; and{" "}
         <a

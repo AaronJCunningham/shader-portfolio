@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FaGithub, FaTwitter, FaInstagramSquare } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 
 export function Footer({}) {
   return (
@@ -13,14 +13,6 @@ export function Footer({}) {
           rel="noreferrer"
         >
           <FaTwitter />
-        </a>
-        <a
-          className="footer_icon"
-          href="https://www.instagram.com/aaronlvx_"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FaInstagramSquare />
         </a>
         <a
           className="footer_icon"
