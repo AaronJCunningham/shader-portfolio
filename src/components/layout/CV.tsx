@@ -6,7 +6,7 @@ export const CV = () => {
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
         <a href="https://github.com/AaronJCunningham" target="_blank" rel="noreferrer">Github</a>
-        {" "}
+        {" | "}
         <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">Twitter</a>
       </p>
       <p>
