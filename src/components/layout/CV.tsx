@@ -127,9 +127,16 @@ export const CV = () => {
       </p>
 
       <p>
-        I started a project with my AI agent Hex to explore whether an AI can
-        learn to be creative autonomously. Every day, it creates — no prompts,
-        no intervention. We call it the{" "}
+        I also use{" "}
+        <a
+          href="https://openclaw.ai"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OpenClaw
+        </a>{" "}
+        to run an autonomous agent that creates shader art and generative visuals.
+        The results have been pretty cool so far. Check it out in the{" "}
         <Link href="https://aaronjcunningham.com/mauve-zone">Mauve Zone</Link>.
       </p>
     </div>
