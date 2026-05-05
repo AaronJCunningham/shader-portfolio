@@ -5,31 +5,45 @@ export const CV = () => {
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
       <p>
-        As a Creative Technologist & Full-stack Three.js Developer specializing
-        in Web3 and AI, I lead projects that push the boundaries of
-        browser-based experiences — from immersive 3D platforms to fully
-        realized metaverses.
+        I&apos;m a Lead Creative Technologist & Full-Stack Developer. I build
+        immersive 3D experiences, full-stack Web3 platforms, and interactive
+        data visualizations — from GLSL shaders to smart contracts to backend
+        services. Everything I build works and looks right, backed by 7+ years
+        of development and 10+ years of professional design.
       </p>
 
       <p>
-        I build production applications with TypeScript, Next.js, React, and
-        Supabase, and I own the full lifecycle: design, architecture, frontend,
-        backend, and smart contracts.
-      </p>
-
-      <p>
-        From 2024-2026, I was lead developer at BASEDAI, where I single-handedly
-        built{" "}
+        From 2024–2026, I was lead developer at BASEDAI, where I
+        single-handedly built the entire product suite:{" "}
         <a
           href="https://basedai-nexus.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          The NEXUS
+          The Nexus
         </a>{" "}
-        — a real-time 3D visualization of live blockchain data. I defined the
-        design thesis, architected and built the full stack, and directed a 3D
-        artist to produce the assets.
+        — a real-time 3D blockchain visualization rendering on-chain node data
+        as an interactive Fibonacci spiral;{" "}
+        <a
+          href="https://defi-launchpad-jade.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          DeFi Launchpad
+        </a>{" "}
+        — a decentralized incubation platform with 41 Solidity smart contracts
+        using EIP-1167 cloneable factories, escrow funding, milestone
+        governance, and a staking position marketplace; and{" "}
+        <a
+          href="https://github.com/AaronJCunningham/based-gecko"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Based Gecko
+        </a>{" "}
+        — a full-stack token monitoring platform with real-time price charts
+        from on-chain Uniswap data, WebSocket-powered community features, and
+        Ethereum wallet authentication.
       </p>
 
       <p>
@@ -53,7 +67,7 @@ export const CV = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          NIKE
+          Nike
         </a>
         . Our project{" "}
         <a
@@ -63,32 +77,29 @@ export const CV = () => {
         >
           Spirit Realm
         </a>{" "}
-        was featured at NFT NYC in Times Square and in Red-Eye magazine. In
-        2022, I contributed to{" "}
-        <a
-          href="https://ravespace.io"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          RaveSpace&apos;s
-        </a>{" "}
-        Musée Dezentral, the first NFT museum.
+        — a browser-based 3D metaverse with custom third-person controls,
+        real-time multiplayer, and Web3 NFT minting — was featured at NFT NYC
+        in Times Square.
       </p>
 
       <p>
-        My blockchain career began in 2014 at{" "}
+        I came into tech through design and blockchain — starting at{" "}
         <a
           href="https://coinsquare.com"
           target="_blank"
           rel="noopener noreferrer"
         >
           Coinsquare
-        </a>
-        , Canada&apos;s largest crypto exchange, followed by{" "}
+        </a>{" "}
+        in 2014, then joining{" "}
         <a href="https://iost.io" target="_blank" rel="noopener noreferrer">
           IOST
         </a>{" "}
-        in Asia. I&apos;ve spoken at{" "}
+        where I was hired for my design and writing background and rose to Head
+        of Growth, Europe. It was at IOST that I started building frontend code
+        through an education fund, discovered I loved coding more than
+        marketing, and made the switch. By 2020 I was lead developer at
+        XELEVEN. I&apos;ve spoken at{" "}
         <Link href="https://www.aaronjcunningham.com/chainlink-in-berlin">
           Chainlink HQ in Berlin
         </Link>{" "}
@@ -97,6 +108,11 @@ export const CV = () => {
           Google Campus in Warsaw
         </Link>
         .
+      </p>
+
+      <p>
+        I use AI tooling — Claude Code, OpenClaw, Hermes — and agentic
+        workflows to speed up development and ship faster.
       </p>
 
       <p>
@@ -110,7 +126,6 @@ export const CV = () => {
         learn to be creative autonomously. Every day, it creates — no prompts,
         no intervention. We call it the{" "}
         <Link href="https://aaronjcunningham.com/mauve-zone">Mauve Zone</Link>.
-        The question: where does it go from here?
       </p>
     </div>
   );
