@@ -1,9 +1,26 @@
 import Link from "next/link";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 
 export const CV = () => {
   return (
     <div id="bio" className="bio_content">
       <h2 className="bio-h2">ABOUT ME</h2>
+      <div className="bio-icons">
+        <a
+          href="https://github.com/AaronJCunningham"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FaGithub />
+        </a>
+        <a
+          href="https://twitter.com/aaron_1337"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FaTwitter />
+        </a>
+      </div>
       <p>
         I&apos;m a Lead Creative Technologist & Full-Stack Developer. I build
         immersive 3D experiences, full-stack Web3 platforms, and interactive
