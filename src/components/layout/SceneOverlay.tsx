@@ -9,6 +9,7 @@ const sceneContent = [
     headline: ["I MAKE THE", "INTERNET LESS BORING"],
     body: null,
     showScrollPrompt: true,
+    isFirst: true,
   },
   {
     index: "//02",
@@ -34,21 +35,33 @@ const sceneContent = [
   },
 ];
 
-function getTextOpacity(phaseProgress: number): number {
-  // Full opacity at rest (0), stay visible until 0.70, fade out 0.70-1.0
-  if (phaseProgress <= 0.7) {
+function getTextOpacity(phaseProgress: number, isFirst: boolean): number {
+  // First scene: full opacity at 0 (page load), no fade in needed
+  // Other scenes: fade in 0-0.15, visible 0.15-0.70, fade out 0.70-1.0
+  if (isFirst) {
+    if (phaseProgress <= 0.70) return 1;
+    return 1 - (phaseProgress - 0.70) / 0.30;
+  }
+  if (phaseProgress <= 0.15) {
+    return phaseProgress / 0.15;
+  } else if (phaseProgress <= 0.70) {
     return 1;
   } else {
-    return 1 - (phaseProgress - 0.7) / 0.3;
+    return 1 - (phaseProgress - 0.70) / 0.30;
   }
 }
 
-function getTextTranslateY(phaseProgress: number): number {
-  // No movement at rest, slide up during fade out
-  if (phaseProgress <= 0.7) {
+function getTextTranslateY(phaseProgress: number, isFirst: boolean): number {
+  if (isFirst) {
+    if (phaseProgress <= 0.70) return 0;
+    return -20 * ((phaseProgress - 0.70) / 0.30);
+  }
+  if (phaseProgress <= 0.15) {
+    return 30 * (1 - phaseProgress / 0.15);
+  } else if (phaseProgress <= 0.70) {
     return 0;
   } else {
-    return -20 * ((phaseProgress - 0.7) / 0.3);
+    return -20 * ((phaseProgress - 0.70) / 0.30);
   }
 }
 
@@ -57,8 +70,9 @@ export default function SceneOverlay() {
   const phaseProgress = useScrollPhase((state) => state.phaseProgress);
 
   const content = sceneContent[phase - 1];
-  const opacity = getTextOpacity(phaseProgress);
-  const translateY = getTextTranslateY(phaseProgress);
+  const isFirst = "isFirst" in content && !!content.isFirst;
+  const opacity = getTextOpacity(phaseProgress, isFirst);
+  const translateY = getTextTranslateY(phaseProgress, isFirst);
 
   return (
     <div className="scene-overlay">
