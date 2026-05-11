@@ -60,7 +60,7 @@ export default function SceneOverlay() {
   return (
     <div className="scene-overlay">
       <div
-        className="scene-overlay__content"
+        className="scene-overlay__bottom"
         style={{
           opacity,
           transform: `translateY(${translateY}px)`,
@@ -81,11 +81,11 @@ export default function SceneOverlay() {
             )
           ))}
         </div>
-      </div>
 
-      {"showScrollPrompt" in content && content.showScrollPrompt && (
-        <p className="scene-overlay__scroll-prompt">SCROLL TO INTERACT</p>
-      )}
+        {"showScrollPrompt" in content && content.showScrollPrompt && (
+          <p className="scene-overlay__scroll-prompt">SCROLL TO INTERACT</p>
+        )}
+      </div>
 
       <div className="scene-overlay__meta" style={{ opacity }}>
         <span className="scene-overlay__index">{content.index}</span>

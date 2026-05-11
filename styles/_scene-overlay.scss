@@ -13,7 +13,10 @@
   padding: 60px 80px;
 }
 
-.scene-overlay__content {
+.scene-overlay__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   will-change: opacity, transform;
   transition: none;
 }
@@ -24,7 +27,7 @@
     font-weight: 400;
     text-transform: uppercase;
     color: $light-color;
-    line-height: 1.05;
+    line-height: 0.95;
     margin: 0;
     padding: 0;
     letter-spacing: -0.02em;
@@ -53,9 +56,6 @@
 }
 
 .scene-overlay__scroll-prompt {
-  position: absolute;
-  bottom: 60px;
-  right: 80px;
   font-size: 0.7rem;
   font-weight: 400;
   letter-spacing: 0.1em;
@@ -63,6 +63,7 @@
   color: #ffffff !important;
   opacity: 1;
   margin: 0;
+  white-space: nowrap;
 }
 
 .scene-overlay__meta {
