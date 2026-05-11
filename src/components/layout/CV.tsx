@@ -10,7 +10,7 @@ export const CV = () => {
         <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">Twitter</a>
       </p>
       <p>
-        I&apos;m a Lead Creative Technologist & Full-Stack Developer. I build
+        I'm a Lead Creative Technologist & Full-Stack Developer. I build
         immersive 3D experiences, full-stack Web3 platforms, and interactive
         data visualizations — from GLSL shaders to smart contracts to backend
         services. Everything I build works and looks right, backed by 7+ years
@@ -104,7 +104,7 @@ export const CV = () => {
         of Growth, Europe. It was at IOST that I started building frontend code
         through an education fund, discovered I loved coding more than
         marketing, and made the switch. By 2020 I was lead developer at
-        XELEVEN. I&apos;ve spoken at{" "}
+        XELEVEN. I've spoken at{" "}
         <Link href="https://www.aaronjcunningham.com/chainlink-in-berlin">
           Chainlink HQ in Berlin
         </Link>{" "}

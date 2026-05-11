@@ -1,7 +1,19 @@
-import { useState, useRef, FC } from "react";
+import { useRef, FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
+
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&#8217;/g, "\u2019")
+    .replace(/&#8216;/g, "\u2018")
+    .replace(/&#8211;/g, "\u2013")
+    .replace(/&#8212;/g, "\u2014")
+    .replace(/&hellip;/g, "\u2026")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'");
+}
 
 interface Post {
   slug: string;
@@ -51,7 +63,7 @@ export const GridItem: FC<GridItemProps> = ({ post, priority = false }) => {
         onClick={handleClick}
       >
         <div className="title-container">
-          <h4>{post?.title?.rendered || "Default Title"}</h4>
+          <h4>{decodeEntities(post?.title?.rendered || "Default Title")}</h4>
         </div>
         <div className="image_container">
           <Image
@@ -70,7 +82,7 @@ export const GridItem: FC<GridItemProps> = ({ post, priority = false }) => {
         </div>
         <div className="description_container">
           <p>
-            {post?.yoast_head_json?.og_description || "Default Description"}
+            {decodeEntities(post?.yoast_head_json?.og_description || "Default Description")}
           </p>
         </div>
       </div>
