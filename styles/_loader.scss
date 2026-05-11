@@ -1,21 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap");
+
 .css-loader {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #0a0a0c;
+  background-color: $base-color;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  transition: opacity 1.2s ease-out;
+  transition: opacity 0.5s ease-out;
   opacity: 1;
   overflow: hidden;
 
   &--fade-out {
     opacity: 0;
     pointer-events: none;
+  }
+
+  &--loop {
+    position: fixed;
   }
 }
 
@@ -31,29 +37,30 @@
 
 .css-loader__shape {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.04);
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
   stroke-width: 0.5;
 }
 
 .css-loader__shape--1 {
-  animation: loader-rotate 40s linear infinite;
-  transform-origin: center;
-}
-
-.css-loader__shape--2 {
-  stroke: rgba(255, 255, 255, 0.06);
-  animation: loader-rotate 60s linear infinite reverse;
-  transform-origin: center;
-}
-
-.css-loader__shape--3 {
-  stroke: rgba(255, 255, 255, 0.03);
   animation: loader-rotate 80s linear infinite;
   transform-origin: center;
 }
 
+.css-loader__shape--2 {
+  stroke: rgba(255, 255, 255, 0.13);
+  animation: loader-rotate 120s linear infinite reverse;
+  transform-origin: center;
+}
+
+.css-loader__shape--3 {
+  stroke: rgba(255, 255, 255, 0.13);
+  animation: loader-rotate 160s linear infinite;
+  transform-origin: center;
+}
+
 .css-loader__shape--4 {
-  stroke: rgba(255, 255, 255, 0.03);
+  stroke: rgba(255, 255, 255, 0.13);
   stroke-width: 0.3;
 }
 
@@ -67,38 +74,63 @@
   gap: 16px;
 }
 
+.css-loader__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
 .css-loader__title {
-  color: $light-color;
+  color: #ffffff !important;
+  font-family: "JetBrains Mono", monospace;
   font-size: 2.2rem;
   font-weight: 300;
   letter-spacing: 0.35em;
   margin: 0;
   text-align: center;
+  display: inline-flex;
 }
 
 .css-loader__label {
   color: rgba(255, 255, 255, 0.5);
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.7rem;
   font-weight: 400;
   letter-spacing: 0.4em;
   margin: 0;
 }
 
-.css-loader__line {
-  width: 80px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.25);
-  animation: loader-pulse 2s ease-in-out infinite;
+.css-loader__dots {
+  display: flex;
+  gap: 8px;
 }
 
-@keyframes loader-pulse {
-  0%, 100% {
-    opacity: 0.15;
-    transform: scaleX(0.6);
+.css-loader__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  animation: loader-dot 1.8s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes loader-dot {
+  0%,
+  100% {
+    transform: scale(0.4);
+    opacity: 0.2;
   }
   50% {
-    opacity: 0.8;
-    transform: scaleX(1.5);
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
