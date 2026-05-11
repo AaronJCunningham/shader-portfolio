@@ -1,17 +1,17 @@
 // pages/_app.tsx
 import { AppProps } from "next/app";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "../styles/index.scss";
 
-const inter = Inter({
+const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  weight: ["300", "400"],
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${inter.variable} ${inter.className}`}>
+    <div className={jetbrains.className}>
       <Component {...pageProps} />
     </div>
   );

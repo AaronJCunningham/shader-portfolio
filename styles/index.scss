@@ -1,6 +1,7 @@
 @import "config.scss";
 @import "loader.scss";
 @import "header.scss";
+@import "scene-overlay.scss";
 @import "grid.scss";
 @import "image_grid.scss";
 @import "about.scss";
@@ -14,10 +15,10 @@ main,
 html {
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
+  font-family: "JetBrains Mono", sans-serif;
 }
 p {
-  font-family: "Inter", sans-serif;
+  font-family: "JetBrains Mono", sans-serif;
   font-weight: 300;
 }
 

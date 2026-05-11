@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
 
-// import Bio from "@/components/layout/Bio";
 import MainScene from "@/components/threejscomponents/MainScene";
 import Loader from "@/components/svg/Loader";
 import { Suspense, useEffect, useState } from "react";
@@ -14,7 +13,7 @@ import { Grid } from "@/components/layout/Grid";
 import { Footer } from "@/components/layout/Footer";
 import { useActivateScroll } from "@/store";
 
-const Bio = dynamic(() => import("../src/components/layout/Bio"), {
+const SceneOverlay = dynamic(() => import("../src/components/layout/SceneOverlay"), {
   ssr: false,
 });
 
@@ -57,7 +56,7 @@ export default function Home({ posts }: { posts: any }) {
       {!activateScroll && (
         <div className="header_container" id="main_header">
           <Loader />
-          <Bio />
+          <SceneOverlay />
           <Suspense fallback={null}>
             <MainScene />
           </Suspense>

@@ -1,0 +1,136 @@
+.scene-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  padding: 60px 80px;
+}
+
+.scene-overlay__content {
+  will-change: opacity, transform;
+  transition: none;
+}
+
+.scene-overlay__headline {
+  h1 {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 400;
+    text-transform: uppercase;
+    color: $light-color;
+    line-height: 1.05;
+    margin: 0;
+    padding: 0;
+    letter-spacing: -0.02em;
+  }
+}
+
+.scene-overlay__headline-link {
+  color: #ffffff !important;
+  text-decoration: none;
+  pointer-events: all;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
+
+.scene-overlay__body {
+  max-width: 440px;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: $light-color;
+  margin-top: 30px;
+  opacity: 0.85;
+}
+
+.scene-overlay__scroll-prompt {
+  position: absolute;
+  bottom: 60px;
+  right: 80px;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  opacity: 1;
+  margin: 0;
+}
+
+.scene-overlay__meta {
+  position: absolute;
+  top: 60px;
+  left: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  will-change: opacity;
+}
+
+.scene-overlay__index {
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: $light-color;
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+}
+
+.scene-overlay__label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $light-color;
+}
+
+.scene-overlay__link {
+  position: absolute;
+  bottom: 60px;
+  right: 80px;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  text-decoration: none;
+  pointer-events: all;
+  margin: 0;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .scene-overlay {
+    padding: 30px 24px;
+  }
+
+  .scene-overlay__headline h1 {
+    font-size: clamp(1.6rem, 8vw, 2.8rem);
+  }
+
+  .scene-overlay__body {
+    font-size: 0.85rem;
+    max-width: 300px;
+  }
+
+  .scene-overlay__meta {
+    top: 30px;
+    left: 24px;
+  }
+
+  .scene-overlay__scroll-prompt {
+    bottom: 30px;
+    right: 24px;
+  }
+
+  .scene-overlay__link {
+    bottom: 30px;
+    right: 24px;
+  }
+}
