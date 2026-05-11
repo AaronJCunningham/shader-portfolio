@@ -1,0 +1,119 @@
+.css-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0a0a0c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 1.2s ease-out;
+  opacity: 1;
+  overflow: hidden;
+
+  &--fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+// Background geometric shapes
+.css-loader__geo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+}
+
+.css-loader__shape {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 0.5;
+}
+
+.css-loader__shape--1 {
+  animation: loader-rotate 40s linear infinite;
+  transform-origin: center;
+}
+
+.css-loader__shape--2 {
+  stroke: rgba(255, 255, 255, 0.06);
+  animation: loader-rotate 60s linear infinite reverse;
+  transform-origin: center;
+}
+
+.css-loader__shape--3 {
+  stroke: rgba(255, 255, 255, 0.03);
+  animation: loader-rotate 80s linear infinite;
+  transform-origin: center;
+}
+
+.css-loader__shape--4 {
+  stroke: rgba(255, 255, 255, 0.03);
+  stroke-width: 0.3;
+}
+
+// Foreground content
+.css-loader__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.css-loader__title {
+  color: $light-color;
+  font-size: 2.2rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  margin: 0;
+  text-align: center;
+}
+
+.css-loader__label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  margin: 0;
+}
+
+.css-loader__line {
+  width: 80px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  animation: loader-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scaleX(0.6);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleX(1.5);
+  }
+}
+
+@keyframes loader-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .css-loader__title {
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+  }
+}

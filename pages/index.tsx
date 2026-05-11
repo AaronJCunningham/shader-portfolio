@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 // import Bio from "@/components/layout/Bio";
 import MainScene from "@/components/threejscomponents/MainScene";
-import { Loader, useProgress } from "@react-three/drei";
+import Loader from "@/components/svg/Loader";
 import { Suspense, useEffect, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 
@@ -56,8 +56,9 @@ export default function Home({ posts }: { posts: any }) {
       <Cookie />
       {!activateScroll && (
         <div className="header_container" id="main_header">
-          <Suspense fallback={<Loader />}>
-            <Bio />
+          <Loader />
+          <Bio />
+          <Suspense fallback={null}>
             <MainScene />
           </Suspense>
         </div>
