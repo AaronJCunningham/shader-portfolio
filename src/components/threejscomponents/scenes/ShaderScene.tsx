@@ -25,7 +25,7 @@ import SceneFour from "./SceneFour";
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js";
 import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js";
 
-import { useLoadingProgress } from "../../../store";
+import { useLoadingProgress, useScrollPhase } from "../../../store";
 
 import useMouseWheelandTouch from "@/components/hooks/useWheelEvent";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -44,7 +44,6 @@ const ShaderScene = () => {
   const renderTargetD = useFBO();
 
   const noiseTexture = useLoader(THREE.TextureLoader, "/images/noise.png");
-  console.log(noiseTexture);
   const { size, camera, viewport, pointer } = useThree();
   const { active, progress, errors, item, loaded, total } = useProgress();
 
@@ -52,6 +51,8 @@ const ShaderScene = () => {
     state.loadingProgress,
     state.setLoadingProgress,
   ]);
+
+  const setScrollState = useScrollPhase((state) => state.setScrollState);
 
   useEffect(() => {
     setLoadingProgress(progress);
@@ -90,24 +91,33 @@ const ShaderScene = () => {
     1000
   );
 
-  let normalizedScroll = 0; // Initialize outside the callback
+  let normalizedScroll = 0;
   let currentPhase = 1;
+
+  const phaseSize = 1 / 3; // 3 transitions
 
   const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } =
     useMouseWheelandTouch(() => {
-      const uScroll = normalizedValueRef.current; // Cumulative scroll value
-      currentPhase = currentPhaseRef.current; // Current phase number (1, 2, 3, 4)
+      const uScroll = normalizedValueRef.current;
+      currentPhase = currentPhaseRef.current;
 
-      // Calculate the normalized scroll value for the current phase
-      const phaseStart = (currentPhase - 1) * 0.25; // Start of the current phase range
-      normalizedScroll = (uScroll - phaseStart) / 0.25;
-
-      // Clamp the value between 0 and 1
+      const phaseStart = (currentPhase - 1) * phaseSize;
+      normalizedScroll = (uScroll - phaseStart) / phaseSize;
       normalizedScroll = Math.min(Math.max(normalizedScroll, 0), 1);
-      // console.log("THREE",currentPhase, currentPhaseRef.current)
+
+      setScrollState(currentPhase, normalizedScroll);
     });
 
   useFrame(({ clock, gl }) => {
+    const uScroll = normalizedValueRef.current;
+    const phase = currentPhaseRef.current;
+    const phaseStart = (phase - 1) * phaseSize;
+    let progress = (uScroll - phaseStart) / phaseSize;
+    progress = Math.min(Math.max(progress, 0), 1);
+    currentPhase = phase;
+    normalizedScroll = progress;
+    setScrollState(phase, progress);
+
     gl.setRenderTarget(renderTargetA);
     gl.render(scene1, cameraSceneOne);
     gl.setRenderTarget(renderTargetB);
@@ -133,13 +143,9 @@ const ShaderScene = () => {
         shaderRef.current.uniforms.uScroll.value,
         0.1
       );
-      // console.log("NORMALIZED SHADER", normalizedScroll )
       shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
-
-      // shaderRef.current.uniforms.uv.value = shaderRef
     }
     gl.setRenderTarget(null);
-    // updateClearColorOnScroll(gl)
   });
 
   useEffect(() => {
@@ -150,7 +156,7 @@ const ShaderScene = () => {
           Math.random() < 0.1 ? glitchIntensity : 0;
       }
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
   return (

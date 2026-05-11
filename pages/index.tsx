@@ -1,12 +1,9 @@
 import dynamic from "next/dynamic";
 
-// import Bio from "@/components/layout/Bio";
 import MainScene from "@/components/threejscomponents/MainScene";
 import Loader from "@/components/svg/Loader";
-import { Suspense, useEffect, useState } from "react";
-import CookieConsent from "react-cookie-consent";
+import { Suspense, useEffect } from "react";
 
-import { useRouter } from "next/router";
 import Cookie from "@/components/cookie/Cookie";
 import Script from "next/script";
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
@@ -14,7 +11,7 @@ import { Grid } from "@/components/layout/Grid";
 import { Footer } from "@/components/layout/Footer";
 import { useActivateScroll } from "@/store";
 
-const Bio = dynamic(() => import("../src/components/layout/Bio"), {
+const SceneOverlay = dynamic(() => import("../src/components/layout/SceneOverlay"), {
   ssr: false,
 });
 
@@ -25,14 +22,12 @@ export default function Home({ posts }: { posts: any }) {
   ]);
 
   useEffect(() => {
-    const isMobile = window.innerWidth <= 768; // Adjust based on your breakpoint for mobile
+    const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
       setActivateScroll(true);
     }
 
-    // Check if page was refreshed while scrolled down (not on the 3D scene)
-    // This happens when users refresh after clicking "projects" and scrolling
     if (window.scrollY > 0 || window.location.hash) {
       setActivateScroll(true);
     }
@@ -57,7 +52,7 @@ export default function Home({ posts }: { posts: any }) {
       {!activateScroll && (
         <div className="header_container" id="main_header">
           <Loader />
-          <Bio />
+          <SceneOverlay />
           <Suspense fallback={null}>
             <MainScene />
           </Suspense>
@@ -73,20 +68,13 @@ export default function Home({ posts }: { posts: any }) {
 }
 
 export async function getStaticProps() {
-  // Call an external API endpoint to get posts
-  // per_page=100 ensures we get all posts (default is 10)
   const res = await fetch("https://xeleven.space/wp-json/wp/v2/initiatives?per_page=100");
   const posts = await res.json();
 
-  console.log("All posts from WordPress API:", posts);
-
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
   return {
     props: {
       posts,
     },
-    // Revalidate every hour (3600 seconds)
     revalidate: 3600,
   };
 }

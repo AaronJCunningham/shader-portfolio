@@ -33,3 +33,9 @@ export const useActivateScroll = create((set) => ({
   activateScroll: false,
   setActivateScroll: (activateScroll) => set({ activateScroll }),
 }));
+
+export const useScrollPhase = create((set) => ({
+  phase: 1,
+  phaseProgress: 0,
+  setScrollState: (phase, phaseProgress) => set({ phase, phaseProgress }),
+}));

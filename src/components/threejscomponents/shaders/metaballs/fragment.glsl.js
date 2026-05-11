@@ -128,19 +128,7 @@ void main() {
         if (d < EPS || t > MAX_DIST) break;
     }
 
-    // ── Starfield background (slightly grey-black) ──
-    vec3 bgColor = vec3(0.04, 0.04, 0.05);
-    // Stars: hash screen position for random placement
-    vec2 starUv = floor(screenUv * uResolution * 0.5);
-    float starHash = fract(sin(dot(starUv, vec2(127.1, 311.7))) * 43758.5453);
-    float star = step(0.997, starHash);
-    // Second independent hash for twinkle timing (different seed)
-    float starHash2 = fract(sin(dot(starUv, vec2(269.5, 183.3))) * 23421.6312);
-    float starSpeed = 0.1 + starHash2 * 0.3;
-    float starPhase = starHash2 * 62.83;
-    float twinkle = 0.3 + 0.7 * pow(0.5 + 0.5 * sin(uTime * starSpeed + starPhase), 3.0);
-    float starBright = star * twinkle * (0.3 + 0.7 * starHash2);
-    vec3 color = bgColor + vec3(starBright);
+    vec3 color = vec3(0.0);
 
     // Lights
     vec3 L1 = normalize(vec3(1.0, 1.0, 0.5));

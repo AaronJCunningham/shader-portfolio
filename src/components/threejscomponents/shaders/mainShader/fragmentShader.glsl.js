@@ -23,46 +23,31 @@ void main() {
     vec4 finalColor;
 
     float softness = 0.005;
-    // Determine which textures to mix based on the current phase
+    // 45 degrees in radians = pi/4
+    float angle = 3.14159265 / 4.0;
+    vec2 direction = vec2(cos(angle), sin(angle));
+    // dot(vUv, direction) ranges from 0 to (cos+sin) — normalize to 0-1
+    float maxDot = direction.x + direction.y;
+    float wipePos = dot(vUv, direction) / maxDot;
+
     if (uCurrentPhase == 1) {
-         texOne = texture(uTextureTwo, vUv);
-         texTwo = texture(uTextureOne, vUv);
-          // Calculate the blend factor based on uScroll, vUv.x and uSoftness
-          float angle = 45.0; // for diagonal
-          vec2 direction = vec2(cos(angle), sin(angle));
-          float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, dot(vUv, direction));
-          finalColor = mix(texOne, texTwo, wipeFactor);
+        texOne = texture(uTextureTwo, vUv);
+        texTwo = texture(uTextureOne, vUv);
+        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, wipePos);
+        finalColor = mix(texOne, texTwo, wipeFactor);
     } else if (uCurrentPhase == 2) {
         texOne = texture(uTextureThree, vUv);
         texTwo = texture(uTextureTwo, vUv);
-       
-        float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.x);
-    
-        // Pixelation effect
-        // float pixelSize = mix(100.0, 200.0, blendFactor); // Adjust pixel size between 1 and 20 based on blendFactor
-        // vec2 pixelatedUv = floor(vUv * pixelSize) / pixelSize;
-        // texTwo = texture(uTextureTwo, pixelatedUv);
-    
-        // Interpolate between texOne and texTwo based on blendFactor
-        finalColor = mix(texOne, texTwo, blendFactor);
+        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, wipePos);
+        finalColor = mix(texOne, texTwo, wipeFactor);
     } else if (uCurrentPhase == 3) {
         texOne = texture(uTextureFour, vUv);
         texTwo = texture(uTextureThree, vUv);
-        float angle = 95.0; // for diagonal
-        vec2 direction = vec2(cos(angle), sin(angle));
-        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, 1.0 - dot(vUv, direction));
+        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, wipePos);
         finalColor = mix(texOne, texTwo, wipeFactor);
-
-
-
-    }
-     else { // uCurrentPhase == 4
-        texOne = texture(uTextureOne, vUv);
-        texTwo = texture(uTextureFour, vUv); // Looping back to the first texture
-        float blendFactor = smoothstep(uScroll - softness, uScroll + softness, vUv.y);
-
-        // Interpolate between texOne and texTwo based on blendFactor
-        finalColor = mix(texOne, texTwo, blendFactor);
+    } else {
+        // Phase 4+: just show the last scene, no transition
+        finalColor = texture(uTextureFour, vUv);
     }
 
     // Assign the glitched color to gl_FragColor

@@ -14,7 +14,7 @@ export const SceneTwo = ({ pointer }: any) => {
   return (
     <>
       <ambientLight intensity={0.5} />
-      <color attach="background" args={["#226666"]} />
+      <color attach="background" args={["#000000"]} />
       <spotLight
         intensity={1}
         angle={0.2}
