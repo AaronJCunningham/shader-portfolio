@@ -18,9 +18,9 @@ import {
 import React, { MutableRefObject, useEffect, useRef } from "react";
 
 import SceneOne from "./SceneOne";
-import SceneTwo from "./SceneTwo";
+import SceneTwoLiquid from "./SceneTwoLiquid";
 import SceneThree from "./SceneThree";
-import SceneFour from "./SceneFour";
+import SceneFourPhysics from "./SceneFourPhysics";
 
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js";
 import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js";
@@ -62,7 +62,7 @@ const ShaderScene = () => {
     if (!shaderRef.current) return;
     shaderRef.current.uniforms.uResolution.value = new THREE.Vector2(
       size.width,
-      size.height
+      size.height,
     );
   });
 
@@ -70,25 +70,25 @@ const ShaderScene = () => {
     55,
     viewport.width / viewport.height,
     1,
-    1000
+    1000,
   );
   const cameraSceneTwo = new THREE.PerspectiveCamera(
     55,
     viewport.width / viewport.height,
     1,
-    1000
+    1000,
   );
   const cameraSceneThree = new THREE.PerspectiveCamera(
     55,
     viewport.width / viewport.height,
     1,
-    1000
+    1000,
   );
   const cameraSceneFour = new THREE.PerspectiveCamera(
     55,
     viewport.width / viewport.height,
     1,
-    1000
+    1000,
   );
 
   let normalizedScroll = 0;
@@ -141,7 +141,7 @@ const ShaderScene = () => {
       shaderRef.current.uniforms.uScroll.value = lerp(
         normalizedScroll,
         shaderRef.current.uniforms.uScroll.value,
-        0.1
+        0.1,
       );
       shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
     }
@@ -203,11 +203,11 @@ const ShaderScene = () => {
       </mesh>
       {createPortal(
         <SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />,
-        scene1
+        scene1,
       )}
-      {createPortal(<SceneFour pointer={pointer} />, scene2)}
+      {createPortal(<SceneTwoLiquid pointer={pointer} />, scene2)}
       {createPortal(<SceneThree pointer={pointer} />, scene3)}
-      {createPortal(<SceneTwo pointer={pointer} />, scene4)}
+      {createPortal(<SceneFourPhysics pointer={pointer} />, scene4)}
     </>
   );
 };

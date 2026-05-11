@@ -10,7 +10,7 @@ const baubleMaterial = new THREE.MeshPhysicalMaterial({
   roughness: 0.5,
 });
 
-export const SceneTwo = ({ pointer }: any) => {
+export const SceneFourPhysics = ({ pointer }: any) => {
   return (
     <>
       <ambientLight intensity={0.5} />
@@ -94,4 +94,4 @@ function Pointer({ pointer }: any) {
   );
 }
 
-export default SceneTwo;
+export default SceneFourPhysics;

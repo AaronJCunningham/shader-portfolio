@@ -7,7 +7,7 @@ import fragmentShader from "../shaders/metaballs/fragment.glsl.js";
 
 const TRAIL_LENGTH = 15;
 
-const SceneFour = ({ pointer }: any) => {
+const SceneTwoLiquid = ({ pointer }: any) => {
   const shaderRef = useRef<THREE.ShaderMaterial>(null);
   const { size, viewport } = useThree();
 
@@ -65,4 +65,4 @@ const SceneFour = ({ pointer }: any) => {
   );
 };
 
-export default SceneFour;
+export default SceneTwoLiquid;
