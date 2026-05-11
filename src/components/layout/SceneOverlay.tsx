@@ -2,77 +2,61 @@ import React from "react";
 import Link from "next/link";
 import { useScrollPhase } from "@/store";
 
+// 5 visual rest points as you scroll through:
+// SceneOne → SceneFour → SceneThree → SceneTwo → SceneOne
 const sceneContent = [
   {
     index: "//01",
     label: "MANIFESTO",
     headline: ["I MAKE THE", "INTERNET LESS BORING"],
-    body: null,
     showScrollPrompt: true,
-    isFirst: true,
   },
   {
     index: "//02",
     label: "VISION",
     headline: ["IF YOU CAN DREAM IT", "I CAN BUILD IT"],
-    body: null,
-    showScrollPrompt: false,
   },
   {
     index: "//03",
     label: "PHILOSOPHY",
     headline: ["IMMERSIVE", "AND FUNCTIONAL"],
-    body: null,
-    showScrollPrompt: false,
   },
   {
     index: "//04",
     label: "PROOF",
     headline: [],
     linkedHeadline: { text: "MY WORK", href: "/projects" },
-    body: null,
-    showScrollPrompt: false,
   },
 ];
 
-function getTextOpacity(phaseProgress: number, isFirst: boolean): number {
-  // First scene: full opacity at 0 (page load), no fade in needed
-  // Other scenes: fade in 0-0.15, visible 0.15-0.70, fade out 0.70-1.0
-  if (isFirst) {
-    if (phaseProgress <= 0.70) return 1;
-    return 1 - (phaseProgress - 0.70) / 0.30;
-  }
-  if (phaseProgress <= 0.15) {
-    return phaseProgress / 0.15;
-  } else if (phaseProgress <= 0.70) {
-    return 1;
-  } else {
-    return 1 - (phaseProgress - 0.70) / 0.30;
-  }
-}
-
-function getTextTranslateY(phaseProgress: number, isFirst: boolean): number {
-  if (isFirst) {
-    if (phaseProgress <= 0.70) return 0;
-    return -20 * ((phaseProgress - 0.70) / 0.30);
-  }
-  if (phaseProgress <= 0.15) {
-    return 30 * (1 - phaseProgress / 0.15);
-  } else if (phaseProgress <= 0.70) {
-    return 0;
-  } else {
-    return -20 * ((phaseProgress - 0.70) / 0.30);
-  }
-}
+// Rest points in normalized scroll space (0 to 1)
+// Each phase boundary is where a scene is fully visible
+const restPoints = [0, 1/3, 2/3, 1];
+const fadeZone = 0.12;
 
 export default function SceneOverlay() {
   const phase = useScrollPhase((state) => state.phase);
   const phaseProgress = useScrollPhase((state) => state.phaseProgress);
 
-  const content = sceneContent[phase - 1];
-  const isFirst = "isFirst" in content && !!content.isFirst;
-  const opacity = getTextOpacity(phaseProgress, isFirst);
-  const translateY = getTextTranslateY(phaseProgress, isFirst);
+  // Overall normalized scroll (0 to ~1)
+  const normalizedScroll = (phase - 1) / 3 + phaseProgress / 3;
+
+  // Find closest rest point
+  let closestScene = 0;
+  let closestDist = Infinity;
+  for (let i = 0; i < restPoints.length; i++) {
+    const dist = Math.abs(normalizedScroll - restPoints[i]);
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestScene = i;
+    }
+  }
+
+  const opacity = Math.max(0, 1 - closestDist / fadeZone);
+  const direction = Math.sign(normalizedScroll - restPoints[closestScene]);
+  const translateY = opacity > 0 ? -20 * (closestDist / fadeZone) * direction : 0;
+
+  const content = sceneContent[closestScene];
 
   return (
     <div className="scene-overlay">
@@ -85,7 +69,7 @@ export default function SceneOverlay() {
       >
         <div className="scene-overlay__headline">
           {content.headline.map((line, i) => (
-            <h1 key={`${phase}-${i}`}>{line}</h1>
+            <h1 key={`${closestScene}-${i}`}>{line}</h1>
           ))}
           {"linkedHeadline" in content && content.linkedHeadline && (
             <h1>
@@ -98,11 +82,9 @@ export default function SceneOverlay() {
             </h1>
           )}
         </div>
-
-        {content.body && <p className="scene-overlay__body">{content.body}</p>}
       </div>
 
-      {content.showScrollPrompt && (
+      {"showScrollPrompt" in content && content.showScrollPrompt && (
         <p className="scene-overlay__scroll-prompt">SCROLL TO INTERACT</p>
       )}
 

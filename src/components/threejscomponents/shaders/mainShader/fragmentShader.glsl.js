@@ -46,10 +46,8 @@ void main() {
         float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, wipePos);
         finalColor = mix(texOne, texTwo, wipeFactor);
     } else {
-        texOne = texture(uTextureOne, vUv);
-        texTwo = texture(uTextureFour, vUv);
-        float wipeFactor = smoothstep(uScroll - softness, uScroll + softness, wipePos);
-        finalColor = mix(texOne, texTwo, wipeFactor);
+        // Phase 4+: just show the last scene, no transition
+        finalColor = texture(uTextureFour, vUv);
     }
 
     // Assign the glitched color to gl_FragColor

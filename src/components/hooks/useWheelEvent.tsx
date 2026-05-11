@@ -15,8 +15,8 @@ const useMouseWheelAndTouch = (
   const snapTargetRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
 
-  const totalRange = 4000;
-  const numScenes = 4;
+  const totalRange = 3000;
+  const numScenes = 3;
   const sceneSize = totalRange / numScenes; // 1000
   const snapDelay = 1000; // ms idle before snap triggers
   const snapDamping = 0.015; // very soft damp factor per frame
@@ -27,13 +27,16 @@ const useMouseWheelAndTouch = (
     state.setActivateScroll,
   ]);
 
-  const updateDerivedValues = useCallback(() => {
-    const clamped = Math.max(0, cumulativeDeltaRef.current);
-    const wrapped = clamped % totalRange;
+  const maxScroll = totalRange - 1; // cap at end of phase 4, no wrapping
 
-    const normalizedDelta = Math.floor(wrapped / sceneSize);
+  const updateDerivedValues = useCallback(() => {
+    // Clamp between 0 and max — no wrapping
+    cumulativeDeltaRef.current = Math.max(0, Math.min(cumulativeDeltaRef.current, maxScroll));
+    const val = cumulativeDeltaRef.current;
+
+    const normalizedDelta = Math.min(Math.floor(val / sceneSize), numScenes - 1);
     currentPhaseRef.current = normalizedDelta + 1;
-    normalizedValueRef.current = wrapped / totalRange;
+    normalizedValueRef.current = val / totalRange;
   }, []);
 
   const cancelSnap = useCallback(() => {
@@ -50,26 +53,16 @@ const useMouseWheelAndTouch = (
   }, []);
 
   const computeSnapTarget = useCallback(() => {
-    const clamped = Math.max(0, cumulativeDeltaRef.current);
-    const wrapped = clamped % totalRange;
-    const positionInScene = wrapped % sceneSize;
-    const sceneStart = wrapped - positionInScene;
-    const baseOffset = clamped - wrapped; // full cycles
+    const val = cumulativeDeltaRef.current;
+    const positionInScene = val % sceneSize;
+    const sceneStart = val - positionInScene;
     const pct = positionInScene / sceneSize;
 
     // Only snap back if barely scrolled in (< 5%), never snap forward
-    let target: number | null = null;
-    if (pct <= 0.05) {
-      target = baseOffset + sceneStart;
+    if (pct <= 0.05 && sceneStart > 0) {
+      return sceneStart;
     }
-
-    // Clamp so we never overshoot into an invalid range
-    if (target !== null) {
-      target = Math.max(0, target);
-      // Ensure target aligns to a clean scene boundary
-      target = Math.round(target / sceneSize) * sceneSize;
-    }
-    return target;
+    return null;
   }, []);
 
   const animateSnap = useCallback(() => {
@@ -118,13 +111,8 @@ const useMouseWheelAndTouch = (
     cancelSnap();
 
     cumulativeDeltaRef.current += event.deltaY;
-    // Prevent scrolling into negative
-    if (cumulativeDeltaRef.current < 0) cumulativeDeltaRef.current = 0;
-
     updateDerivedValues();
     callback(event, cumulativeDeltaRef.current);
-
-    // Schedule snap after idle
     scheduleSnap();
   };
 
@@ -141,8 +129,6 @@ const useMouseWheelAndTouch = (
     cancelSnap();
 
     cumulativeDeltaRef.current += deltaY;
-    if (cumulativeDeltaRef.current < 0) cumulativeDeltaRef.current = 0;
-
     updateDerivedValues();
     callback(event, cumulativeDeltaRef.current);
 

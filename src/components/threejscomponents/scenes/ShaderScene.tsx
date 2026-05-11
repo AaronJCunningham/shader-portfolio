@@ -94,25 +94,25 @@ const ShaderScene = () => {
   let normalizedScroll = 0;
   let currentPhase = 1;
 
+  const phaseSize = 1 / 3; // 3 transitions
+
   const { cumulativeDeltaRef, currentPhaseRef, normalizedValueRef } =
     useMouseWheelandTouch(() => {
       const uScroll = normalizedValueRef.current;
       currentPhase = currentPhaseRef.current;
 
-      const phaseStart = (currentPhase - 1) * 0.25;
-      normalizedScroll = (uScroll - phaseStart) / 0.25;
+      const phaseStart = (currentPhase - 1) * phaseSize;
+      normalizedScroll = (uScroll - phaseStart) / phaseSize;
       normalizedScroll = Math.min(Math.max(normalizedScroll, 0), 1);
 
-      // Push to store so SceneOverlay can read it
       setScrollState(currentPhase, normalizedScroll);
     });
 
   useFrame(({ clock, gl }) => {
-    // Also update store during snap animations (when callback isn't firing)
     const uScroll = normalizedValueRef.current;
     const phase = currentPhaseRef.current;
-    const phaseStart = (phase - 1) * 0.25;
-    let progress = (uScroll - phaseStart) / 0.25;
+    const phaseStart = (phase - 1) * phaseSize;
+    let progress = (uScroll - phaseStart) / phaseSize;
     progress = Math.min(Math.max(progress, 0), 1);
     currentPhase = phase;
     normalizedScroll = progress;
