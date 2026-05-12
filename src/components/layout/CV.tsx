@@ -21,12 +21,12 @@ export const CV = () => {
         <span className="bio-links__separator">|</span>
         <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">TWITTER</a>
         <span className="bio-links__separator">|</span>
-        <span className="bio-links__contact" onClick={handleCopyEmail}>
+        <a href="#" className="bio-links__contact" onClick={(e) => { e.preventDefault(); handleCopyEmail(); }}>
           CONTACT
           <span className={`bio-links__copied ${copied ? "bio-links__copied--visible" : ""}`}>
             COPIED
           </span>
-        </span>
+        </a>
       </div>
       <p>
         I'm a Lead Creative Technologist & Full-Stack Developer. I build

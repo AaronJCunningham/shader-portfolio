@@ -137,23 +137,7 @@ html {
   }
 
   .bio-links__contact {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: $accent-color;
-    cursor: pointer;
-    transition: color 0.2s ease;
     position: relative;
-
-    &:hover {
-      color: #ffffff;
-    }
   }
 
   .bio-links__copied {
