@@ -33,7 +33,7 @@ export const Grid: FC<GridProps> = ({ posts }) => {
     <div className="project-grid" id="grid">
       <CV />
       <div id="projects" className="section-meta">
-        <span className="section-meta__index">//06</span>
+        <span className="section-meta__index">{"//06"}</span>
         <div className="section-meta__filters">
           <button
             className={select === 5 ? "active" : ""}

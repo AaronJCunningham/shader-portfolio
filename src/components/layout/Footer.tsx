@@ -6,7 +6,7 @@ export function Footer({}) {
   return (
     <footer id="contact">
       <div className="section-meta">
-        <span className="section-meta__index">//07</span>
+        <span className="section-meta__index">{"//07"}</span>
         <span className="section-meta__label">CONNECT</span>
       </div>
       <h3 className="footer_cta">
