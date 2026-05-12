@@ -140,42 +140,37 @@ void main() {
         vec3 normal  = calcNormal(pos);
         vec3 reflDir = reflect(rd, normal);
 
-        // ── Diffuse lighting (gives the blob proper 3D form) ──
+        // ── Diffuse — very subtle, just enough to see form ──
         float diff1 = max(dot(normal, L1), 0.0);
         float diff2 = max(dot(normal, L2), 0.0);
         float diffuse = diff1 * 0.7 + diff2 * 0.3;
 
-        // ── Solid base color — clean water blue, lit by diffuse ──
-        vec3 baseColor = vec3(0.35, 0.72, 0.88);
-        color = baseColor * (0.25 + 0.75 * diffuse);
+        // ── Near-black base — the blob is essentially black ──
+        vec3 baseColor = vec3(0.01, 0.01, 0.02);
+        color = baseColor + vec3(0.01, 0.02, 0.04) * diffuse;
 
-        // ── Subtle caustic patterns (noise as variation, not driver) ──
-        float caustic = fbm(reflDir * 3.0 + uTime * 0.12);
-        color += vec3(0.08, 0.15, 0.18) * caustic;
+        // ── Fresnel rim — cool blue edge glow, makes shape visible ──
+        float fresnel = pow(1.0 - max(dot(-rd, normal), 0.0), 4.0);
+        color += vec3(0.08, 0.15, 0.4) * fresnel * 0.8;
 
-        // ── Fresnel ──
-        float fresnel = pow(1.0 - max(dot(-rd, normal), 0.0), 3.5);
+        // ── Strong glossy specular — sharp white highlights ──
+        float spec1 = pow(max(dot(reflDir, L1), 0.0), 120.0);
+        float spec2 = pow(max(dot(reflDir, L2), 0.0), 80.0);
+        color += vec3(0.9, 0.95, 1.0) * spec1 * 1.8;
+        color += vec3(0.5, 0.7, 1.0) * spec2 * 0.6;
 
-        // ── Rim: warm-white edge to contrast against warm background ──
-        color += vec3(1.0, 0.92, 0.85) * fresnel * 0.55;
+        // ── Subtle environment reflection via noise — like dark glass ──
+        float envRefl = fbm(reflDir * 4.0 + uTime * 0.08);
+        color += vec3(0.02, 0.04, 0.08) * envRefl * fresnel;
 
-        // ── Specular highlights ──
-        float spec1 = pow(max(dot(reflDir, L1), 0.0), 80.0);
-        float spec2 = pow(max(dot(reflDir, L2), 0.0), 40.0);
-        color += vec3(1.0, 0.98, 0.95) * spec1 * 1.2;
-        color += vec3(0.7, 0.85, 1.0) * spec2 * 0.4;
-
-        // ── Subsurface scattering (warm light bleeding through) ──
-        float sss = pow(max(dot(rd, L1), 0.0), 2.5) * 0.2;
-        color += vec3(0.3, 0.7, 0.85) * sss;
-
-        // ── Warm ambient from background environment ──
-        color += vec3(0.06, 0.03, 0.01) * (1.0 - diffuse);
+        // ── Very faint blue subsurface at grazing angles ──
+        float sss = pow(max(dot(rd, L1), 0.0), 3.0) * 0.08;
+        color += vec3(0.05, 0.1, 0.2) * sss;
 
     } else {
-        // ── Near-miss glow (soft blue halo against warm bg) ──
-        float glow = exp(-d * 15.0);
-        color += vec3(0.12, 0.28, 0.35) * glow;
+        // ── Near-miss glow — faint blue halo ──
+        float glow = exp(-d * 18.0);
+        color += vec3(0.03, 0.06, 0.15) * glow;
     }
 
     // ── Gentle tone mapping (preserve the light blues) ──

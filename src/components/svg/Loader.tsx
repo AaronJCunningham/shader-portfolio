@@ -11,7 +11,7 @@ const Loader = () => {
   useEffect(() => {
     if (loadingProgress >= 100) {
       setFadeOut(true);
-      const timer = setTimeout(() => setVisible(false), 1200);
+      const timer = setTimeout(() => setVisible(false), 600);
       return () => clearTimeout(timer);
     }
   }, [loadingProgress]);
