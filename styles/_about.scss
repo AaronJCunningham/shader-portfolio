@@ -88,6 +88,16 @@ html {
     line-height: 1.5;
     margin: 0 0 8px;
     max-width: none;
+
+    a {
+      color: $accent-color;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
   }
 }
 
@@ -103,6 +113,29 @@ html {
     opacity: 0.3;
   }
 
+  .bio-links__filter {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $accent-color;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+
+    &.active {
+      color: #ffffff;
+    }
+  }
+
   .bio-links__contact {
     background: none;
     border: none;
@@ -113,14 +146,13 @@ html {
     font-weight: 500;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: $light-color;
+    color: $accent-color;
     cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
+    transition: color 0.2s ease;
     position: relative;
 
     &:hover {
-      opacity: 1;
+      color: #ffffff;
     }
   }
 
@@ -152,12 +184,11 @@ html {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     text-decoration: none;
-    color: $light-color;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
+    color: $accent-color;
+    transition: color 0.2s ease;
 
     &:hover {
-      opacity: 1;
+      color: #ffffff;
     }
   }
 }
@@ -226,13 +257,12 @@ footer {
   }
 
   .footer_icon {
-    color: $light-color;
+    color: $accent-color;
     text-decoration: none;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
+    transition: color 0.2s ease;
 
     &:hover {
-      opacity: 1;
+      color: #ffffff;
     }
   }
 
@@ -304,6 +334,7 @@ footer {
   display: flex;
   gap: 16px;
   justify-content: flex-start;
+  flex-wrap: wrap;
 
   button {
     background: none;
@@ -334,5 +365,19 @@ footer {
   #copyright {
     padding: 1rem;
     font-size: 0.6rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .section-meta__index {
+    font-size: 1rem;
+  }
+
+  .section-meta__label {
+    font-size: 1rem;
+  }
+
+  .section-meta__filters button {
+    font-size: 1rem;
   }
 }

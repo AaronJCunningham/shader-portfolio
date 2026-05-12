@@ -34,32 +34,36 @@ export const Grid: FC<GridProps> = ({ posts }) => {
       <CV />
       <div id="projects" className="section-meta">
         <span className="section-meta__index">{"//06"}</span>
-        <div className="section-meta__filters">
-          <button
-            className={select === 5 ? "active" : ""}
-            onClick={() => setSelect(5)}
-          >
-            Projects
-          </button>
-          <button
-            className={select === 4 ? "active" : ""}
-            onClick={() => setSelect(4)}
-          >
-            News
-          </button>
-          <button
-            className={select === 8 ? "active" : ""}
-            onClick={() => setSelect(8)}
-          >
-            Tutorials
-          </button>
-          <button
-            className={select === null ? "active" : ""}
-            onClick={() => setSelect(null)}
-          >
-            All
-          </button>
-        </div>
+        <span className="section-meta__label">MY WORK</span>
+      </div>
+      <div className="bio-links">
+        <button
+          className={`bio-links__filter ${select === 5 ? "active" : ""}`}
+          onClick={() => setSelect(5)}
+        >
+          PROJECTS
+        </button>
+        <span className="bio-links__separator">|</span>
+        <button
+          className={`bio-links__filter ${select === 4 ? "active" : ""}`}
+          onClick={() => setSelect(4)}
+        >
+          NEWS
+        </button>
+        <span className="bio-links__separator">|</span>
+        <button
+          className={`bio-links__filter ${select === 8 ? "active" : ""}`}
+          onClick={() => setSelect(8)}
+        >
+          TUTORIALS
+        </button>
+        <span className="bio-links__separator">|</span>
+        <button
+          className={`bio-links__filter ${select === null ? "active" : ""}`}
+          onClick={() => setSelect(null)}
+        >
+          ALL
+        </button>
       </div>
       <div className="main-grid-container">
         {newPosts.map((post, index) => {
