@@ -22,7 +22,7 @@ const sceneContent = [
   },
   {
     index: "//04",
-    label: "",
+    label: "COLLABORATION",
     headline: ["MORE OF MY WORK"],
     isClickable: true,
     body: "A selection of projects spanning creative development, interactive design and full-stack engineering. Each one built from scratch.",
