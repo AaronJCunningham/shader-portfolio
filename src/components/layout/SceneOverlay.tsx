@@ -12,17 +12,20 @@ const sceneContent = [
     index: "//02",
     label: "VISION",
     headline: ["IF YOU CAN DREAM IT", "I CAN BUILD IT"],
+    body: "Crafting digital experiences that blur the line between art and engineering. Every pixel is intentional, every interaction considered.",
   },
   {
     index: "//03",
     label: "PHILOSOPHY",
     headline: ["IMMERSIVE", "AND FUNCTIONAL"],
+    body: "Performance meets aesthetics. Built with WebGL, GLSL and modern frameworks to deliver seamless experiences across every device.",
   },
   {
     index: "//04",
     label: "PROOF",
     headline: ["MORE OF MY WORK"],
     isClickable: true,
+    body: "A selection of projects spanning creative development, interactive design and full-stack engineering. Each one built from scratch.",
   },
 ];
 
@@ -87,6 +90,10 @@ export default function SceneOverlay() {
 
         {"showScrollPrompt" in content && content.showScrollPrompt && (
           <p className="scene-overlay__scroll-prompt">SCROLL TO INTERACT</p>
+        )}
+
+        {"body" in content && content.body && (
+          <p className="scene-overlay__body">{content.body}</p>
         )}
       </div>
 

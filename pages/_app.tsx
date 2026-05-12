@@ -6,7 +6,7 @@ import "../styles/index.scss";
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400"],
+  weight: ["100", "200", "300", "400"],
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
