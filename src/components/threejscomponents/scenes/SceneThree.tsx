@@ -1,101 +1,75 @@
-import { InstancedMesh, MathUtils, Mesh } from "three";
-import { useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Instances, Instance, Environment } from "@react-three/drei";
+import * as THREE from "three";
+import { useRef, useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
 
-interface BubbleProps {
-  factor: number;
-  speed: number;
-  xFactor: number;
-  yFactor: number;
-  zFactor: number;
-}
+import vertexShader from "../shaders/particleSphere/vertex.glsl.js";
+import fragmentShader from "../shaders/particleSphere/fragment.glsl.js";
 
-interface BubblesProps {
+interface SceneThreeProps {
   pointer: { x: number; y: number };
 }
 
-const particles = Array.from({ length: 150 }, () => ({
-  factor: MathUtils.randInt(30, 100),
-  speed: MathUtils.randFloat(0.03, 0.75),
-  xFactor: MathUtils.randFloatSpread(40),
-  yFactor: MathUtils.randFloatSpread(10),
-  zFactor: MathUtils.randFloatSpread(10),
-}));
+export default function SceneThree({ pointer }: SceneThreeProps) {
+  const meshRef = useRef<THREE.Points>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-export default function App({ pointer }: any) {
+  const particleCount = 15000;
+
+  const positions = useMemo(() => {
+    const pos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      // Distribute points on a sphere using fibonacci spiral
+      const phi = Math.acos(1 - (2 * (i + 0.5)) / particleCount);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      const radius = 3.5;
+
+      pos[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = radius * Math.cos(phi);
+    }
+    return pos;
+  }, []);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uPointer: { value: new THREE.Vector2(0, 0) },
+    }),
+    []
+  );
+
+  useFrame(({ clock }) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
+      materialRef.current.uniforms.uPointer.value.set(pointer.x, pointer.y);
+    }
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.001;
+    }
+  });
+
   return (
     <>
-      <color attach="background" args={["#444444"]} />
-      <fog attach="fog" args={["#ff22ff", 20, -5]} />
-      <ambientLight intensity={1.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-      <Bubbles pointer={pointer} />
-
-      <Environment preset="city" />
+      <color attach="background" args={["#000000"]} />
+      <points ref={meshRef} position={[0, 0, -10]}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={particleCount}
+            array={positions}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <shaderMaterial
+          ref={materialRef}
+          uniforms={uniforms}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
     </>
   );
-}
-
-function Bubbles({ pointer }: BubblesProps) {
-  const ref = useRef<any>(null);
-  useFrame((state, delta) => {
-    if (!ref.current) return;
-    ref.current.rotation.y = MathUtils.damp(
-      ref.current.rotation.y,
-      (pointer.x * Math.PI) / 3,
-      2.75,
-      delta
-    );
-    ref.current.rotation.x = MathUtils.damp(
-      ref.current.rotation.x,
-      (-pointer.y * Math.PI) / 3,
-      2.75,
-      delta
-    );
-  });
-  return (
-    <Instances
-      limit={particles.length}
-      ref={ref}
-      castShadow
-      receiveShadow
-      position={[0, 2.5, -15]}
-    >
-      <sphereGeometry args={[3, 32, 30]} />
-      <meshNormalMaterial wireframe={true} />
-      {particles.map((data, i) => (
-        <Bubble key={i} {...data} />
-      ))}
-    </Instances>
-  );
-}
-
-function Bubble({ factor, speed, xFactor, yFactor, zFactor }: BubbleProps) {
-  const ref = useRef<Mesh>();
-  useFrame((state, delta) => {
-    if (!ref.current) return;
-    const t = factor + state.clock.elapsedTime * (speed / 2);
-    ref.current.scale.setScalar(Math.max(0.5, Math.cos(t) * 1));
-    ref.current.position.set(
-      Math.cos(t) +
-        Math.sin(t * 1) / 10 +
-        xFactor +
-        Math.cos((t / 10) * factor) +
-        (Math.sin(t * 1) * factor) / 10,
-      Math.sin(t) +
-        Math.cos(t * 2) / 10 +
-        yFactor +
-        Math.sin((t / 10) * factor) +
-        (Math.cos(t * 2) * factor) / 10,
-      Math.sin(t) +
-        Math.cos(t * 2) / 10 +
-        zFactor +
-        Math.cos((t / 10) * factor) +
-        (Math.sin(t * 3) * factor) / -10
-    );
-    ref.current.rotation.y = Math.sin(delta);
-    ref.current.rotation.x = Math.sin(delta);
-  });
-  return <Instance ref={ref} />;
 }

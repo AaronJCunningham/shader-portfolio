@@ -1,97 +1,102 @@
 import * as THREE from "three";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Outlines, Environment, useTexture } from "@react-three/drei";
-import { Physics, useSphere } from "@react-three/cannon";
+import { useRef, useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
 
-const rfs = THREE.MathUtils.randFloatSpread;
-const sphereGeometry = new THREE.IcosahedronGeometry(1, 0);
-const baubleMaterial = new THREE.MeshPhysicalMaterial({
-  reflectivity: 0.5,
-  roughness: 0.5,
-});
+import vertexShader from "../shaders/particleGrid/vertex.glsl.js";
+import fragmentShader from "../shaders/particleGrid/fragment.glsl.js";
 
-export const SceneFourPhysics = ({ pointer }: any) => {
+interface SceneFourProps {
+  pointer: { x: number; y: number };
+}
+
+export default function SceneFourPhysics({ pointer }: SceneFourProps) {
+  const meshRef = useRef<THREE.Points>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const prevPointer = useRef(new THREE.Vector2(0, 0));
+  const pointerSpeed = useRef(0);
+
+  const gridSize = 120;
+  const spacing = 0.14;
+  const particleCount = gridSize * gridSize;
+
+  const { positions, randoms } = useMemo(() => {
+    const pos = new Float32Array(particleCount * 3);
+    const rnd = new Float32Array(particleCount);
+    const halfGrid = (gridSize * spacing) / 2;
+
+    for (let ix = 0; ix < gridSize; ix++) {
+      for (let iz = 0; iz < gridSize; iz++) {
+        const i = ix * gridSize + iz;
+        pos[i * 3] = ix * spacing - halfGrid;
+        pos[i * 3 + 1] = 0;
+        pos[i * 3 + 2] = iz * spacing - halfGrid;
+        rnd[i] = Math.random();
+      }
+    }
+
+    return { positions: pos, randoms: rnd };
+  }, []);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uPointer: { value: new THREE.Vector2(0, 0) },
+      uPrevPointer: { value: new THREE.Vector2(0, 0) },
+      uPointerSpeed: { value: 0 },
+    }),
+    []
+  );
+
+  useFrame(({ clock }) => {
+    if (!materialRef.current) return;
+
+    const dx = pointer.x - prevPointer.current.x;
+    const dy = pointer.y - prevPointer.current.y;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    pointerSpeed.current += (speed - pointerSpeed.current) * 0.1;
+
+    materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
+    materialRef.current.uniforms.uPrevPointer.value.copy(
+      materialRef.current.uniforms.uPointer.value
+    );
+    materialRef.current.uniforms.uPointer.value.set(pointer.x, pointer.y);
+    materialRef.current.uniforms.uPointerSpeed.value = pointerSpeed.current;
+
+    prevPointer.current.set(pointer.x, pointer.y);
+  });
+
   return (
     <>
-      <ambientLight intensity={0.5} />
       <color attach="background" args={["#000000"]} />
-      <spotLight
-        intensity={1}
-        angle={0.2}
-        color={0xff22ff}
-        penumbra={1}
-        position={[30, 30, 30]}
-        castShadow
-        shadow-mapSize={[512, 512]}
-      />
-      <Physics gravity={[0, 2, 0]} iterations={10}>
-        <Pointer pointer={pointer} />
-        <Clump />
-      </Physics>
-      <Environment files="/images/adamsbridge.hdr" />
+      <points
+        ref={meshRef}
+        position={[0, -2, -8]}
+        rotation={[-Math.PI * 0.35, 0, 0]}
+      >
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={particleCount}
+            array={positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-aRandom"
+            count={particleCount}
+            array={randoms}
+            itemSize={1}
+          />
+        </bufferGeometry>
+        <shaderMaterial
+          ref={materialRef}
+          uniforms={uniforms}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
     </>
   );
-};
-
-function Clump({
-  mat = new THREE.Matrix4(),
-  vec = new THREE.Vector3(),
-  ...props
-}) {
-  const [ref, api] = useSphere(() => ({
-    args: [1],
-    mass: 1,
-    angularDamping: 0.1,
-    linearDamping: 0.65,
-    position: [rfs(20), rfs(20), rfs(20) - 9],
-  }));
-  useFrame((state) => {
-    for (let i = 0; i < 40; i++) {
-      if (!ref.current) return;
-      //@ts-ignore
-      ref.current.getMatrixAt(i, mat);
-      // Normalize the position and multiply by a negative force.
-      // This is enough to drive it towards the center-point.
-      api
-        .at(i)
-        .applyForce(
-          vec
-            .setFromMatrixPosition(mat)
-            .normalize()
-            .multiplyScalar(-40)
-            .toArray(),
-          [0, 0, 0]
-        );
-    }
-  });
-  return (
-    <instancedMesh
-      /*@ts-ignore */
-      ref={ref}
-      castShadow
-      receiveShadow
-      args={[sphereGeometry, baubleMaterial, 40]}
-      position={[0, -2, -12]}
-    >
-      {/* <Outlines thickness={outlines} /> */}
-    </instancedMesh>
-  );
 }
-
-function Pointer({ pointer }: any) {
-  const viewport = useThree((state) => state.viewport);
-  const [, api] = useSphere(() => ({
-    type: "Kinematic",
-    args: [3],
-    position: [0, 0, 0],
-  }));
-  return useFrame((state) =>
-    api.position.set(
-      (pointer.x * viewport.width) / 2,
-      (pointer.y * viewport.height) / 2,
-      0
-    )
-  );
-}
-
-export default SceneFourPhysics;
