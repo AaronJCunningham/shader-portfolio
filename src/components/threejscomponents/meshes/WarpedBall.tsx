@@ -27,8 +27,8 @@ const WarpedBall: React.FC<WarpedBallProps> = ({ pointer }) => {
 
   useEffect(() => {
     const material = new MeshStandardMaterial({
-      color: 0x444444,
-      emissive: 0x222222,
+      color: 0x363636,
+      emissive: 0x1a1a1a,
       roughness: 0.4,
     });
     material.onBeforeCompile = (shader) => {
@@ -76,7 +76,7 @@ const WarpedBall: React.FC<WarpedBallProps> = ({ pointer }) => {
   return (
     <>
       <mesh
-        position={[-1, 0, -10]}
+        position={[0, 0, -10]}
         //@ts-ignore
         ref={icoRef}
         geometry={new IcosahedronGeometry(2, 250)}

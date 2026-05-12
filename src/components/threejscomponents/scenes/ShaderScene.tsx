@@ -17,10 +17,10 @@ import {
 } from "@react-three/drei";
 import React, { MutableRefObject, useEffect, useRef } from "react";
 
-import SceneOne from "./SceneOne";
-import SceneTwoLiquid from "./SceneTwoLiquid";
-import SceneThree from "./SceneThree";
-import SceneFourPhysics from "./SceneFourPhysics";
+import SceneWarpBall from "./SceneWarpBall";
+import SceneLiquid from "./SceneLiquid";
+import SceneParticleSphere from "./SceneParticleSphere";
+import SceneParticleGrid from "./SceneParticleGrid";
 
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js";
 import fragmentShader from "../shaders/mainShader/fragmentShader.glsl.js";
@@ -201,13 +201,13 @@ const ShaderScene = () => {
           fragmentShader={fragmentShader}
         />
       </mesh>
+      {createPortal(<SceneParticleSphere pointer={pointer} />, scene1)}
+      {createPortal(<SceneLiquid pointer={pointer} />, scene2)}
       {createPortal(
-        <SceneOne sceneCamera={cameraSceneOne} pointer={pointer} />,
-        scene1,
+        <SceneWarpBall sceneCamera={cameraSceneThree} pointer={pointer} />,
+        scene3,
       )}
-      {createPortal(<SceneTwoLiquid pointer={pointer} />, scene2)}
-      {createPortal(<SceneThree pointer={pointer} />, scene3)}
-      {createPortal(<SceneFourPhysics pointer={pointer} />, scene4)}
+      {createPortal(<SceneParticleGrid pointer={pointer} />, scene4)}
     </>
   );
 };

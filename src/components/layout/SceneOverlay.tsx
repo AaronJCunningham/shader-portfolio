@@ -21,19 +21,21 @@ const sceneContent = [
   {
     index: "//04",
     label: "PROOF",
-    headline: ["MY WORK"],
+    headline: ["MORE OF MY WORK"],
     isClickable: true,
   },
 ];
 
 // 4 scenes, 3 transitions. Rest points where each scene is fully visible.
-const restPoints = [0, 1/3, 2/3, 1];
+const restPoints = [0, 1 / 3, 2 / 3, 1];
 const fadeZone = 0.12;
 
 export default function SceneOverlay() {
   const phase = useScrollPhase((state) => state.phase);
   const phaseProgress = useScrollPhase((state) => state.phaseProgress);
-  const setActivateScroll = useActivateScroll((state) => state.setActivateScroll);
+  const setActivateScroll = useActivateScroll(
+    (state) => state.setActivateScroll,
+  );
 
   const normalizedScroll = (phase - 1) / 3 + phaseProgress / 3;
 
@@ -49,7 +51,8 @@ export default function SceneOverlay() {
 
   const opacity = Math.max(0, 1 - closestDist / fadeZone);
   const direction = Math.sign(normalizedScroll - restPoints[closestScene]);
-  const translateY = opacity > 0 ? -20 * (closestDist / fadeZone) * direction : 0;
+  const translateY =
+    opacity > 0 ? -20 * (closestDist / fadeZone) * direction : 0;
 
   const content = sceneContent[closestScene];
 
@@ -67,7 +70,7 @@ export default function SceneOverlay() {
         }}
       >
         <div className="scene-overlay__headline">
-          {content.headline.map((line, i) => (
+          {content.headline.map((line, i) =>
             "isClickable" in content && content.isClickable ? (
               <h1
                 key={`${closestScene}-${i}`}
@@ -78,8 +81,8 @@ export default function SceneOverlay() {
               </h1>
             ) : (
               <h1 key={`${closestScene}-${i}`}>{line}</h1>
-            )
-          ))}
+            ),
+          )}
         </div>
 
         {"showScrollPrompt" in content && content.showScrollPrompt && (

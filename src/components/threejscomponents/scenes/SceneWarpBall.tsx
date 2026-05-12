@@ -33,7 +33,7 @@ const SceneOne: React.FC<SceneOneProps> = ({ sceneCamera, pointer }) => {
       <Environment preset="city" background={false} />
       <ambientLight intensity={0.3} />
       <WarpedBall pointer={pointer} />
-      <color attach="background" args={["#444444"]} />
+      <color attach="background" args={["#000000"]} />
     </>
   );
 };
