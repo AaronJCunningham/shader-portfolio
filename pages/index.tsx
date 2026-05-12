@@ -33,6 +33,17 @@ export default function Home({ posts }: { posts: any }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!activateScroll) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activateScroll]);
+
   return (
     <>
       <MetaDataHeader title={"Home"} />
@@ -59,10 +70,12 @@ export default function Home({ posts }: { posts: any }) {
         </div>
       )}
 
-      <>
-        <Grid posts={posts} />
-        <Footer />
-      </>
+      {activateScroll && (
+        <>
+          <Grid posts={posts} />
+          <Footer />
+        </>
+      )}
     </>
   );
 }

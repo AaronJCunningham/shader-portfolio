@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { useState } from "react";
 
 export const CV = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText("hello@aaronjcunningham.com");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div id="bio" className="bio_content">
       <div className="section-meta">
@@ -11,6 +20,13 @@ export const CV = () => {
         <a href="https://github.com/AaronJCunningham" target="_blank" rel="noreferrer">GITHUB</a>
         <span className="bio-links__separator">|</span>
         <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">TWITTER</a>
+        <span className="bio-links__separator">|</span>
+        <button className="bio-links__contact" onClick={handleCopyEmail}>
+          CONTACT
+          <span className={`bio-links__copied ${copied ? "bio-links__copied--visible" : ""}`}>
+            COPIED
+          </span>
+        </button>
       </div>
       <p>
         I'm a Lead Creative Technologist & Full-Stack Developer. I build

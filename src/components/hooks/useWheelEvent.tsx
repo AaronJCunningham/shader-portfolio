@@ -1,4 +1,4 @@
-import { useActivateScroll } from "@/store";
+import { useActivateScroll, useLoadingProgress } from "@/store";
 import { useEffect, useRef, useCallback } from "react";
 
 const useMouseWheelAndTouch = (
@@ -26,6 +26,9 @@ const useMouseWheelAndTouch = (
     state.activateScroll,
     state.setActivateScroll,
   ]);
+
+  const loadingProgress = useLoadingProgress((state: any) => state.loadingProgress);
+  const isLoaded = loadingProgress >= 100;
 
   const maxScroll = totalRange - 1; // cap at end of phase 4, no wrapping
 
@@ -107,6 +110,12 @@ const useMouseWheelAndTouch = (
       event.preventDefault();
     }
 
+    // Block all scroll input while loading
+    if (!isLoaded) {
+      event.preventDefault();
+      return;
+    }
+
     // Cancel any in-progress snap
     cancelSnap();
 
@@ -122,6 +131,8 @@ const useMouseWheelAndTouch = (
   };
 
   const handleTouchMove = (event: TouchEvent) => {
+    if (!isLoaded) return;
+
     const touchY = event.touches[0].clientY;
     const deltaY = lastTouchYRef.current - touchY;
     lastTouchYRef.current = touchY;

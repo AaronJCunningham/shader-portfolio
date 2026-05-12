@@ -84,7 +84,7 @@ html {
   box-sizing: border-box;
 
   p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.5;
     margin: 0 0 8px;
     max-width: none;
@@ -101,6 +101,49 @@ html {
     font-size: 0.7rem;
     color: $light-color;
     opacity: 0.3;
+  }
+
+  .bio-links__contact {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $light-color;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    position: relative;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .bio-links__copied {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: $light-color;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+
+    &--visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   }
 
   a {
