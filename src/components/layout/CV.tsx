@@ -3,12 +3,15 @@ import Link from "next/link";
 export const CV = () => {
   return (
     <div id="bio" className="bio_content">
-      <h2 className="bio-h2">ABOUT ME</h2>
-      <p>
-        <a href="https://github.com/AaronJCunningham" target="_blank" rel="noreferrer">Github</a>
-        {" | "}
-        <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">Twitter</a>
-      </p>
+      <div className="section-meta">
+        <span className="section-meta__index">//05</span>
+        <span className="section-meta__label">ABOUT ME</span>
+      </div>
+      <div className="bio-links">
+        <a href="https://github.com/AaronJCunningham" target="_blank" rel="noreferrer">GITHUB</a>
+        <span className="bio-links__separator">|</span>
+        <a href="https://twitter.com/aaron_1337" target="_blank" rel="noreferrer">TWITTER</a>
+      </div>
       <p>
         I'm a Lead Creative Technologist & Full-Stack Developer. I build
         immersive 3D experiences, full-stack Web3 platforms, and interactive

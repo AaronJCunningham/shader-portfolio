@@ -42,7 +42,7 @@ html {
 .about_container {
   padding: 20px;
   min-height: 100%;
-  margin: 0 auto -50px;
+  margin: 0 auto 0;
   position: relative;
 }
 
@@ -58,28 +58,65 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding-bottom: 50px;
-  width: 95%;
+  padding: 0 0 20px;
+  width: 100%;
   height: 100%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: none;
+  margin: 0;
   position: relative;
   z-index: 200;
   pointer-events: none;
   animation: fadeIn 1s ease-in-out forwards;
+  box-sizing: border-box;
 }
 .bio_content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding-bottom: 50px;
-  width: 95%;
+  padding: 0 0 20px;
+  width: 100%;
   height: 100%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: none;
+  margin: 0;
   position: relative;
   animation: fadeIn 1s ease-in-out forwards;
+  box-sizing: border-box;
+
+  p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 8px;
+    max-width: none;
+  }
+}
+
+.bio-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .bio-links__separator {
+    font-size: 0.7rem;
+    color: $light-color;
+    opacity: 0.3;
+  }
+
+  a {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: $light-color;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .about-canvas {
@@ -117,55 +154,65 @@ h2 {
 }
 
 footer {
-  background-color: $light-color;
+  background-color: $base-color;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 24px;
 
   h3 {
-    font-size: 3rem;
-    color: $base-color;
-    margin: 4px;
-    margin-top: 40px;
+    font-size: 1.5rem;
+    color: $light-color;
+    margin: 8px 0;
   }
 
   p {
-    color: $base-color;
+    color: $light-color;
     padding: 0;
-    margin: 0;
-    font-weight: 300;
+    margin: 4px 0;
+    font-weight: 100;
+    font-size: 0.75rem;
   }
 
   #footer_icons {
-    font-size: 2rem;
-    padding-bottom: 10px;
-    padding-top: 30px;
-    h3 {
-      font-size: 2.5rem;
-      margin: 0;
-      padding: hpx;
-    }
-    p {
-      padding-bottom: 30px;
-    }
+    font-size: 1.2rem;
+    display: flex;
+    gap: 12px;
+    margin: 8px 0;
   }
 
   .footer_icon {
-    color: $base-color;
+    color: $light-color;
     text-decoration: none;
-    margin: 0;
-    padding: 5px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   #copyright {
-    padding-bottom: 30px;
+    margin-top: 16px;
+    margin-bottom: 40px;
+    opacity: 0.4;
   }
 }
 
 .email {
-  color: $base-color;
-  padding: 10px;
+  color: $light-color;
+  padding: 0;
+  opacity: 0.6;
+}
+
+.footer_cta-link {
+  color: $light-color;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.6;
+  }
 }
 
 .radio-container {
@@ -184,6 +231,60 @@ footer {
 .radio input {
   cursor: pointer;
   background-color: $light-color;
+}
+
+.section-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 24px;
+  margin-bottom: 20px;
+}
+
+.section-meta__index {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: $light-color;
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+}
+
+.section-meta__label {
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $light-color;
+}
+
+.section-meta__filters {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: $light-color;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    &.active {
+      opacity: 0.4;
+    }
+  }
 }
 
 @media only screen and (max-width: 1150px) {

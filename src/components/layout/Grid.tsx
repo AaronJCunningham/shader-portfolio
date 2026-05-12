@@ -32,38 +32,34 @@ export const Grid: FC<GridProps> = ({ posts }) => {
   return (
     <div className="project-grid" id="grid">
       <CV />
-      <div id="projects" className="about_content">
-        <h2 className="bio-h2">PROJECTS & NEWS</h2>
-        <p>
-          Here are a few of my recent projects, as well as some of my thoughts
-          that I write for my blog.
-        </p>
-      </div>
-      <div className="button-container">
-        <button
-          className={select === null ? "active" : ""}
-          onClick={() => setSelect(null)}
-        >
-          All
-        </button>
-        <button
-          className={select === 5 ? "active" : ""}
-          onClick={() => setSelect(5)}
-        >
-          Projects
-        </button>
-        <button
-          className={select === 4 ? "active" : ""}
-          onClick={() => setSelect(4)}
-        >
-          News
-        </button>
-        <button
-          className={select === 8 ? "active" : ""}
-          onClick={() => setSelect(8)}
-        >
-          Tutorials
-        </button>
+      <div id="projects" className="section-meta">
+        <span className="section-meta__index">//06</span>
+        <div className="section-meta__filters">
+          <button
+            className={select === 5 ? "active" : ""}
+            onClick={() => setSelect(5)}
+          >
+            Projects
+          </button>
+          <button
+            className={select === 4 ? "active" : ""}
+            onClick={() => setSelect(4)}
+          >
+            News
+          </button>
+          <button
+            className={select === 8 ? "active" : ""}
+            onClick={() => setSelect(8)}
+          >
+            Tutorials
+          </button>
+          <button
+            className={select === null ? "active" : ""}
+            onClick={() => setSelect(null)}
+          >
+            All
+          </button>
+        </div>
       </div>
       <div className="main-grid-container">
         {newPosts.map((post, index) => {

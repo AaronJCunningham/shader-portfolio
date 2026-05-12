@@ -1,7 +1,10 @@
 .project-grid {
-  margin: 2rem 0;
+  margin: 0;
+  padding: 0 24px 60px;
   animation: fadeIn 1s ease-in-out forwards;
-  overflow: hidden;
+  overflow: visible;
+  width: 100%;
+  box-sizing: border-box;
 }
 .main-grid-container {
   display: grid;
@@ -38,33 +41,34 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin: 2rem 0;
+  margin: 0 0 1rem;
+  gap: 16px;
 
   button {
     background-color: transparent;
-    color: $accent-color;
-    border: 1px solid $accent-color;
-    min-width: 80px;
-    border-radius: 5px;
-    padding: 0.5rem;
-    margin: 0.1rem;
-    font-size: 0.8rem;
+    color: $light-color;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     cursor: pointer;
-  }
-  button:focus {
-    background-color: $accent-color;
-    color: $light-color;
-  }
-  .active {
-    background-color: $accent-color;
-    color: $light-color;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
   }
 
-  button:first-of-type:focus {
-    background-color: $accent-color;
+  .active {
+    opacity: 1;
     color: $light-color;
   }
 }
