@@ -265,11 +265,13 @@ footer {
 }
 
 .footer_cta-link {
-  color: $light-color;
+  color: $accent-color;
   text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.6;
+    color: #ffffff;
+    opacity: 1;
   }
 }
 
