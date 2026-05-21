@@ -18,8 +18,10 @@ void main() {
   vec3 cyanBright = vec3(0.18, 0.72, 0.68);
   vec3 hot        = vec3(0.75, 1.0, 0.95);
 
-  vec3 color = mix(cyanDim, cyanBright, vGlow * 0.5 + centerHot * 0.4);
-  color = mix(color, hot, vMouseProx * 0.65 + centerHot * 0.25);
+  vec3 color = mix(cyanDim, cyanBright, vGlow * 0.45 + centerHot * 0.32);
+  color = mix(color, hot, vMouseProx * 0.24 + centerHot * 0.16);
+
+  alpha *= 0.72 + vMouseProx * 0.12;
 
   gl_FragColor = vec4(color * alpha, alpha);
 }

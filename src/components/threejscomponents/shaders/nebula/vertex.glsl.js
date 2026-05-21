@@ -31,8 +31,8 @@ void main() {
   // ── Mouse: magnetic pull through the cloud, with a small lift toward camera ──
   vec2  mouseW = uPointer * vec2(2.8, 2.0);
   float distXY = length(pos.xy - mouseW);
-  float prox   = smoothstep(2.8, 0.0, distXY);
-  float magnetic = prox * prox;
+  float prox   = smoothstep(4.0, 0.0, distXY);
+  float magnetic = pow(prox, 1.35);
   vec2 pullDir = mouseW - pos.xy;
   pos.xy += pullDir * magnetic * (0.38 + aSeed * 0.28);
   pos.z += magnetic * 0.55;
@@ -42,7 +42,7 @@ void main() {
   vGlow       = 0.35 + aSeed * 0.65;
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = (1.0 + aSeed * 1.8 + prox * 1.6) * (38.0 / -mv.z);
+  gl_PointSize = (1.0 + aSeed * 1.8 + prox * 0.75) * (38.0 / -mv.z);
   gl_Position  = projectionMatrix * mv;
 }
 `
