@@ -36,8 +36,8 @@
 
 .css-loader__shape {
   fill: none;
-  stroke: rgba($light-color, 0.13);
-  stroke-width: 0.5;
+  stroke: rgba($light-color, 0.24);
+  stroke-width: 0.8;
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform;
@@ -48,11 +48,11 @@
 }
 
 .css-loader__shape--2 {
-  stroke: rgba($light-color, 0.1);
+  stroke: rgba($light-color, 0.2);
 }
 
 .css-loader__shape--3 {
-  stroke: rgba($light-color, 0.1);
+  stroke: rgba($light-color, 0.2);
   animation: loader-rotate 140s linear infinite reverse;
 }
 
