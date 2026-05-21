@@ -18,7 +18,7 @@ import {
 import React, { MutableRefObject, useEffect, useRef } from "react";
 
 import SceneWarpBall from "./SceneWarpBall";
-import SceneLiquid from "./SceneLiquid";
+import SceneNebula from "./SceneNebula";
 import SceneParticleSphere from "./SceneParticleSphere";
 import SceneParticleGrid from "./SceneParticleGrid";
 
@@ -196,7 +196,7 @@ const ShaderScene = () => {
         />
       </mesh>
       {createPortal(<SceneParticleSphere pointer={pointer} />, scene1)}
-      {createPortal(<SceneLiquid pointer={pointer} />, scene2)}
+      {createPortal(<SceneNebula pointer={pointer} />, scene2)}
       {createPortal(
         <SceneWarpBall sceneCamera={cameraSceneThree} pointer={pointer} />,
         scene3,
