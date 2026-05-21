@@ -31,35 +31,29 @@
   transform: translate(-50%, -50%);
   width: 110%;
   height: 110%;
+  opacity: 0.82;
 }
 
 .css-loader__shape {
   fill: none;
-  fill: none;
   stroke: rgba(255, 255, 255, 0.13);
   stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
 }
 
 .css-loader__shape--1 {
-  animation: loader-rotate 80s linear infinite;
-  transform-origin: center;
+  animation: loader-rotate 96s linear infinite;
 }
 
 .css-loader__shape--2 {
-  stroke: rgba(255, 255, 255, 0.13);
-  animation: loader-rotate 120s linear infinite reverse;
-  transform-origin: center;
+  stroke: rgba(255, 255, 255, 0.1);
 }
 
 .css-loader__shape--3 {
-  stroke: rgba(255, 255, 255, 0.13);
-  animation: loader-rotate 160s linear infinite;
-  transform-origin: center;
-}
-
-.css-loader__shape--4 {
-  stroke: rgba(255, 255, 255, 0.13);
-  stroke-width: 0.3;
+  stroke: rgba(255, 255, 255, 0.1);
+  animation: loader-rotate 140s linear infinite reverse;
 }
 
 // Foreground content
@@ -118,6 +112,7 @@
   border-radius: 50%;
   background: rgba(246, 244, 238, 0.56);
   animation: loader-dot 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
 
   &:nth-child(2) {
     animation-delay: 0.3s;
@@ -142,10 +137,17 @@
 
 @keyframes loader-rotate {
   from {
-    transform: rotate(0deg);
+    transform: rotate(0deg) translateZ(0);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .css-loader__shape,
+  .css-loader__dot {
+    animation: none;
   }
 }
 

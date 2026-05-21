@@ -24,6 +24,8 @@ const Loader = () => {
         className="css-loader__geo"
         viewBox="0 0 1000 1000"
         preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+        focusable="false"
       >
         <polygon
           points="500,80 920,500 500,920 80,500"
@@ -36,34 +38,6 @@ const Loader = () => {
         <polygon
           points="500,50 650,500 500,950 350,500"
           className="css-loader__shape css-loader__shape--3"
-        />
-        <line
-          x1="100"
-          y1="150"
-          x2="500"
-          y2="500"
-          className="css-loader__shape css-loader__shape--4"
-        />
-        <line
-          x1="900"
-          y1="150"
-          x2="500"
-          y2="500"
-          className="css-loader__shape css-loader__shape--4"
-        />
-        <line
-          x1="100"
-          y1="850"
-          x2="500"
-          y2="500"
-          className="css-loader__shape css-loader__shape--4"
-        />
-        <line
-          x1="900"
-          y1="850"
-          x2="500"
-          y2="500"
-          className="css-loader__shape css-loader__shape--4"
         />
       </svg>
 
