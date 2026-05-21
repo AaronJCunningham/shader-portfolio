@@ -35,18 +35,21 @@ void main() {
   pos.z += foldC * 1.1 + foldA * 0.25;
   pos.x += sin(stream * 0.42 + bandPhase + drift) * 0.35;
 
+  pos.y *= 1.9;
+  pos.z *= 1.18;
+
   float twist = 0.22 * sin(u * 3.0 + uTime * 0.12);
   float c = cos(twist);
   float s = sin(twist);
   pos.yz = mat2(c, -s, s, c) * pos.yz;
 
-  vec2 pointerWorld = uPointer * vec2(4.5, 2.4);
+  vec2 pointerWorld = uPointer * vec2(4.5, 3.6);
   float distToPointer = length(pos.xy - pointerWorld);
-  float prox = smoothstep(1.4, 0.0, distToPointer);
+  float prox = smoothstep(2.1, 0.0, distToPointer);
   pos.z += prox * 0.9;
   pos.y += prox * sin(stream * 4.0 + uTime * 1.8) * 0.18;
 
-  float crossing = 1.0 - smoothstep(0.0, 0.5, abs(pos.y));
+  float crossing = 1.0 - smoothstep(0.0, 0.95, abs(pos.y));
   float sparkle = pow(0.5 + 0.5 * sin(aSeed * 40.0 + uTime * 0.85), 7.0);
 
   vEnergy = clamp(crossing * 0.55 + prox * 0.75 + sparkle * 0.45, 0.0, 1.0);
