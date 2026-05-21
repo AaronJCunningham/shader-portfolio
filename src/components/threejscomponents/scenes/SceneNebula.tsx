@@ -13,19 +13,21 @@ export default function SceneNebula({ pointer }: SceneNebulaProps) {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const particleCount = 9800;
+  const particleCount = 5000;
 
-  const { positions, basePos, phases, seeds } = useMemo(() => {
+  const { positions, basePos, phases, seeds, large, colorMixes } = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     const base = new Float32Array(particleCount * 3);
     const ph = new Float32Array(particleCount * 3);
     const sd = new Float32Array(particleCount);
+    const largeParticle = new Float32Array(particleCount);
+    const colorMix = new Float32Array(particleCount);
 
     // Gaussian-ish 3D blob via central-limit (sum of 3 uniforms)
     for (let i = 0; i < particleCount; i++) {
-      const gx = (Math.random() + Math.random() + Math.random() - 1.5) * 1.6;
-      const gy = (Math.random() + Math.random() + Math.random() - 1.5) * 1.1;
-      const gz = (Math.random() + Math.random() + Math.random() - 1.5) * 1.6;
+      const gx = (Math.random() + Math.random() + Math.random() - 1.5) * 3.2;
+      const gy = (Math.random() + Math.random() + Math.random() - 1.5) * 1.25;
+      const gz = (Math.random() + Math.random() + Math.random() - 1.5) * 1.8;
 
       base[i * 3] = gx;
       base[i * 3 + 1] = gy;
@@ -35,9 +37,26 @@ export default function SceneNebula({ pointer }: SceneNebulaProps) {
       ph[i * 3 + 1] = Math.random() * 6.28318;
       ph[i * 3 + 2] = Math.random() * 6.28318;
       sd[i] = Math.random();
+      largeParticle[i] = Math.random() < 0.02 ? 1 : 0;
+
+      const colorRoll = Math.random();
+      if (colorRoll < 0.2) {
+        colorMix[i] = 0.82 + Math.random() * 0.18;
+      } else if (colorRoll < 0.52) {
+        colorMix[i] = 0.28 + Math.random() * 0.42;
+      } else {
+        colorMix[i] = Math.random() * 0.18;
+      }
     }
 
-    return { positions: pos, basePos: base, phases: ph, seeds: sd };
+    return {
+      positions: pos,
+      basePos: base,
+      phases: ph,
+      seeds: sd,
+      large: largeParticle,
+      colorMixes: colorMix,
+    };
   }, []);
 
   const uniforms = useMemo(
@@ -81,6 +100,18 @@ export default function SceneNebula({ pointer }: SceneNebulaProps) {
             attach="attributes-aSeed"
             count={particleCount}
             array={seeds}
+            itemSize={1}
+          />
+          <bufferAttribute
+            attach="attributes-aLarge"
+            count={particleCount}
+            array={large}
+            itemSize={1}
+          />
+          <bufferAttribute
+            attach="attributes-aColorMix"
+            count={particleCount}
+            array={colorMixes}
             itemSize={1}
           />
         </bufferGeometry>

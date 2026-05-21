@@ -2,6 +2,7 @@ const fragmentShader = /*glsl*/`
 varying float vGlow;
 varying float vMouseProx;
 varying float vCenterDist;
+varying float vColorMix;
 
 void main() {
   vec2 c = gl_PointCoord - 0.5;
@@ -19,9 +20,10 @@ void main() {
   vec3 hot        = vec3(0.75, 1.0, 0.95);
 
   vec3 color = mix(cyanDim, cyanBright, vGlow * 0.45 + centerHot * 0.32);
+  color = mix(color, hot, vColorMix * 0.72);
   color = mix(color, hot, vMouseProx * 0.24 + centerHot * 0.16);
 
-  alpha *= 0.72 + vMouseProx * 0.12;
+  alpha *= 0.72 + vMouseProx * 0.12 + vColorMix * 0.1;
 
   gl_FragColor = vec4(color * alpha, alpha);
 }

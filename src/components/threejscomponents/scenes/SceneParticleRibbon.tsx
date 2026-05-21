@@ -76,8 +76,8 @@ export default function SceneParticleRibbon({
     materialRef.current.uniforms.uPointer.value.set(pointer.x, pointer.y);
 
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = Math.sin(clock.elapsedTime * 0.08) * 0.16;
-      pointsRef.current.rotation.z = Math.sin(clock.elapsedTime * 0.05) * 0.05;
+      pointsRef.current.rotation.y = Math.sin(clock.elapsedTime * 0.056) * 0.16;
+      pointsRef.current.rotation.z = Math.sin(clock.elapsedTime * 0.035) * 0.05;
     }
   });
 

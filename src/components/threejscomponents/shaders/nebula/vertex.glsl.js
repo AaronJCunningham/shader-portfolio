@@ -5,10 +5,13 @@ uniform vec2  uPointer;
 attribute vec3 aBasePos;
 attribute vec3 aPhase;
 attribute float aSeed;
+attribute float aLarge;
+attribute float aColorMix;
 
 varying float vGlow;
 varying float vMouseProx;
 varying float vCenterDist;
+varying float vColorMix;
 
 void main() {
   vec3 pos = aBasePos;
@@ -40,9 +43,11 @@ void main() {
   vMouseProx  = prox;
   vCenterDist = length(aBasePos);
   vGlow       = 0.35 + aSeed * 0.65;
+  vColorMix   = aColorMix;
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = (1.0 + aSeed * 1.8 + prox * 0.75) * (38.0 / -mv.z);
+  float largeBoost = mix(1.0, 2.65, aLarge);
+  gl_PointSize = (1.0 + aSeed * 1.8 + prox * 0.75) * largeBoost * (38.0 / -mv.z);
   gl_Position  = projectionMatrix * mv;
 }
 `
