@@ -17,9 +17,9 @@ import {
 } from "@react-three/drei";
 import React, { MutableRefObject, useEffect, useRef } from "react";
 
-import SceneWarpBall from "./SceneWarpBall";
 import SceneNebula from "./SceneNebula";
 import SceneParticleSphere from "./SceneParticleSphere";
+import SceneParticleRibbon from "./SceneParticleRibbon";
 import SceneParticleGrid from "./SceneParticleGrid";
 
 import vertexShader from "../shaders/mainShader/vertexShader.glsl.js";
@@ -197,10 +197,7 @@ const ShaderScene = () => {
       </mesh>
       {createPortal(<SceneParticleSphere pointer={pointer} />, scene1)}
       {createPortal(<SceneNebula pointer={pointer} />, scene2)}
-      {createPortal(
-        <SceneWarpBall sceneCamera={cameraSceneThree} pointer={pointer} />,
-        scene3,
-      )}
+      {createPortal(<SceneParticleRibbon pointer={pointer} />, scene3)}
       {createPortal(<SceneParticleGrid pointer={pointer} />, scene4)}
     </>
   );
