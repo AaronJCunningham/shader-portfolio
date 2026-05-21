@@ -19,8 +19,6 @@ export const Grid: FC<GridProps> = ({ posts }) => {
     state.setSelect,
   ]);
 
-  console.log("All posts from WordPress API:", posts);
-
   const newPosts = posts.filter((post) => {
     if (select === null) {
       return true;

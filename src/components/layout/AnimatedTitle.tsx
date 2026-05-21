@@ -37,7 +37,6 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ words, id }) => {
 
   const handleClick = () => {
     setActivateScroll(true);
-    console.log("CLICK");
   };
 
   return (
