@@ -1,6 +1,4 @@
-@import "../../../styles/config.scss";
-
-.container {
+.audio-controls {
   position: fixed;
   top: 20px;
   left: 20px;
@@ -9,19 +7,19 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  mix-blend-mode: difference; /* Ensures visibility on both dark and light */
+  mix-blend-mode: difference;
 }
 
-.controlsRow {
+.audio-controls__row {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.playButton {
+.audio-controls__play-button {
   background: transparent;
   border: none;
-  color: white;
+  color: $light-color;
   font-size: 24px;
   cursor: pointer;
   display: flex;
@@ -35,7 +33,7 @@
   }
 }
 
-.selectContainer {
+.audio-controls__select-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -46,8 +44,8 @@
   }
 }
 
-.selectIcon {
-  color: white;
+.audio-controls__select-icon {
+  color: $light-color;
   font-size: 10px;
   pointer-events: none;
   position: absolute;
@@ -56,28 +54,28 @@
   transform: translateY(-50%);
 }
 
-.songSelect {
+.audio-controls__song-select {
   background: transparent;
-  border: none; /* Minimalist: No border */
-  color: white;
+  border: none;
+  color: $light-color;
   font-family: "Inter", sans-serif;
   font-size: 12px;
-  padding: 4px 15px 4px 0; /* Right padding for icon */
+  padding: 4px 15px 4px 0;
   cursor: pointer;
   outline: none;
   max-width: 300px;
   text-overflow: ellipsis;
-  appearance: none; /* Hides default arrow */
+  appearance: none;
   z-index: 1;
   
   option {
-    background: black;
+    background: $base-color;
     color: $light-color;
     padding: 10px;
   }
 }
 
-.volumeSlider {
+.audio-controls__volume-slider {
   -webkit-appearance: none;
   width: 100px;
   height: 2px;

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 const MetaDataHeader = ({
   content = "Aaron J. Cunningham is a frontend developer specializing in metaverse & web3 using Three.js, R3F, Next.js & React.",
-  image = "https://aaronjcunningham.com/images/preview.png",
+  image = "https://aaronjcunningham.com/images/meta-image.png",
   title = "home",
 }) => {
   const router = useRouter();

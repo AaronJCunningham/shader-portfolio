@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styles from './AudioControls.module.scss';
 import { FaPlay, FaPause, FaChevronDown } from 'react-icons/fa';
 
 interface AudioControlsProps {
@@ -69,9 +68,9 @@ const AudioControls: React.FC<AudioControlsProps> = ({ audioRef }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.controlsRow}>
-          <button onClick={togglePlay} className={styles.playButton}>
+    <div className="audio-controls">
+      <div className="audio-controls__row">
+          <button onClick={togglePlay} className="audio-controls__play-button">
             {isPlaying ? <FaPause /> : <FaPlay />}
           </button>
           <input
@@ -81,13 +80,13 @@ const AudioControls: React.FC<AudioControlsProps> = ({ audioRef }) => {
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}
-            className={styles.volumeSlider}
+            className="audio-controls__volume-slider"
           />
       </div>
       
-      <div className={styles.selectContainer}>
+      <div className="audio-controls__select-container">
         <select 
-          className={styles.songSelect} 
+          className="audio-controls__song-select" 
           value={currentSongIndex} 
           onChange={handleSongChange}
         >
@@ -97,11 +96,10 @@ const AudioControls: React.FC<AudioControlsProps> = ({ audioRef }) => {
                 </option>
             ))}
         </select>
-        <FaChevronDown className={styles.selectIcon} />
+        <FaChevronDown className="audio-controls__select-icon" />
       </div>
     </div>
   );
 };
 
 export default AudioControls;
-
