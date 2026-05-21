@@ -6,10 +6,13 @@ attribute float aU;
 attribute float aBand;
 attribute float aSide;
 attribute float aSeed;
+attribute float aLarge;
+attribute float aColorMix;
 
 varying float vEnergy;
 varying float vProximity;
 varying float vBand;
+varying float vColorMix;
 
 const float TAU = 6.28318530718;
 
@@ -55,9 +58,11 @@ void main() {
   vEnergy = clamp(crossing * 0.55 + prox * 0.75 + sparkle * 0.45, 0.0, 1.0);
   vProximity = prox;
   vBand = band / 10.0;
+  vColorMix = aColorMix;
 
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = (0.8 + aSeed * 0.9 + vEnergy * 1.8) * (28.0 / -mvPosition.z);
+  float largeBoost = mix(1.0, 2.65, aLarge);
+  gl_PointSize = (0.8 + aSeed * 0.9 + vEnergy * 1.8) * largeBoost * (28.0 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 }
 `;

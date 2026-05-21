@@ -19,12 +19,14 @@ export default function SceneParticleRibbon({
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const { positions, uValues, bands, sides, seeds } = useMemo(() => {
+  const { positions, uValues, bands, sides, seeds, large, colorMixes } = useMemo(() => {
     const pos = new Float32Array(PARTICLE_COUNT * 3);
     const u = new Float32Array(PARTICLE_COUNT);
     const band = new Float32Array(PARTICLE_COUNT);
     const side = new Float32Array(PARTICLE_COUNT);
     const seed = new Float32Array(PARTICLE_COUNT);
+    const largeParticle = new Float32Array(PARTICLE_COUNT);
+    const colorMix = new Float32Array(PARTICLE_COUNT);
 
     for (let b = 0; b < BAND_COUNT; b++) {
       for (let i = 0; i < PARTICLES_PER_BAND; i++) {
@@ -35,10 +37,28 @@ export default function SceneParticleRibbon({
         band[index] = b;
         side[index] = (b - (BAND_COUNT - 1) * 0.5) / ((BAND_COUNT - 1) * 0.5);
         seed[index] = Math.random();
+        largeParticle[index] = Math.random() < 0.02 ? 1 : 0;
+
+        const colorRoll = Math.random();
+        if (colorRoll < 0.2) {
+          colorMix[index] = 0.82 + Math.random() * 0.18;
+        } else if (colorRoll < 0.52) {
+          colorMix[index] = 0.28 + Math.random() * 0.42;
+        } else {
+          colorMix[index] = Math.random() * 0.18;
+        }
       }
     }
 
-    return { positions: pos, uValues: u, bands: band, sides: side, seeds: seed };
+    return {
+      positions: pos,
+      uValues: u,
+      bands: band,
+      sides: side,
+      seeds: seed,
+      large: largeParticle,
+      colorMixes: colorMix,
+    };
   }, []);
 
   const uniforms = useMemo(
@@ -94,6 +114,18 @@ export default function SceneParticleRibbon({
             attach="attributes-aSeed"
             count={PARTICLE_COUNT}
             array={seeds}
+            itemSize={1}
+          />
+          <bufferAttribute
+            attach="attributes-aLarge"
+            count={PARTICLE_COUNT}
+            array={large}
+            itemSize={1}
+          />
+          <bufferAttribute
+            attach="attributes-aColorMix"
+            count={PARTICLE_COUNT}
+            array={colorMixes}
             itemSize={1}
           />
         </bufferGeometry>

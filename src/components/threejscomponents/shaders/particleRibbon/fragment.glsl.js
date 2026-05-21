@@ -4,6 +4,7 @@ precision highp float;
 varying float vEnergy;
 varying float vProximity;
 varying float vBand;
+varying float vColorMix;
 
 void main() {
   vec2 center = gl_PointCoord - vec2(0.5);
@@ -20,9 +21,10 @@ void main() {
 
   vec3 color = mix(voidCyan, deepCyan, 0.55 + vBand * 0.25);
   color = mix(color, brightCyan, smoothstep(0.18, 0.78, vEnergy));
-  color = mix(color, softWhite, core * (0.12 + vEnergy * 0.58 + vProximity * 0.18));
+  color = mix(color, softWhite, vColorMix * 0.78);
+  color = mix(color, softWhite, core * (0.12 + vEnergy * 0.46 + vProximity * 0.14));
 
-  float alpha = edgeFade * (0.16 + vEnergy * 0.42 + vProximity * 0.18);
+  float alpha = edgeFade * (0.16 + vEnergy * 0.38 + vProximity * 0.16 + vColorMix * 0.12);
 
   gl_FragColor = vec4(color, alpha);
 }
