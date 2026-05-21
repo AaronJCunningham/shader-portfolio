@@ -7,9 +7,14 @@
 }
 
 .header_container {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
+  background-color: $base-color;
 }
 
 .header_title_container {

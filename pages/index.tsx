@@ -16,30 +16,18 @@ const SceneOverlay = dynamic(() => import("../src/components/layout/SceneOverlay
 });
 
 export default function Home({ posts }: { posts: any }) {
-  const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
-    state.activateScroll,
-    state.setActivateScroll,
-  ]);
-
-  useEffect(() => {
-    const isMobile = window.innerWidth <= 768;
-
-    if (isMobile) {
-      setActivateScroll(true);
-    }
-
-    if (window.scrollY > 0 || window.location.hash) {
-      setActivateScroll(true);
-    }
-  }, []);
+  const activateScroll = useActivateScroll((state) => state.activateScroll);
 
   useEffect(() => {
     if (!activateScroll) {
+      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "auto";
+      document.body.style.overflow = "auto";
     }
     return () => {
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
   }, [activateScroll]);
@@ -61,6 +49,14 @@ export default function Home({ posts }: { posts: any }) {
       </Script>
       <Cookie />
       {!activateScroll && (
+        <style jsx global>{`
+          html,
+          body {
+            overflow: hidden;
+          }
+        `}</style>
+      )}
+      {!activateScroll && (
         <div className="header_container" id="main_header">
           <Loader />
           <SceneOverlay />
@@ -70,12 +66,8 @@ export default function Home({ posts }: { posts: any }) {
         </div>
       )}
 
-      {activateScroll && (
-        <>
-          <Grid posts={posts} />
-          <Footer />
-        </>
-      )}
+      <Grid posts={posts} />
+      <Footer />
     </>
   );
 }
