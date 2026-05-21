@@ -35,55 +35,43 @@ interface GridItemProps {
 
 export const GridItem: FC<GridItemProps> = ({ post, priority = false }) => {
   const gridRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const handleIn = () => {
-    gsap.to(gridRef.current, { opacity: 0.5 });
-    gsap.to(bgRef.current, { "background-color": "#292929", duration: 0.3 });
-    gsap.to(bgRef.current, { scale: 0.98, duration: 0.3 });
+    gsap.to(gridRef.current, { y: -4, duration: 0.35, ease: "power2.out" });
+    gsap.to(imageRef.current, { scale: 1.035, duration: 0.7, ease: "power3.out" });
   };
   const handleOut = () => {
-    gsap.to(gridRef.current, { opacity: 1 });
-    gsap.to(bgRef.current, { "background-color": "#030303", duration: 0.3 });
-    gsap.to(bgRef.current, { scale: 1, duration: 0.3 });
-  };
-
-  const handleClick = () => {
-    gsap.to(bgRef.current, { "background-color": "#797979", duration: 0.3 });
+    gsap.to(gridRef.current, { y: 0, duration: 0.35, ease: "power2.out" });
+    gsap.to(imageRef.current, { scale: 1, duration: 0.7, ease: "power3.out" });
   };
 
   return (
     <Link href={`/${post?.slug}`}>
       <div
-        ref={bgRef}
+        ref={gridRef}
         className="grid-container"
         key={post?.slug}
         onMouseEnter={handleIn}
         onMouseLeave={handleOut}
-        onClick={handleClick}
       >
+        <div className="image_container">
+          <div ref={imageRef} className="image_container__inner">
+            <Image
+              src={
+                post?.better_featured_image?.source_url || "/images/default.jpg"
+              }
+              layout="fill"
+              alt={post?.title?.rendered || "Default Image"}
+              objectFit="cover"
+              objectPosition="center"
+              priority={priority}
+              loading={priority ? "eager" : "lazy"}
+            />
+          </div>
+        </div>
         <div className="title-container">
           <h4>{decodeEntities(post?.title?.rendered || "Default Title")}</h4>
-        </div>
-        <div className="image_container">
-          <Image
-            src={
-              post?.better_featured_image?.source_url || "/images/default.jpg"
-            }
-            layout="fill"
-            // width={post?.better_featured_image?.media_details?.width || 1920}
-            // height={post?.better_featured_image?.media_details?.height || 1080}
-            alt={post?.title?.rendered || "Default Image"}
-            objectFit="cover" /* Ensures the image covers the area */
-            objectPosition="center" /* Adjust as needed */
-            priority={priority}
-            loading={priority ? "eager" : "lazy"}
-          />
-        </div>
-        <div className="description_container">
-          <p>
-            {decodeEntities(post?.yoast_head_json?.og_description || "Default Description")}
-          </p>
         </div>
       </div>
     </Link>

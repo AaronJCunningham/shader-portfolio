@@ -114,10 +114,28 @@
 }
 
 .image_container {
-  width: 100%; /* Adjust the width as needed */
-  padding-top: 56.25%; /* For 16:9 aspect ratio */
+  width: 100%;
+  aspect-ratio: 16 / 9;
   position: relative;
-  overflow: hidden; /* To handle images that don't fit perfectly */
+  overflow: hidden;
+  background: #050505;
+  border-radius: 5px;
+}
+
+.image_container__inner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.grid-container .image_container {
+  opacity: 0.84;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.grid-container:hover .image_container {
+  opacity: 1;
+  filter: contrast(1.08) saturate(1.04);
 }
 
 // .image-wrapper {
