@@ -145,35 +145,35 @@ void main() {
         float diff2 = max(dot(normal, L2), 0.0);
         float diffuse = diff1 * 0.7 + diff2 * 0.3;
 
-        // ── Near-black base — the blob is essentially black ──
-        vec3 baseColor = vec3(0.01, 0.01, 0.02);
-        color = baseColor + vec3(0.01, 0.02, 0.04) * diffuse;
+        // ── Near-black base — the blob is essentially black with a cyan undertone ──
+        vec3 baseColor = vec3(0.003, 0.012, 0.014);
+        color = baseColor + vec3(0.006, 0.05, 0.052) * diffuse;
 
-        // ── Fresnel rim — cool blue edge glow, makes shape visible ──
+        // ── Fresnel rim — cool cyan edge glow, makes shape visible ──
         float fresnel = pow(1.0 - max(dot(-rd, normal), 0.0), 4.0);
-        color += vec3(0.08, 0.15, 0.4) * fresnel * 0.8;
+        color += vec3(0.07, 0.55, 0.52) * fresnel * 0.9;
 
-        // ── Strong glossy specular — sharp white highlights ──
+        // ── Strong glossy specular — soft off-white and cyan highlights ──
         float spec1 = pow(max(dot(reflDir, L1), 0.0), 120.0);
         float spec2 = pow(max(dot(reflDir, L2), 0.0), 80.0);
-        color += vec3(0.9, 0.95, 1.0) * spec1 * 1.8;
-        color += vec3(0.5, 0.7, 1.0) * spec2 * 0.6;
+        color += vec3(0.949, 0.941, 0.918) * spec1 * 1.8;
+        color += vec3(0.333, 0.937, 0.894) * spec2 * 0.65;
 
         // ── Subtle environment reflection via noise — like dark glass ──
         float envRefl = fbm(reflDir * 4.0 + uTime * 0.08);
-        color += vec3(0.02, 0.04, 0.08) * envRefl * fresnel;
+        color += vec3(0.01, 0.10, 0.11) * envRefl * fresnel;
 
-        // ── Very faint blue subsurface at grazing angles ──
+        // ── Very faint cyan subsurface at grazing angles ──
         float sss = pow(max(dot(rd, L1), 0.0), 3.0) * 0.08;
-        color += vec3(0.05, 0.1, 0.2) * sss;
+        color += vec3(0.03, 0.18, 0.18) * sss;
 
     } else {
-        // ── Near-miss glow — faint blue halo ──
+        // ── Near-miss glow — faint cyan halo ──
         float glow = exp(-d * 18.0);
-        color += vec3(0.03, 0.06, 0.15) * glow;
+        color += vec3(0.02, 0.18, 0.18) * glow;
     }
 
-    // ── Gentle tone mapping (preserve the light blues) ──
+    // ── Gentle tone mapping (preserve cyan highlights) ──
     color = color / (color + vec3(1.0));  // Reinhard
 
     // ── Subtle vignette ──
