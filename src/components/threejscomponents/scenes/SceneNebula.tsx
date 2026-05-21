@@ -13,7 +13,7 @@ export default function SceneNebula({ pointer }: SceneNebulaProps) {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const particleCount = 14000;
+  const particleCount = 9800;
 
   const { positions, basePos, phases, seeds } = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
