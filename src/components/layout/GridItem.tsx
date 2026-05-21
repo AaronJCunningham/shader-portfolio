@@ -71,7 +71,9 @@ export const GridItem: FC<GridItemProps> = ({ post, priority = false }) => {
           </div>
         </div>
         <div className="title-container">
-          <h4>{decodeEntities(post?.title?.rendered || "Default Title")}</h4>
+          <div className="title-inner">
+            <h4>{decodeEntities(post?.title?.rendered || "Default Title")}</h4>
+          </div>
         </div>
       </div>
     </Link>
