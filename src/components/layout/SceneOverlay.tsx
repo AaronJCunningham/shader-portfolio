@@ -64,7 +64,7 @@ export default function SceneOverlay() {
   };
 
   return (
-    <div className="scene-overlay">
+    <div className={`scene-overlay scene-overlay--layout-${closestScene}`}>
       <div
         className="scene-overlay__bottom"
         style={{
