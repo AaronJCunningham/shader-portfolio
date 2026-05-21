@@ -31,7 +31,8 @@ const sceneContent = [
 
 // 4 scenes, 3 transitions. Rest points where each scene is fully visible.
 const restPoints = [0, 1 / 3, 2 / 3, 1];
-const fadeZone = 0.12;
+const holdZone = 0.095;
+const fadeZone = 0.045;
 
 export default function SceneOverlay() {
   const phase = useScrollPhase((state) => state.phase);
@@ -52,10 +53,10 @@ export default function SceneOverlay() {
     }
   }
 
-  const opacity = Math.max(0, 1 - closestDist / fadeZone);
+  const fadeProgress = Math.max(0, (closestDist - holdZone) / fadeZone);
+  const opacity = Math.max(0, 1 - fadeProgress);
   const direction = Math.sign(normalizedScroll - restPoints[closestScene]);
-  const translateY =
-    opacity > 0 ? -20 * (closestDist / fadeZone) * direction : 0;
+  const translateY = opacity > 0 ? -10 * fadeProgress * direction : 0;
 
   const content = sceneContent[closestScene];
 
