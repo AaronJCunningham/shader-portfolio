@@ -36,7 +36,7 @@
 
 .css-loader__shape {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.13);
+  stroke: rgba($light-color, 0.13);
   stroke-width: 0.5;
   transform-box: fill-box;
   transform-origin: center;
@@ -48,11 +48,11 @@
 }
 
 .css-loader__shape--2 {
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: rgba($light-color, 0.1);
 }
 
 .css-loader__shape--3 {
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: rgba($light-color, 0.1);
   animation: loader-rotate 140s linear infinite reverse;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .css-loader__title {
-  color: rgba(246, 244, 238, 0.88) !important;
+  color: rgba($light-color, 0.88) !important;
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.05rem, 2vw, 1.85rem);
   font-weight: 100 !important;
@@ -88,7 +88,7 @@
 }
 
 .css-loader__label {
-  color: rgba(246, 244, 238, 0.5);
+  color: rgba($light-color, 0.5);
   font-family: "JetBrains Mono", monospace;
   font-size: 0.62rem;
   font-weight: 400;
@@ -110,7 +110,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(246, 244, 238, 0.56);
+  background: rgba($light-color, 0.56);
   animation: loader-dot 1.8s ease-in-out infinite;
   will-change: transform, opacity;
 

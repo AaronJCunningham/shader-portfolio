@@ -1,7 +1,7 @@
 .scene-overlay {
   --edge: clamp(38px, 5vw, 82px);
-  --text: rgba(246, 244, 238, 0.88);
-  --muted: rgba(246, 244, 238, 0.7);
+  --text: #{rgba($light-color, 0.9)};
+  --muted: #{rgba($light-color, 0.72)};
 
   position: absolute;
   inset: 0;
@@ -103,7 +103,7 @@
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #ffffff !important;
+  color: $light-color !important;
   text-decoration: none;
   pointer-events: all;
   margin: 0;

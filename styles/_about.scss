@@ -96,7 +96,7 @@ html {
       transition: color 0.2s ease;
 
       &:hover {
-        color: #ffffff;
+        color: $light-color;
       }
     }
   }
@@ -129,11 +129,11 @@ html {
     transition: color 0.2s ease;
 
     &:hover {
-      color: #ffffff;
+      color: $light-color;
     }
 
     &.active {
-      color: #ffffff;
+      color: $light-color;
     }
   }
 
@@ -149,7 +149,7 @@ html {
     font-size: 0.6rem;
     letter-spacing: 0.1em;
     color: $light-color;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba($light-color, 0.1);
     padding: 2px 8px;
     border-radius: 3px;
     white-space: nowrap;
@@ -173,7 +173,7 @@ html {
     transition: color 0.2s ease;
 
     &:hover {
-      color: #ffffff;
+      color: $light-color;
     }
   }
 }
@@ -247,7 +247,7 @@ footer {
     transition: color 0.2s ease;
 
     &:hover {
-      color: #ffffff;
+      color: $light-color;
     }
   }
 
@@ -270,7 +270,7 @@ footer {
   transition: color 0.2s ease, opacity 0.2s ease;
 
   &:hover {
-    color: #ffffff;
+    color: $light-color;
     opacity: 1;
   }
 }

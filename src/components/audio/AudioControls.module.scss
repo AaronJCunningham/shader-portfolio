@@ -1,3 +1,5 @@
+@import "../../../styles/config.scss";
+
 .container {
   position: fixed;
   top: 20px;
@@ -70,7 +72,7 @@
   
   option {
     background: black;
-    color: white;
+    color: $light-color;
     padding: 10px;
   }
 }
@@ -79,7 +81,7 @@
   -webkit-appearance: none;
   width: 100px;
   height: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba($light-color, 0.3);
   outline: none;
   cursor: pointer;
 
@@ -89,7 +91,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: white;
+    background: $accent-color;
     cursor: pointer;
   }
 
@@ -97,8 +99,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: white;
+    background: $accent-color;
     cursor: pointer;
   }
 }
-
