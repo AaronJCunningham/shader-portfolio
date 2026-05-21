@@ -8,8 +8,8 @@
 }
 .main-grid-container {
   display: grid;
-  grid-template-columns: repeat(3, minmax(260px, 1fr));
-  gap: clamp(16px, 1.8vw, 26px);
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: clamp(10px, 1vw, 16px);
 }
 
 .grid-container {
