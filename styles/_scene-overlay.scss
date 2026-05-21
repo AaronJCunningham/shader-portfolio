@@ -76,12 +76,11 @@
   left: var(--edge);
   display: flex;
   flex-direction: column;
-  gap: 4px;
   will-change: opacity;
 }
 
 .scene-overlay__index {
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
   letter-spacing: 0.05em;
