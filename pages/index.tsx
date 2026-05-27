@@ -15,6 +15,13 @@ const SceneOverlay = dynamic(() => import("../src/components/layout/SceneOverlay
   ssr: false,
 });
 
+const WebGPUHeader = dynamic(
+  () => import("../src/components/threejscomponents/WebGPUHeader"),
+  {
+    ssr: false,
+  },
+);
+
 async function fetchWordPressPosts() {
   const endpoint = "https://xeleven.space/wp-json/wp/v2/initiatives?per_page=100";
   const attempts = 3;
@@ -40,6 +47,7 @@ async function fetchWordPressPosts() {
 
 export default function Home({ posts }: { posts: any }) {
   const [introReady, setIntroReady] = useState(false);
+  const [webgpuIntroFailed, setWebgpuIntroFailed] = useState(false);
   const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
     state.activateScroll,
     state.setActivateScroll,
@@ -101,9 +109,13 @@ export default function Home({ posts }: { posts: any }) {
         <div className="header_container" id="main_header">
           <Loader />
           <SceneOverlay />
-          <Suspense fallback={null}>
-            <MainScene />
-          </Suspense>
+          {webgpuIntroFailed ? (
+            <Suspense fallback={null}>
+              <MainScene />
+            </Suspense>
+          ) : (
+            <WebGPUHeader onFallback={() => setWebgpuIntroFailed(true)} />
+          )}
         </div>
       )}
 
