@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 import MainScene from "@/components/threejscomponents/MainScene";
 import Loader from "@/components/svg/Loader";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import Cookie from "@/components/cookie/Cookie";
 import Script from "next/script";
@@ -39,10 +39,26 @@ async function fetchWordPressPosts() {
 }
 
 export default function Home({ posts }: { posts: any }) {
-  const activateScroll = useActivateScroll((state) => state.activateScroll);
+  const [introReady, setIntroReady] = useState(false);
+  const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
+    state.activateScroll,
+    state.setActivateScroll,
+  ]);
 
   useEffect(() => {
-    if (!activateScroll) {
+    const isMobile = window.innerWidth <= 768;
+    const shouldSkipIntro = isMobile || window.scrollY > 0 || Boolean(window.location.hash);
+
+    if (shouldSkipIntro) {
+      setActivateScroll(true);
+      return;
+    }
+
+    setIntroReady(true);
+  }, [setActivateScroll]);
+
+  useEffect(() => {
+    if (introReady && !activateScroll) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
@@ -53,7 +69,9 @@ export default function Home({ posts }: { posts: any }) {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
-  }, [activateScroll]);
+  }, [activateScroll, introReady]);
+
+  const showIntro = introReady && !activateScroll;
 
   return (
     <>
@@ -71,7 +89,7 @@ export default function Home({ posts }: { posts: any }) {
   `}
       </Script>
       <Cookie />
-      {!activateScroll && (
+      {showIntro && (
         <style jsx global>{`
           html,
           body {
@@ -79,7 +97,7 @@ export default function Home({ posts }: { posts: any }) {
           }
         `}</style>
       )}
-      {!activateScroll && (
+      {showIntro && (
         <div className="header_container" id="main_header">
           <Loader />
           <SceneOverlay />
