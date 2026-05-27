@@ -5,6 +5,9 @@ import {
   createWebGPUSceneOne,
   type WebGPURuntimeScene,
 } from "@/components/threejscomponents/webgpu-scenes/WebGPUSceneOne";
+import { createWebGPUSceneTwo } from "@/components/threejscomponents/webgpu-scenes/WebGPUSceneTwo";
+import { createWebGPUSceneThree } from "@/components/threejscomponents/webgpu-scenes/WebGPUSceneThree";
+import { createWebGPUSceneFour } from "@/components/threejscomponents/webgpu-scenes/WebGPUSceneFour";
 import { useLoadingProgress, useScrollPhase } from "@/store";
 
 type WebGPUHeaderProps = {
@@ -15,143 +18,37 @@ const sceneCount = 4;
 const phaseSize = 1 / 3;
 
 function setSceneOpacity(runtimeScene: WebGPURuntimeScene, opacity: number) {
-  runtimeScene.group.visible = opacity > 0.01;
   runtimeScene.materials.forEach((material) => {
     material.opacity = opacity;
     material.needsUpdate = true;
   });
 }
 
-function makeParticleGeometry(
-  THREE: any,
-  count: number,
-  layout: "nebula" | "ribbon" | "grid",
-) {
-  const positions = new Float32Array(count * 3);
-  const phases = new Float32Array(count);
-  const amplitudes = new Float32Array(count);
-  const sizes = new Float32Array(count);
-
-  for (let i = 0; i < count; i += 1) {
-    const i3 = i * 3;
-    const t = i / count;
-    const angle = t * Math.PI * 2;
-    const spin = angle * 5.0;
-    const radius = Math.sqrt(t);
-
-    if (layout === "nebula") {
-      const z = 1 - 2 * t;
-      const sphereRadius = Math.sqrt(Math.max(0, 1 - z * z));
-      const theta = i * 2.399963229728653;
-
-      positions[i3] =
-        Math.cos(spin) * radius * 3.6 + Math.cos(theta) * sphereRadius * 0.55;
-      positions[i3 + 1] = (Math.random() - 0.5) * 1.8 + Math.sin(angle * 3) * 0.35;
-      positions[i3 + 2] =
-        Math.sin(spin) * radius * 2.6 + Math.sin(theta) * sphereRadius * 0.55;
-    }
-
-    if (layout === "ribbon") {
-      const x = (t - 0.5) * 8;
-      positions[i3] = x;
-      positions[i3 + 1] = Math.sin(t * Math.PI * 8) * 1.2;
-      positions[i3 + 2] = Math.cos(t * Math.PI * 5) * 1.2;
-    }
-
-    if (layout === "grid") {
-      const side = Math.ceil(Math.sqrt(count));
-      const x = (i % side) / side - 0.5;
-      const y = Math.floor(i / side) / side - 0.5;
-      positions[i3] = x * 7;
-      positions[i3 + 1] = y * 4.2;
-      positions[i3 + 2] = (Math.random() - 0.5) * 0.45;
-    }
-
-    phases[i] = Math.random() * Math.PI * 2;
-    amplitudes[i] = 0.04 + Math.random() * 0.22;
-    sizes[i] = 2.5 + Math.random() * 5.5;
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("phase", new THREE.BufferAttribute(phases, 1));
-  geometry.setAttribute("amp", new THREE.BufferAttribute(amplitudes, 1));
-  geometry.setAttribute("pointSize", new THREE.BufferAttribute(sizes, 1));
-
-  return geometry;
-}
-
-function createNodeParticleMaterial(
-  Nodes: any,
-  THREE: any,
-  colorA: string,
-  colorB: string,
-  layout: "nebula" | "ribbon" | "grid",
-) {
+function createCompositorMaterial(Nodes: any, currentTexture: any, nextTexture: any) {
   const {
-    PointsNodeMaterial,
-    attribute,
-    color,
+    MeshBasicNodeMaterial,
+    float,
     mix,
-    sin,
-    timerGlobal,
-    vec3,
-    positionLocal,
+    smoothstep,
+    texture,
+    uniform,
+    uv,
   } = Nodes;
 
-  const time = timerGlobal(0.75);
-  const phase = attribute("phase", "float");
-  const amp = attribute("amp", "float");
-  const wave = sin(time.add(phase));
+  const progress = uniform(0);
+  const softness = float(0.005);
+  const screenUv = uv();
+  const wipePosition = screenUv.x.add(screenUv.y).mul(0.5);
+  const wipe = smoothstep(progress.sub(softness), progress.add(softness), wipePosition);
+  const currentScene = texture(currentTexture, screenUv);
+  const nextScene = texture(nextTexture, screenUv);
+  const material = new MeshBasicNodeMaterial();
 
-  const material = new PointsNodeMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    opacity: 0,
-    size: 3,
-  });
-
-  material.colorNode = mix(color(colorA), color(colorB), wave.mul(0.5).add(0.5));
-  material.sizeNode = attribute("pointSize", "float").mul(wave.mul(0.18).add(1.0));
-  material.positionNode = positionLocal.add(
-    vec3(
-      sin(time.mul(0.77).add(phase)).mul(amp),
-      sin(time.mul(1.13).add(phase.mul(1.7))).mul(amp.mul(1.4)),
-      sin(time.mul(0.51).add(phase.mul(0.6))).mul(amp.mul(2.2)),
-    ),
-  );
+  material.colorNode = mix(nextScene, currentScene, wipe);
 
   return {
     material,
-  };
-}
-
-function createRuntimeScene(
-  THREE: any,
-  Nodes: any,
-  layout: "nebula" | "ribbon" | "grid",
-  colors: [string, string],
-  count: number,
-) {
-  const group = new THREE.Group();
-  const geometry = makeParticleGeometry(THREE, count, layout);
-  const { material } = createNodeParticleMaterial(
-    Nodes,
-    THREE,
-    colors[0],
-    colors[1],
-    layout,
-  );
-  const points = new THREE.Points(geometry, material);
-
-  group.add(points);
-
-  return {
-    group,
-    materials: [material],
-    interaction: layout === "grid" ? 0.55 : 0.72,
-    baseScale: 1,
+    progress,
   };
 }
 
@@ -169,9 +66,14 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
   useEffect(() => {
     let mounted = true;
     let renderer: any;
-    let scene: any;
-    let camera: any;
+    let renderCamera: any;
+    let outputScene: any;
+    let outputCamera: any;
+    let outputPlane: any;
     let runtimeScenes: WebGPURuntimeScene[] = [];
+    let renderScenes: any[] = [];
+    let renderTargets: any[] = [];
+    let compositorPasses: Array<{ material: any; progress: any }> = [];
     let renderFailed = false;
     const container = containerRef.current;
 
@@ -194,34 +96,65 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
 
         container.appendChild(renderer.domElement);
 
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(
+        renderCamera = new THREE.PerspectiveCamera(
           48,
           window.innerWidth / window.innerHeight,
           0.1,
           100,
         );
-        camera.position.set(0, 0, 7.25);
+        renderCamera.position.set(0, 0, 7.25);
 
         runtimeScenes = [
           createWebGPUSceneOne(THREE, Nodes),
-          createRuntimeScene(THREE, Nodes, "nebula", ["#ff4d8d", "#7b61ff"], 2600),
-          createRuntimeScene(THREE, Nodes, "ribbon", ["#e4ff6a", "#40ffc6"], 2200),
-          createRuntimeScene(THREE, Nodes, "grid", ["#d8d2c4", "#ff693d"], 2400),
+          createWebGPUSceneTwo(THREE, Nodes),
+          createWebGPUSceneThree(THREE, Nodes),
+          createWebGPUSceneFour(THREE, Nodes),
         ];
 
-        runtimeScenes.forEach((runtimeScene) => scene.add(runtimeScene.group));
+        runtimeScenes.forEach((runtimeScene) => setSceneOpacity(runtimeScene, 1));
+
+        renderScenes = runtimeScenes.map((runtimeScene) => {
+          const renderScene = new THREE.Scene();
+          renderScene.background = new THREE.Color(0x000000);
+          renderScene.add(runtimeScene.group);
+          return renderScene;
+        });
+
+        renderTargets = runtimeScenes.map(
+          () =>
+            new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+              depthBuffer: true,
+              stencilBuffer: false,
+            }),
+        );
+
+        compositorPasses = [
+          createCompositorMaterial(Nodes, renderTargets[0].texture, renderTargets[1].texture),
+          createCompositorMaterial(Nodes, renderTargets[1].texture, renderTargets[2].texture),
+          createCompositorMaterial(Nodes, renderTargets[2].texture, renderTargets[3].texture),
+        ];
+
+        outputScene = new THREE.Scene();
+        outputCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        outputPlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(2, 2),
+          compositorPasses[0].material,
+        );
+        outputScene.add(outputPlane);
 
         await renderer.init();
         setLoadingProgress(100);
 
         const handleResize = () => {
-          if (!renderer || !camera) return;
+          if (!renderer || !renderCamera) return;
 
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
+          renderCamera.aspect = window.innerWidth / window.innerHeight;
+          renderCamera.updateProjectionMatrix();
           renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
           renderer.setSize(window.innerWidth, window.innerHeight);
+          renderTargets.forEach((renderTarget) => {
+            renderTarget.setSize(window.innerWidth, window.innerHeight);
+          });
         };
 
         const updatePointer = (clientX: number, clientY: number) => {
@@ -261,7 +194,6 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
             Math.max((smoothedGlobalScroll - phaseStart) / phaseSize, 0),
             1,
           );
-          const globalProgress = (currentPhase - 1 + phaseProgress) / 3;
           const pointer = pointerRef.current;
           const smoothedPointer = smoothedPointerRef.current;
           const previousX = smoothedPointer.x;
@@ -279,38 +211,30 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
           setScrollState(currentPhase, phaseProgress);
 
           runtimeScenes.forEach((runtimeScene, index) => {
-            const sceneProgress = index / (sceneCount - 1);
-            const distance = Math.abs(globalProgress - sceneProgress);
-            const opacity = THREE.MathUtils.smoothstep(0.34 - distance, 0, 0.34);
-            const interaction = runtimeScene.interaction * opacity;
-            const scaleLift = pointerVelocityRef.current * 2.4 * interaction;
-
             runtimeScene.update?.({
               pointer: smoothedPointer,
               time: frameRef.current / 60,
             });
-            setSceneOpacity(runtimeScene, opacity);
-            runtimeScene.group.rotation.y +=
-              index === 0 ? 0 : 0.0018 + index * 0.0008 + smoothedPointer.x * 0.004 * interaction;
-            runtimeScene.group.rotation.x =
-              index === 0
-                ? 0
-                : Math.sin(frameRef.current * 0.006 + index) * 0.16 +
-                  smoothedPointer.y * 0.26 * interaction;
-            runtimeScene.group.position.x = index === 0 ? 0 : smoothedPointer.x * 0.42 * interaction;
-            runtimeScene.group.position.y = index === 0 ? 0 : smoothedPointer.y * 0.3 * interaction;
-            runtimeScene.group.position.z = -distance * 1.3;
-            runtimeScene.group.scale.setScalar(index === 0 ? 1 : runtimeScene.baseScale + scaleLift);
           });
 
-          camera.position.x = Math.sin(frameRef.current * 0.002) * 0.14 + smoothedPointer.x * 0.22;
-          camera.position.y = Math.cos(frameRef.current * 0.0027) * 0.1 + smoothedPointer.y * 0.16;
-          camera.lookAt(0, 0, 0);
+          renderCamera.position.x = Math.sin(frameRef.current * 0.002) * 0.14;
+          renderCamera.position.y = Math.cos(frameRef.current * 0.0027) * 0.1;
+          renderCamera.lookAt(0, 0, 0);
+
+          const compositorPass = compositorPasses[currentPhase - 1];
+          compositorPass.progress.value = phaseProgress;
+          outputPlane.material = compositorPass.material;
 
           frameRef.current += 1;
 
           try {
-            await renderer.render(scene, camera);
+            for (let i = 0; i < renderScenes.length; i += 1) {
+              renderer.setRenderTarget(renderTargets[i]);
+              await renderer.render(renderScenes[i], renderCamera);
+            }
+
+            renderer.setRenderTarget(null);
+            await renderer.render(outputScene, outputCamera);
           } catch (error) {
             if (renderFailed) return;
 
@@ -359,6 +283,9 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
           child.material?.dispose?.();
         });
       });
+      renderTargets.forEach((renderTarget) => renderTarget.dispose());
+      outputPlane?.geometry?.dispose?.();
+      compositorPasses.forEach((pass) => pass.material?.dispose?.());
 
       if (container) {
         container.innerHTML = "";
