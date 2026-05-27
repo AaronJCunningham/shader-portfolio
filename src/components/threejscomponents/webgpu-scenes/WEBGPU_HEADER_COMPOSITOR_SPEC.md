@@ -12,7 +12,9 @@ Goal: match the original WebGL header architecture, not a group-fade redesign.
    - phase 3: scene 3 to scene 4
 6. The transition is the original hard diagonal wipe:
    - `wipePos = (uv.x + uv.y) * 0.5`
-   - `wipe = smoothstep(progress - 0.005, progress + 0.005, wipePos)`
+   - `wipe = smoothstep(progress - softness, progress + softness, wipePos)`
+   - use a small but visible softness value, currently `0.035`, so partial states read clearly while preserving a hard diagonal transition line.
+   - map linear scroll progress through the diagonal wipe distribution before assigning `progress`, so early scroll movement visibly reveals part of the next scene instead of hiding in a tiny corner.
    - `color = mix(nextSceneTexture, currentSceneTexture, wipe)`
 7. The scene overlay reads the same scroll phase/progress from Zustand.
 8. Scene files own their particle math and pointer response. The header shell owns only renderer, render targets, compositor, and scroll orchestration.

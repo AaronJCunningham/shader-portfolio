@@ -15,7 +15,7 @@ const useMouseWheelAndTouch = (
   const snapTargetRef = useRef<number | null>(null);
   const isSnappingRef = useRef(false);
 
-  const totalRange = 3000;
+  const totalRange = 6000;
   const numScenes = 3;
   const sceneSize = totalRange / numScenes; // 1000
   const snapDelay = 1000; // ms idle before snap triggers

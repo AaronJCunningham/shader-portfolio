@@ -16,6 +16,15 @@ type WebGPUHeaderProps = {
 
 const sceneCount = 4;
 const phaseSize = 1 / 3;
+const wipeSoftness = 0.035;
+
+function mapProgressToDiagonalCoverage(progress: number) {
+  if (progress <= 0.5) {
+    return Math.sqrt(progress * 0.5);
+  }
+
+  return 1 - Math.sqrt((1 - progress) * 0.5);
+}
 
 function setSceneOpacity(runtimeScene: WebGPURuntimeScene, opacity: number) {
   runtimeScene.materials.forEach((material) => {
@@ -36,7 +45,7 @@ function createCompositorMaterial(Nodes: any, currentTexture: any, nextTexture: 
   } = Nodes;
 
   const progress = uniform(0);
-  const softness = float(0.005);
+  const softness = float(wipeSoftness);
   const screenUv = uv();
   const wipePosition = screenUv.x.add(screenUv.y).mul(0.5);
   const wipe = smoothstep(progress.sub(softness), progress.add(softness), wipePosition);
@@ -59,6 +68,7 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
   const smoothedPointerRef = useRef({ x: 0, y: 0 });
   const pointerVelocityRef = useRef(0);
   const frameRef = useRef(0);
+  const lastFrameTimeRef = useRef<number | null>(null);
   const setScrollState = useScrollPhase((state) => state.setScrollState);
   const setLoadingProgress = useLoadingProgress((state) => state.setLoadingProgress);
   const { normalizedValueRef } = useMouseWheelAndTouch(() => {});
@@ -173,10 +183,12 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
           updatePointer(touch.clientX, touch.clientY);
         };
 
-        const animate = async () => {
+        const animate = async (time = 0) => {
           if (!mounted) return;
 
-          const delta = 0.08;
+          const lastFrameTime = lastFrameTimeRef.current ?? time;
+          const delta = Math.min(Math.max((time - lastFrameTime) / 1000, 1 / 120), 1 / 30);
+          lastFrameTimeRef.current = time;
           smoothedGlobalScrollRef.current = THREE.MathUtils.damp(
             smoothedGlobalScrollRef.current,
             normalizedValueRef.current,
@@ -222,7 +234,7 @@ export default function WebGPUHeader({ onFallback }: WebGPUHeaderProps) {
           renderCamera.lookAt(0, 0, 0);
 
           const compositorPass = compositorPasses[currentPhase - 1];
-          compositorPass.progress.value = phaseProgress;
+          compositorPass.progress.value = mapProgressToDiagonalCoverage(phaseProgress);
           outputPlane.material = compositorPass.material;
 
           frameRef.current += 1;
