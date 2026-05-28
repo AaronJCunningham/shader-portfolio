@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 
 import vertexShader from "../shaders/particleRibbon/vertex.glsl.js";
 import fragmentShader from "../shaders/particleRibbon/fragment.glsl.js";
@@ -12,12 +12,31 @@ interface SceneParticleRibbonProps {
 const BAND_COUNT = 11;
 const PARTICLES_PER_BAND = 760;
 const PARTICLE_COUNT = BAND_COUNT * PARTICLES_PER_BAND;
+const RIBBON_SIZE_BOOST = 1.2;
+const RIBBON_BASE_ANGLE = Math.PI * 0.16;
 
 export default function SceneParticleRibbon({
   pointer,
 }: SceneParticleRibbonProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const ribbonDepth = 9;
+  const fov = 55;
+  const { size } = useThree();
+  const aspect = size.width / size.height;
+  const visibleHeight =
+    2 * Math.tan(THREE.MathUtils.degToRad(fov * 0.5)) * ribbonDepth;
+  const visibleWidth = visibleHeight * aspect;
+  const ribbonScale = useMemo(
+    () =>
+      new THREE.Vector2(
+        THREE.MathUtils.clamp((visibleWidth * 0.86) / 14, 1, 1.75) *
+          RIBBON_SIZE_BOOST,
+        THREE.MathUtils.clamp((visibleHeight * 0.58) / 5.4, 1, 1.65) *
+          RIBBON_SIZE_BOOST,
+      ),
+    [visibleHeight, visibleWidth],
+  );
 
   const { positions, uValues, bands, sides, seeds, large, colorMixes } = useMemo(() => {
     const pos = new Float32Array(PARTICLE_COUNT * 3);
@@ -65,9 +84,15 @@ export default function SceneParticleRibbon({
     () => ({
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0, 0) },
+      uRibbonScale: { value: ribbonScale },
     }),
-    [],
+    [ribbonScale],
   );
+
+  useEffect(() => {
+    if (!materialRef.current) return;
+    materialRef.current.uniforms.uRibbonScale.value.copy(ribbonScale);
+  }, [ribbonScale]);
 
   useFrame(({ clock }) => {
     if (!materialRef.current) return;
@@ -77,14 +102,15 @@ export default function SceneParticleRibbon({
 
     if (pointsRef.current) {
       pointsRef.current.rotation.y = Math.sin(clock.elapsedTime * 0.056) * 0.16;
-      pointsRef.current.rotation.z = Math.sin(clock.elapsedTime * 0.035) * 0.05;
+      pointsRef.current.rotation.z =
+        RIBBON_BASE_ANGLE + Math.sin(clock.elapsedTime * 0.035) * 0.05;
     }
   });
 
   return (
     <>
       <color attach="background" args={["#000000"]} />
-      <points ref={pointsRef} position={[0, 0, -9]}>
+      <points ref={pointsRef} position={[0, 0, -ribbonDepth]}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"

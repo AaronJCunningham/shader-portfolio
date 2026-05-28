@@ -1,6 +1,7 @@
 const vertexShader = /*glsl*/`
 uniform float uTime;
 uniform vec2 uPointer;
+uniform vec2 uRibbonScale;
 
 attribute float aU;
 attribute float aBand;
@@ -41,12 +42,15 @@ void main() {
   pos.y *= 1.9;
   pos.z *= 1.18;
 
+  pos.xy *= uRibbonScale;
+  pos.z *= mix(uRibbonScale.x, uRibbonScale.y, 0.5);
+
   float twist = 0.22 * sin(u * 3.0 + uTime * 0.12);
   float c = cos(twist);
   float s = sin(twist);
   pos.yz = mat2(c, -s, s, c) * pos.yz;
 
-  vec2 pointerWorld = uPointer * vec2(4.5, 3.6);
+  vec2 pointerWorld = uPointer * vec2(4.5, 3.6) * uRibbonScale;
   float distToPointer = length(pos.xy - pointerWorld);
   float prox = smoothstep(2.1, 0.0, distToPointer);
   pos.z += prox * 0.9;
