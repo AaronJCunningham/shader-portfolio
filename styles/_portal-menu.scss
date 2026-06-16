@@ -98,7 +98,7 @@
   background:
     linear-gradient(rgba($light-color, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba($light-color, 0.025) 1px, transparent 1px),
-    rgba($base-color, 0.5);
+    rgba($base-color, 0.8);
   background-size: 100% 44px, 44px 100%, auto;
   opacity: 0;
   pointer-events: none;
@@ -116,101 +116,114 @@
 
 .portal-menu__panel {
   position: relative;
-  width: min(680px, calc(100vw - 48px));
-  padding: clamp(42px, 8vw, 84px) clamp(28px, 7vw, 76px);
-  border-left: 1px solid rgba($light-color, 0.78);
-  border-right: 1px solid rgba($light-color, 0.78);
+  isolation: isolate;
+  width: min(920px, calc(100vw - 42px));
+  aspect-ratio: 1000 / 420;
+  display: grid;
+  place-items: center;
+  padding: clamp(40px, 7vw, 72px) clamp(36px, 7vw, 88px);
 }
 
-.portal-menu__frame {
+.portal-menu__plate {
   position: absolute;
-  left: clamp(14px, 3vw, 28px);
-  right: clamp(14px, 3vw, 28px);
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba($light-color, 0),
-    rgba($light-color, 0.86) 18%,
-    rgba($light-color, 0.86) 82%,
-    rgba($light-color, 0)
-  );
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: -7px;
-    width: 1px;
-    height: 15px;
-    background: rgba($light-color, 0.84);
-  }
-
-  &::before {
-    left: 0;
-  }
-
-  &::after {
-    right: 0;
-  }
+  inset: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 0 6px rgba($light-color, 0.1))
+    drop-shadow(0 0 18px rgba($accent-color, 0.08));
 }
 
-.portal-menu__frame--top {
-  top: 0;
+.portal-menu__plate-fill {
+  fill: rgba($light-color, 0.04);
+  stroke: none;
 }
 
-.portal-menu__frame--bottom {
-  bottom: 0;
+.portal-menu__plate-line {
+  fill: none;
+  stroke: rgba($light-color, 0.5);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.portal-menu__plate-detail {
+  fill: none;
+  stroke: rgba($light-color, 0.24);
+  stroke-width: 1;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+
+.portal-menu__plate-detail--dim {
+  fill: rgba($light-color, 0.06);
+  stroke: rgba($light-color, 0.12);
 }
 
 .portal-menu__links {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: clamp(20px, 4vw, 34px);
+  width: min(440px, 72%);
+  gap: clamp(12px, 1.8vw, 18px);
 }
 
 .portal-menu__link {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(42px, 1fr) auto minmax(42px, 1fr);
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: clamp(16px, 3vw, 28px);
+  gap: clamp(14px, 2vw, 22px);
+  min-height: clamp(46px, 5vw, 58px);
+  padding: 0 clamp(14px, 2vw, 22px);
   color: $light-color !important;
-  font-size: clamp(2.2rem, 7vw, 5.8rem);
+  font-size: clamp(1.5rem, 4vw, 3.4rem);
   font-weight: 100;
   letter-spacing: 0;
-  line-height: 0.92;
-  text-align: center;
+  line-height: 1;
+  text-align: left;
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(12px);
+  background:
+    linear-gradient(90deg, rgba($light-color, 0.24), rgba($light-color, 0)) top left / 100% 1px no-repeat,
+    linear-gradient(90deg, rgba($light-color, 0.12), rgba($light-color, 0)) bottom left / 100% 1px no-repeat;
   transition:
+    background-color 0.24s ease,
     color 0.24s ease,
     opacity 0.4s ease,
     transform 0.4s ease;
 
-  &::before,
-  &::after {
+  &::before {
     content: "";
-    height: 1px;
-    background: rgba($light-color, 0.72);
-    transform: scaleX(0.62);
-    transition:
-      background-color 0.24s ease,
-      transform 0.24s ease;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    border-top: 1px solid rgba($light-color, 0.42);
+    border-right: 1px solid rgba($light-color, 0.42);
+    transform: translate(-1px, 1px);
+    transition: border-color 0.24s ease;
   }
 
-  span {
+  > span:not(.portal-menu__link-index) {
+    position: relative;
     color: $light-color !important;
+    text-shadow:
+      0 0 18px rgba($light-color, 0.12),
+      0 0 28px rgba($accent-color, 0.1);
   }
 
   &:hover,
   &:focus-visible,
   &--active {
     color: $light-color !important;
+    background-color: rgba($light-color, 0.045);
 
-    &::before,
-    &::after {
-      background: rgba($accent-color, 0.82);
-      transform: scaleX(1);
+    &::before {
+      border-color: rgba($light-color, 0.72);
     }
   }
 
@@ -264,11 +277,13 @@
   }
 
   .portal-menu__panel {
-    width: min(440px, calc(100vw - 44px));
-    padding: 52px 22px;
+    width: min(520px, calc(100vw - 28px));
+    min-height: 340px;
+    aspect-ratio: auto;
+    padding: 54px 34px;
   }
 
   .portal-menu__link {
-    grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+    grid-template-columns: 1fr;
   }
 }
