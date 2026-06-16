@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 import { FaGithub, FaTwitter } from "react-icons/fa";
 
@@ -35,6 +36,11 @@ export function Footer({}) {
       <p id="copyright">
         All Rights Reserved Aaron J. Cunningham - 2026
       </p>
+      <nav className="footer_legal" aria-label="Legal links">
+        <Link href="/impressum">Impressum</Link>
+        <span>|</span>
+        <Link href="/datenschutz">Datenschutzerklärung</Link>
+      </nav>
     </footer>
   );
 }
