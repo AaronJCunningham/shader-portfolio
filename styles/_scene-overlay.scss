@@ -36,15 +36,84 @@
   }
 }
 
-.scene-overlay__headline-link {
-  color: var(--text) !important;
-  text-decoration: none;
+.scene-overlay__headline-button {
+  appearance: none;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba($light-color, 0.62);
+  border-radius: 8px;
+  padding: clamp(0.54rem, 0.86vw, 0.78rem) clamp(0.82rem, 1.45vw, 1.28rem);
+  color: $light-color !important;
+  background: rgba($base-color, 0.1);
   pointer-events: all;
   cursor: pointer;
+  font-size: clamp(1.45rem, 2.45vw, 3rem);
+  font-weight: 300 !important;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 16px 42px rgba(0, 0, 0, 0.72);
+  margin: 0;
+  box-shadow: inset 0 0 0 1px rgba($light-color, 0.08);
+  transition:
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    background-color 0.28s ease;
 
-  &:hover {
-    opacity: 0.72;
+  &::before {
+    content: "";
+    position: absolute;
+    top: -18%;
+    bottom: -18%;
+    left: 0;
+    z-index: 0;
+    width: 58%;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      rgba($accent-color, 0) 0%,
+      rgba($accent-color, 0.14) 22%,
+      rgba($accent-color, 0.54) 48%,
+      rgba($accent-color, 0.14) 74%,
+      rgba($accent-color, 0) 100%
+    );
+    filter: blur(0.5px);
+    opacity: 0;
+    transform: translateX(-150%) skewX(-18deg);
+    transition:
+      opacity 0.24s ease,
+      transform 3.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  &:hover,
+  &:focus-visible {
+    color: $light-color !important;
+    background-color: rgba($base-color, 0.22);
+    border-color: rgba($light-color, 0.94);
+    box-shadow:
+      inset 0 0 0 1px rgba($accent-color, 0.2),
+      0 0 24px rgba($accent-color, 0.18);
+
+    &::before {
+      opacity: 1;
+      transform: translateX(260%) skewX(-18deg);
+    }
+  }
+
+  &:focus-visible {
+    outline: 1px solid rgba($light-color, 0.85);
+    outline-offset: 4px;
+  }
+}
+
+.scene-overlay__headline-button-text {
+  position: relative;
+  z-index: 1;
+  color: $light-color !important;
 }
 
 .scene-overlay__body {

@@ -76,13 +76,16 @@ export default function SceneOverlay() {
         <div className="scene-overlay__headline">
           {content.headline.map((line, i) =>
             "isClickable" in content && content.isClickable ? (
-              <h1
+              <button
                 key={`${closestScene}-${i}`}
-                className="scene-overlay__headline-link"
+                className="scene-overlay__headline-button"
+                type="button"
                 onClick={handleEnter}
               >
-                {line}
-              </h1>
+                <span className="scene-overlay__headline-button-text">
+                  {line}
+                </span>
+              </button>
             ) : (
               <h1 key={`${closestScene}-${i}`}>{line}</h1>
             ),
