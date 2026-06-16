@@ -117,98 +117,59 @@
 .portal-menu__panel {
   position: relative;
   isolation: isolate;
-  width: min(920px, calc(100vw - 42px));
-  aspect-ratio: 1000 / 420;
-  display: grid;
-  place-items: center;
-  padding: clamp(40px, 7vw, 72px) clamp(36px, 7vw, 88px);
-}
-
-.portal-menu__plate {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: visible;
-  pointer-events: none;
-  filter:
-    drop-shadow(0 0 6px rgba($light-color, 0.1))
-    drop-shadow(0 0 18px rgba($accent-color, 0.08));
-}
-
-.portal-menu__plate-fill {
-  fill: rgba($light-color, 0.04);
-  stroke: none;
-}
-
-.portal-menu__plate-line {
-  fill: none;
-  stroke: rgba($light-color, 0.5);
-  stroke-width: 1.35;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.portal-menu__plate-detail {
-  fill: none;
-  stroke: rgba($light-color, 0.24);
-  stroke-width: 1;
-  stroke-linecap: square;
-  vector-effect: non-scaling-stroke;
-}
-
-.portal-menu__plate-detail--dim {
-  fill: rgba($light-color, 0.06);
-  stroke: rgba($light-color, 0.12);
+  width: min(620px, calc(100vw - 48px));
 }
 
 .portal-menu__links {
   position: relative;
   z-index: 1;
   display: grid;
-  width: min(440px, 72%);
-  gap: clamp(12px, 1.8vw, 18px);
+  gap: clamp(14px, 2vw, 22px);
 }
 
 .portal-menu__link {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(54px, 1fr) auto minmax(54px, 1fr);
   align-items: center;
-  gap: clamp(14px, 2vw, 22px);
-  min-height: clamp(46px, 5vw, 58px);
-  padding: 0 clamp(14px, 2vw, 22px);
+  gap: clamp(16px, 3vw, 34px);
+  min-height: clamp(50px, 7vw, 78px);
   color: $light-color !important;
-  font-size: clamp(1.5rem, 4vw, 3.4rem);
+  font-size: clamp(2rem, 6vw, 4.8rem);
   font-weight: 100;
   letter-spacing: 0;
   line-height: 1;
-  text-align: left;
+  text-align: center;
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(12px);
-  background:
-    linear-gradient(90deg, rgba($light-color, 0.24), rgba($light-color, 0)) top left / 100% 1px no-repeat,
-    linear-gradient(90deg, rgba($light-color, 0.12), rgba($light-color, 0)) bottom left / 100% 1px no-repeat;
   transition:
-    background-color 0.24s ease,
     color 0.24s ease,
     opacity 0.4s ease,
     transform 0.4s ease;
 
-  &::before {
+  &::before,
+  &::after {
     content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 16px;
-    height: 16px;
-    border-top: 1px solid rgba($light-color, 0.42);
-    border-right: 1px solid rgba($light-color, 0.42);
-    transform: translate(-1px, 1px);
-    transition: border-color 0.24s ease;
+    height: 1px;
+    background: rgba($light-color, 0.36);
+    transition:
+      background-color 0.24s ease,
+      opacity 0.24s ease,
+      transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  > span:not(.portal-menu__link-index) {
+  &::before {
+    transform: translateX(10px) scaleX(0.72);
+    transform-origin: right;
+  }
+
+  &::after {
+    transform: translateX(-10px) scaleX(0.72);
+    transform-origin: left;
+  }
+
+  > span {
     position: relative;
     color: $light-color !important;
     text-shadow:
@@ -220,10 +181,12 @@
   &:focus-visible,
   &--active {
     color: $light-color !important;
-    background-color: rgba($light-color, 0.045);
 
-    &::before {
-      border-color: rgba($light-color, 0.72);
+    &::before,
+    &::after {
+      background: rgba($accent-color, 0.92);
+      opacity: 1;
+      transform: translateX(0) scaleX(1);
     }
   }
 
@@ -268,7 +231,7 @@
 
 @media (max-width: 768px) {
   .portal-menu {
-    --portal-edge: 22px;
+    --portal-edge: 20px;
   }
 
   .portal-menu__trigger {
@@ -276,14 +239,27 @@
     height: 38px;
   }
 
+  .portal-menu__overlay {
+    padding: 20px;
+    background:
+      linear-gradient(rgba($light-color, 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($light-color, 0.02) 1px, transparent 1px),
+      rgba($base-color, 0.94);
+    background-size: 100% 36px, 36px 100%, auto;
+  }
+
   .portal-menu__panel {
-    width: min(520px, calc(100vw - 28px));
-    min-height: 340px;
-    aspect-ratio: auto;
-    padding: 54px 34px;
+    width: min(340px, calc(100vw - 48px));
+  }
+
+  .portal-menu__links {
+    gap: 12px;
   }
 
   .portal-menu__link {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(36px, 1fr) auto minmax(36px, 1fr);
+    min-height: 44px;
+    gap: 14px;
+    font-size: clamp(1.55rem, 8vw, 2.05rem);
   }
 }
