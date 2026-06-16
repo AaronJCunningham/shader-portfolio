@@ -18,6 +18,8 @@ export default function Datenschutz() {
           <p>
             Aaron J. Cunningham
             <br />
+            c/o Meister
+            <br />
             Uhlandstr. 29
             <br />
             10719 Berlin

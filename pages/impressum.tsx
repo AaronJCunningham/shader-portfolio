@@ -18,11 +18,20 @@ export default function Impressum() {
           <p>
             Aaron J. Cunningham
             <br />
+            c/o Meister
+            <br />
             Uhlandstr. 29
             <br />
             10719 Berlin
             <br />
             Deutschland
+          </p>
+
+          <h2>Umsatzsteuer-ID</h2>
+          <p>
+            Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
+            <br />
+            DE321776741
           </p>
 
           <h2>Kontakt</h2>
@@ -38,6 +47,8 @@ export default function Impressum() {
             Verantwortlich nach § 18 Abs. 2 MStV:
             <br />
             Aaron J. Cunningham
+            <br />
+            c/o Meister
             <br />
             Uhlandstr. 29
             <br />
