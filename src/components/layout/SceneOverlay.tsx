@@ -1,5 +1,6 @@
 import React from "react";
-import { useScrollPhase, useActivateScroll } from "@/store";
+import { useRouter } from "next/router";
+import { useScrollPhase } from "@/store";
 
 const sceneContent = [
   {
@@ -35,11 +36,9 @@ const holdZone = 0.095;
 const fadeZone = 0.045;
 
 export default function SceneOverlay() {
+  const router = useRouter();
   const phase = useScrollPhase((state) => state.phase);
   const phaseProgress = useScrollPhase((state) => state.phaseProgress);
-  const setActivateScroll = useActivateScroll(
-    (state) => state.setActivateScroll,
-  );
 
   const normalizedScroll = (phase - 1) / 3 + phaseProgress / 3;
 
@@ -61,7 +60,7 @@ export default function SceneOverlay() {
   const content = sceneContent[closestScene];
 
   const handleEnter = () => {
-    setActivateScroll(true);
+    router.push("/work");
   };
 
   return (
