@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Cookie from "@/components/cookie/Cookie";
 import Script from "next/script";
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
+import PortalMenu from "@/components/layout/PortalMenu";
 
 const SceneOverlay = dynamic(() => import("../src/components/layout/SceneOverlay"), {
   ssr: false,
@@ -29,6 +30,7 @@ export default function Home() {
   `}
       </Script>
       <Cookie />
+      <PortalMenu />
       <style jsx global>{`
         html,
         body {

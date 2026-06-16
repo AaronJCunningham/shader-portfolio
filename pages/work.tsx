@@ -1,6 +1,7 @@
 import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 import { Footer } from "@/components/layout/Footer";
 import { Grid } from "@/components/layout/Grid";
+import PortalMenu from "@/components/layout/PortalMenu";
 
 async function fetchWordPressPosts() {
   const endpoint = "https://xeleven.space/wp-json/wp/v2/initiatives?per_page=100";
@@ -29,6 +30,7 @@ export default function Work({ posts }: { posts: any }) {
   return (
     <>
       <MetaDataHeader title={"Work"} />
+      <PortalMenu />
       <Grid posts={posts} />
       <Footer />
     </>
