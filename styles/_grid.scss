@@ -66,6 +66,26 @@
   transform: translateX(2px);
 }
 
+.project-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, rgba($accent-color, 0.1), transparent 55%),
+    rgba($light-color, 0.035);
+  box-sizing: border-box;
+
+  span {
+    color: rgba($light-color, 0.62);
+    font-size: 0.68rem;
+    line-height: 1.35;
+    max-width: 92%;
+  }
+}
+
 .grid-container:focus-visible {
   outline: 1px solid rgba($accent-color, 0.8);
   outline-offset: 3px;

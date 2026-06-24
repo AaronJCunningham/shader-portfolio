@@ -1,167 +1,139 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import React from 'react'
+import Link from 'next/link'
 
-import { Footer } from "@/components/layout/Footer";
+import {Footer} from '@/components/layout/Footer'
+import MetaDataHeader from '@/components/metadata/MetaDataHeader'
+import {ProjectBody} from '@/components/sanity/ProjectBody'
+import {getProjectBySlug, getProjectNavigation, getProjectSlugs} from '@/sanity/lib/projects'
+import type {Project, ProjectNavItem} from '@/sanity/types'
 
-import MetaDataHeader from "@/components/metadata/MetaDataHeader";
-
-interface Post {
-  title: { rendered: string };
-  content: { rendered: string };
-  date: string;
-  yoast_head_json: { og_description: string };
-  better_featured_image: { source_url: string };
-  previous?: { slug: string };
-  next?: { slug: string };
-}
-
-interface DynamicNewsProps {
-  post: Post[];
+interface DynamicProjectProps {
+  project: Project
+  previousProject?: ProjectNavItem | null
+  nextProject?: ProjectNavItem | null
 }
 
 interface Params {
-  slug: string;
+  slug: string
 }
 
 interface StaticPropsContext {
-  params: Params;
+  params: Params
 }
 
-export default function DynamicNews({ post }: DynamicNewsProps) {
-  const [width, setWidth] = useState<Number>();
-
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    setWidth(ref.current.offsetWidth);
-  }, [width]);
-
-  const previous = post[0]?.previous?.slug;
-  const next = post[0]?.next?.slug;
-
+export default function DynamicProject({project, previousProject, nextProject}: DynamicProjectProps) {
   return (
     <>
       <MetaDataHeader
-        title={post[0]?.title.rendered}
-        content={post[0]?.yoast_head_json.og_description}
-        image={post[0]?.better_featured_image?.source_url}
+        title={project.seo?.title || project.title}
+        content={project.seo?.description || project.excerpt}
+        image={project.seoImageUrl || project.imageUrl}
+        noIndex={project.seo?.noIndex}
       />
-      <Link href="/" passHref>
-        <h1 className="about_button">HOME</h1>
+      <Link href="/work" passHref>
+        <h1 className="about_button">WORK</h1>
       </Link>
-      <div className="about_container" ref={ref}>
-        {previous && (
-          <Link href={`/${previous}`}>
+      <div className="about_container">
+        {previousProject && (
+          <Link href={`/${previousProject.slug}`}>
             <p className="left_link">previous</p>
           </Link>
         )}
-        {next && (
-          <Link href={`/${next}`}>
+        {nextProject && (
+          <Link href={`/${nextProject.slug}`}>
             <p className="right_link">next</p>
           </Link>
         )}
         <div className="news_content">
           <div className="news_header">
-            <h1>{post[0]?.title?.rendered}</h1>
+            <h1>{project.title}</h1>
           </div>
           <div className="news_text_container">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: post[0]?.content?.rendered,
-              }}
-            ></span>
+            <ProjectBody value={project.body} />
           </div>
         </div>
       </div>
       <br />
       <br />
       <div className="bottom_link">
-        {previous && (
-          <Link href={`/${previous}`}>
+        {previousProject && (
+          <Link href={`/${previousProject.slug}`}>
             <p>previous</p>
           </Link>
         )}
         <br />
-        {next && (
-          <Link href={`/${next}`}>
+        {nextProject && (
+          <Link href={`/${nextProject.slug}`}>
             <p>next</p>
           </Link>
         )}
       </div>
       <div className="article-meta">
-        <p>By Aaron J. Cunningham • Date Published: {post[0]?.date && new Date(post[0].date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <p>
+          By Aaron J. Cunningham
+          {project.publishedAt &&
+            ` • Date Published: ${new Date(project.publishedAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}`}
+        </p>
       </div>
       <Footer />
     </>
-  );
-}
-
-const url = "https://xeleven.space/wp-json/wp/v2/initiatives";
-
-async function fetchInitiatives(endpoint: string) {
-  const attempts = 3;
-
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    try {
-      const res = await fetch(endpoint);
-
-      if (!res.ok) {
-        throw new Error(`WordPress request failed: ${res.status}`);
-      }
-
-      return await res.json();
-    } catch (error) {
-      if (attempt === attempts) {
-        throw error;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
-    }
-  }
+  )
 }
 
 export const getStaticPaths = async () => {
   try {
-    const posts = await fetchInitiatives(`${url}?per_page=100`);
+    const projects = await getProjectSlugs()
 
-    const paths = posts.map((post: Params) => {
+    const paths = projects.map((project) => {
       return {
-        params: { slug: `${post.slug}` },
-      };
-    });
+        params: {slug: project.slug},
+      }
+    })
 
     return {
       paths,
-      fallback: "blocking",
-    };
+      fallback: 'blocking',
+    }
   } catch (error) {
-    console.error("Failed to fetch WordPress paths during build", error);
+    console.error('Failed to fetch Sanity project paths during build', error)
 
     return {
       paths: [],
-      fallback: "blocking",
-    };
+      fallback: 'blocking',
+    }
   }
-};
+}
 
-// This also gets called at build time
-export async function getStaticProps({ params }: StaticPropsContext) {
-  // params contains the post `id`.
-  // If the route is like /posts/1, then params.id is 1
+export async function getStaticProps({params}: StaticPropsContext) {
   try {
-    const post = await fetchInitiatives(
-      `${url}?slug=${encodeURIComponent(params.slug)}`
-    );
+    const [project, navigation] = await Promise.all([
+      getProjectBySlug(params.slug),
+      getProjectNavigation(),
+    ])
 
-    if (!post?.length) {
-      return { notFound: true, revalidate: 60 };
+    if (!project) {
+      return {notFound: true, revalidate: 60}
     }
 
-    // Pass post data to the page via props
-    return { props: { post }, revalidate: 3600 };
+    const currentIndex = navigation.findIndex((item) => item.slug === params.slug)
+    const previousProject =
+      currentIndex >= 0 && currentIndex < navigation.length - 1 ? navigation[currentIndex + 1] : null
+    const nextProject = currentIndex > 0 ? navigation[currentIndex - 1] : null
+
+    return {
+      props: {
+        project,
+        previousProject,
+        nextProject,
+      },
+      revalidate: 3600,
+    }
   } catch (error) {
-    console.error(`Failed to fetch WordPress post for slug "${params.slug}"`, error);
-    return { notFound: true, revalidate: 60 };
+    console.error(`Failed to fetch Sanity project for slug "${params.slug}"`, error)
+    return {notFound: true, revalidate: 60}
   }
 }
