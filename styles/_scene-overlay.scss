@@ -43,22 +43,26 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.72em;
   overflow: hidden;
-  border: 1px solid rgba($light-color, 0.62);
-  border-radius: 8px;
-  padding: clamp(0.54rem, 0.86vw, 0.78rem) clamp(0.82rem, 1.45vw, 1.28rem);
+  border: 1px solid rgba($light-color, 0.54);
+  border-radius: 0;
+  min-width: clamp(10.8rem, 16vw, 18rem);
+  padding: clamp(0.5rem, 0.76vw, 0.68rem) clamp(0.78rem, 1.18vw, 1.12rem);
   color: $light-color !important;
-  background: rgba($base-color, 0.1);
+  background: rgba($base-color, 0.12);
   pointer-events: all;
   cursor: pointer;
-  font-size: clamp(1.45rem, 2.45vw, 3rem);
+  font-size: clamp(1.16rem, 1.72vw, 2.08rem);
   font-weight: 300 !important;
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
   text-shadow: 0 16px 42px rgba(0, 0, 0, 0.72);
   margin: 0;
-  box-shadow: inset 0 0 0 1px rgba($light-color, 0.08);
+  box-shadow:
+    inset 0 0 0 1px rgba($light-color, 0.05),
+    0 0 18px rgba($base-color, 0.34);
   transition:
     border-color 0.28s ease,
     box-shadow 0.28s ease,
@@ -89,18 +93,39 @@
       transform 3.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  &::after {
+    content: "";
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    width: 0.46em;
+    height: 0.46em;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    opacity: 0.72;
+    transform: rotate(45deg);
+    transition:
+      opacity 0.24s ease,
+      transform 0.28s ease;
+  }
+
   &:hover,
   &:focus-visible {
     color: $light-color !important;
-    background-color: rgba($base-color, 0.22);
+    background-color: rgba($accent-color, 0.08);
     border-color: rgba($light-color, 0.94);
     box-shadow:
-      inset 0 0 0 1px rgba($accent-color, 0.2),
-      0 0 24px rgba($accent-color, 0.18);
+      inset 0 0 0 1px rgba($accent-color, 0.18),
+      0 0 22px rgba($accent-color, 0.16);
 
     &::before {
       opacity: 1;
       transform: translateX(260%) skewX(-18deg);
+    }
+
+    &::after {
+      opacity: 0.96;
+      transform: translateX(0.16em) rotate(45deg);
     }
   }
 
@@ -114,6 +139,8 @@
   position: relative;
   z-index: 1;
   color: $light-color !important;
+  min-width: 8.8em;
+  text-align: center;
 }
 
 .scene-overlay__body {

@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useScrollPhase } from "@/store";
+import { gsap } from "gsap";
+import { TextPlugin } from "gsap/TextPlugin";
+
+gsap.registerPlugin(TextPlugin);
 
 const sceneContent = [
   {
@@ -34,6 +38,36 @@ const sceneContent = [
 const restPoints = [0, 1 / 3, 2 / 3, 1];
 const holdZone = 0.095;
 const fadeZone = 0.045;
+const ctaWords = ["MY WORK", "MEINE ARBEIT", "私の作品"];
+
+function AnimatedCtaText() {
+  const textRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!textRef.current) return;
+
+    const timeline = gsap.timeline({ repeat: -1, repeatDelay: 1.4 });
+
+    ctaWords.forEach((word) => {
+      timeline.to(textRef.current, {
+        duration: 1.25,
+        text: word,
+        ease: "power1.inOut",
+      });
+      timeline.to({}, { duration: 1.1 });
+    });
+
+    return () => {
+      timeline.kill();
+    };
+  }, []);
+
+  return (
+    <span ref={textRef} className="scene-overlay__headline-button-text">
+      {ctaWords[0]}
+    </span>
+  );
+}
 
 export default function SceneOverlay() {
   const router = useRouter();
@@ -79,11 +113,10 @@ export default function SceneOverlay() {
                 key={`${closestScene}-${i}`}
                 className="scene-overlay__headline-button"
                 type="button"
+                aria-label="Visit my work"
                 onClick={handleEnter}
               >
-                <span className="scene-overlay__headline-button-text">
-                  {line}
-                </span>
+                <AnimatedCtaText />
               </button>
             ) : (
               <h1 key={`${closestScene}-${i}`}>{line}</h1>
