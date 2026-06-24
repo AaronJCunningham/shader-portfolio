@@ -53,15 +53,12 @@ export default function DynamicProject({project, previousProject, nextProject}: 
           </div>
         </div>
       </div>
-      <br />
-      <br />
       <div className="bottom_link">
         {previousProject && (
           <Link href={`/${previousProject.slug}`}>
             <p>previous</p>
           </Link>
         )}
-        <br />
         {nextProject && (
           <Link href={`/${nextProject.slug}`}>
             <p>next</p>
