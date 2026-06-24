@@ -1,9 +1,11 @@
 .portal-menu {
-  --portal-edge: clamp(24px, 4vw, 54px);
+  --portal-edge: clamp(28px, 4vw, 54px);
+  --portal-size: 42px;
+  --portal-radius: 21px;
 
   position: fixed;
-  top: var(--portal-edge);
-  right: var(--portal-edge);
+  top: calc(var(--portal-edge) - var(--portal-radius));
+  right: calc(var(--portal-edge) - var(--portal-radius));
   z-index: 1200;
   pointer-events: none;
 }
@@ -13,8 +15,8 @@
   position: relative;
   z-index: 2;
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: var(--portal-size);
+  height: var(--portal-size);
   place-items: center;
   border: 1px solid rgba($light-color, 0.72);
   border-radius: 50%;
@@ -219,7 +221,9 @@
 
 @media (max-width: 768px) {
   .portal-menu {
-    --portal-edge: 20px;
+    --portal-edge: 28px;
+    --portal-size: 38px;
+    --portal-radius: 19px;
   }
 
   .portal-menu__trigger {
