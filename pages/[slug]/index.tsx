@@ -30,9 +30,24 @@ export default function DynamicProject({project, previousProject, nextProject}: 
         image={project.seoImageUrl || project.imageUrl}
         noIndex={project.seo?.noIndex}
       />
-      <Link href="/work" passHref>
-        <h1 className="about_button">WORK</h1>
-      </Link>
+      <nav className="project-top-nav" aria-label="Project navigation">
+        <Link href="/work" className="project-top-nav__back">
+          ← Projects
+        </Link>
+        <div className="project-top-nav__pager">
+          {previousProject ? (
+            <Link href={`/${previousProject.slug}`}>Prev</Link>
+          ) : (
+            <span className="is-disabled">Prev</span>
+          )}
+          <span aria-hidden="true">/</span>
+          {nextProject ? (
+            <Link href={`/${nextProject.slug}`}>Next</Link>
+          ) : (
+            <span className="is-disabled">Next</span>
+          )}
+        </div>
+      </nav>
       <div className="about_container">
         {previousProject && (
           <Link href={`/${previousProject.slug}`}>
@@ -53,18 +68,11 @@ export default function DynamicProject({project, previousProject, nextProject}: 
           </div>
         </div>
       </div>
-      <div className="bottom_link">
-        {previousProject && (
-          <Link href={`/${previousProject.slug}`}>
-            <p>previous</p>
-          </Link>
-        )}
-        {nextProject && (
-          <Link href={`/${nextProject.slug}`}>
-            <p>next</p>
-          </Link>
-        )}
-      </div>
+      <nav className="bottom_link" aria-label="Adjacent projects">
+        {previousProject && <Link href={`/${previousProject.slug}`}>Previous</Link>}
+        {previousProject && nextProject && <span aria-hidden="true">/</span>}
+        {nextProject && <Link href={`/${nextProject.slug}`}>Next</Link>}
+      </nav>
       <div className="article-meta">
         <p>
           By Aaron J. Cunningham
