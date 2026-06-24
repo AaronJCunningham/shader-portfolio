@@ -84,7 +84,7 @@ html {
 
 .about-signal {
   width: 100%;
-  margin: 0 0 clamp(54px, 8vw, 96px);
+  margin: 0 0 clamp(27px, 4vw, 48px);
   animation: fadeIn 1s ease-in-out forwards;
 }
 
@@ -498,15 +498,25 @@ footer {
 
 @media only screen and (max-width: 520px) {
   .about-signal {
-    margin-bottom: 48px;
+    margin-bottom: 20px;
+  }
+
+  .about-signal__ruler {
+    span {
+      min-height: auto;
+      padding: 8px 0 7px;
+    }
   }
 
   .about-signal__grid {
     grid-template-columns: 1fr;
 
     div {
-      min-height: 76px;
+      min-height: auto;
+      padding: 12px 0 14px;
       border-right: none;
+      gap: 24px;
+      justify-content: flex-start;
     }
   }
 }
