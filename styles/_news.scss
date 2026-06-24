@@ -206,6 +206,21 @@ p {
     gap: 7px;
   }
 
+  .project-top-nav a,
+  .bottom_link a {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  .project-top-nav a:hover,
+  .project-top-nav a:focus,
+  .project-top-nav a:active,
+  .bottom_link a:hover,
+  .bottom_link a:focus,
+  .bottom_link a:active {
+    color: inherit;
+  }
+
   .bottom_link {
     display: flex;
     z-index: 100;
