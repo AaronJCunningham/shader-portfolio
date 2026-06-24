@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const menuItems = [
   { label: "HOME", href: "/" },
   { label: "WORK", href: "/work" },
-  { label: "CONTACT", href: "mailto:hello@aaronjcunningham.com" },
+  { label: "CONTACT", href: "/work#contact" },
 ];
 
 export default function PortalMenu() {
@@ -46,23 +46,14 @@ export default function PortalMenu() {
         <nav className="portal-menu__panel" aria-label="Primary navigation">
           <div className="portal-menu__links">
             {menuItems.map((item) => {
-              const isExternal = item.href.startsWith("mailto:");
-              const isActive = router.pathname === item.href;
+              const isActive =
+                router.pathname === item.href ||
+                (item.href.includes("#") && router.asPath === item.href);
               const className = `portal-menu__link ${
                 isActive ? "portal-menu__link--active" : ""
               }`;
 
-              return isExternal ? (
-                <a
-                  key={item.href}
-                  className={className}
-                  href={item.href}
-                  tabIndex={isOpen ? undefined : -1}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <span>{item.label}</span>
-                </a>
-              ) : (
+              return (
                 <Link
                   key={item.href}
                   className={className}
