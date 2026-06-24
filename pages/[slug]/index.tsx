@@ -49,16 +49,6 @@ export default function DynamicProject({project, previousProject, nextProject}: 
         </div>
       </nav>
       <div className="about_container">
-        {previousProject && (
-          <Link href={`/${previousProject.slug}`}>
-            <p className="left_link">previous</p>
-          </Link>
-        )}
-        {nextProject && (
-          <Link href={`/${nextProject.slug}`}>
-            <p className="right_link">next</p>
-          </Link>
-        )}
         <div className="news_content">
           <div className="news_header">
             <h1>{project.title}</h1>
@@ -68,11 +58,6 @@ export default function DynamicProject({project, previousProject, nextProject}: 
           </div>
         </div>
       </div>
-      <nav className="bottom_link" aria-label="Adjacent projects">
-        {previousProject && <Link href={`/${previousProject.slug}`}>Previous</Link>}
-        {previousProject && nextProject && <span aria-hidden="true">/</span>}
-        {nextProject && <Link href={`/${nextProject.slug}`}>Next</Link>}
-      </nav>
       <div className="article-meta">
         <p>
           By Aaron J. Cunningham
