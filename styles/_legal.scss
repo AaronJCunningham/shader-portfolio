@@ -44,16 +44,24 @@
 
 .footer_legal {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 40px;
+  color: rgba($light-color, 0.4);
+  font-size: 0.75rem;
+  font-weight: 100;
+  line-height: 1.4;
 
   a,
   span {
-    color: rgba($light-color, 0.5);
+    color: inherit;
+  }
+
+  a {
+    text-decoration: none;
+    transition: color 0.2s ease;
   }
 
   a:hover {

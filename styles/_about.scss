@@ -69,6 +69,18 @@ html {
   animation: fadeIn 1s ease-in-out forwards;
   box-sizing: border-box;
 }
+.about-me-page {
+  min-height: 100vh;
+  padding: clamp(82px, 10vw, 130px) 24px 54px;
+  box-sizing: border-box;
+
+  .bio_content {
+    max-width: 1120px;
+    margin: 0 auto;
+    justify-content: flex-start;
+  }
+}
+
 .bio_content {
   display: flex;
   flex-direction: column;
@@ -251,11 +263,6 @@ footer {
     }
   }
 
-  #copyright {
-    margin-top: 16px;
-    margin-bottom: 40px;
-    opacity: 0.4;
-  }
 }
 
 .email {
@@ -352,6 +359,23 @@ footer {
   #copyright {
     padding: 1rem;
     font-size: 0.6rem;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .about-me-page {
+    padding: 76px 18px 38px;
+
+    .bio_content {
+      p {
+        text-align: left;
+      }
+    }
+
+    .bio-links {
+      flex-wrap: wrap;
+      row-gap: 6px;
+    }
   }
 }
 

@@ -1,6 +1,5 @@
 import {FC} from 'react'
 import {GridItem} from './GridItem'
-import {CV} from './CV'
 import type {ProjectListItem} from '@/sanity/types'
 
 interface GridProps {
@@ -10,7 +9,6 @@ interface GridProps {
 export const Grid: FC<GridProps> = ({posts}) => {
   return (
     <div className="project-grid" id="grid">
-      <CV />
       <div id="projects" className="section-meta">
         <span className="section-meta__index">{'//06'}</span>
         <span className="section-meta__label">MY WORK</span>

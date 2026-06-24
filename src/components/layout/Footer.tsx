@@ -33,12 +33,11 @@ export function Footer({}) {
           <FaGithub />
         </a>
       </div>
-      <p id="copyright">
-        All Rights Reserved Aaron J. Cunningham - 2026
-      </p>
-      <nav className="footer_legal" aria-label="Legal links">
+      <nav className="footer_legal" aria-label="Copyright and legal links">
+        <span>All Rights Reserved Aaron J. Cunningham - 2026</span>
+        <span> | </span>
         <Link href="/impressum">Impressum</Link>
-        <span>|</span>
+        <span> | </span>
         <Link href="/datenschutz">Datenschutzerklärung</Link>
       </nav>
     </footer>
