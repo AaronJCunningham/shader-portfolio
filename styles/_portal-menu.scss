@@ -43,6 +43,11 @@
       opacity 0.24s ease;
   }
 
+  &::before {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+
   &::after {
     inset: 13px;
     border-color: rgba($light-color, 0.42);
@@ -55,16 +60,15 @@
     box-shadow:
       inset 0 0 0 1px rgba($accent-color, 0.18),
       0 0 28px rgba($accent-color, 0.18);
-    transform: translateY(-1px);
 
     &::before {
       border-color: rgba($accent-color, 0.58);
-      animation: portal-trigger-warp 1.2s steps(2, end) infinite;
+      opacity: 1;
+      transform: scale(1);
     }
 
     &::after {
       opacity: 0.88;
-      transform: scaleX(1.42) scaleY(0.72) rotate(-18deg);
     }
   }
 
@@ -210,22 +214,6 @@
 
   &:nth-child(3) {
     transition-delay: 0.2s;
-  }
-}
-
-@keyframes portal-trigger-warp {
-  0%,
-  100% {
-    clip-path: inset(0 0 0 0);
-    transform: translate(0, 0) scale(1);
-  }
-  35% {
-    clip-path: inset(18% 0 22% 0);
-    transform: translate(2px, -1px) scaleX(1.18);
-  }
-  70% {
-    clip-path: inset(45% 0 8% 0);
-    transform: translate(-2px, 1px) scaleY(1.16);
   }
 }
 

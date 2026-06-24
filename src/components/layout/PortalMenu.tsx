@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const menuItems = [
   { label: "HOME", href: "/" },
   { label: "WORK", href: "/work" },
-  { label: "CONTACT", href: "/work#contact" },
+  { label: "CONNECT", href: "/work#contact" },
 ];
 
 export default function PortalMenu() {
