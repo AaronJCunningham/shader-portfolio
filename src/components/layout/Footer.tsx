@@ -34,10 +34,10 @@ export function Footer({}) {
         </a>
       </div>
       <nav className="footer_legal" aria-label="Copyright and legal links">
-        <span>All Rights Reserved Aaron J. Cunningham - 2026</span>
-        <span> | </span>
+        <span className="footer_legal-copy">All Rights Reserved Aaron J. Cunningham - 2026</span>
+        <span className="footer_legal-separator" aria-hidden="true">|</span>
         <Link href="/impressum">Impressum</Link>
-        <span> | </span>
+        <span className="footer_legal-separator" aria-hidden="true">|</span>
         <Link href="/datenschutz">Datenschutzerklärung</Link>
       </nav>
     </footer>

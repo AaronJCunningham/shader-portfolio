@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
-export const CV = () => {
+type CVProps = {
+  children?: ReactNode;
+};
+
+export const CV = ({ children }: CVProps) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = () => {
@@ -28,6 +32,7 @@ export const CV = () => {
           </span>
         </a>
       </div>
+      {children}
       <p>
         I'm a Lead Creative Technologist & Full-Stack Developer. I build
         immersive 3D experiences, full-stack Web3 platforms, and interactive

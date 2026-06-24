@@ -44,18 +44,23 @@
 
 .footer_legal {
   display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
+  flex-wrap: wrap;
   align-items: center;
+  column-gap: 0.45em;
+  row-gap: 0.25em;
+  max-width: min(100%, 52rem);
   margin-top: 16px;
   margin-bottom: 40px;
   color: rgba($light-color, 0.4);
   font-size: 0.75rem;
   font-weight: 100;
-  line-height: 1.4;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  word-break: normal;
 
   a,
   span {
+    min-width: 0;
     color: inherit;
   }
 
@@ -66,5 +71,31 @@
 
   a:hover {
     color: $light-color;
+  }
+}
+
+.footer_legal-copy {
+  max-width: 100%;
+}
+
+.footer_legal-separator {
+  opacity: 0.75;
+}
+
+@media only screen and (max-width: 520px) {
+  .footer_legal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: 2px;
+    max-width: 100%;
+    margin-top: 14px;
+    margin-bottom: 0;
+    font-size: clamp(0.58rem, 2.45vw, 0.68rem);
+    line-height: 1.55;
+  }
+
+  .footer_legal-separator {
+    display: none;
   }
 }

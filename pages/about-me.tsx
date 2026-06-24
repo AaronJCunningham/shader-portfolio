@@ -12,41 +12,36 @@ export default function AboutMe() {
       />
       <PortalMenu />
       <main className="about-me-page">
-        <section className="about-signal" aria-label="Creative technology profile">
-          <div className="section-meta">
-            <span className="section-meta__index">{'//04'}</span>
-            <span className="section-meta__label">SIGNAL</span>
-          </div>
+        <CV>
+          <section className="about-signal" aria-label="Creative technology profile">
+            <div className="about-signal__sheet">
+              <div className="about-signal__ruler" aria-hidden="true">
+                <span>CREATIVE TECHNOLOGY</span>
+                <span>AI-FIRST BUILDER</span>
+                <span>FULL APP THINKING</span>
+              </div>
 
-          <div className="about-signal__sheet">
-            <div className="about-signal__ruler" aria-hidden="true">
-              <span>CREATIVE TECHNOLOGY</span>
-              <span>AI-FIRST BUILDER</span>
-              <span>FULL APP THINKING</span>
-            </div>
-
-            <div className="about-signal__grid">
-              <div>
-                <span>01</span>
-                <strong>Idea to interface</strong>
-              </div>
-              <div>
-                <span>02</span>
-                <strong>Shader to system</strong>
-              </div>
-              <div>
-                <span>03</span>
-                <strong>Design that ships</strong>
-              </div>
-              <div>
-                <span>04</span>
-                <strong>Prototype to product</strong>
+              <div className="about-signal__grid">
+                <div>
+                  <span>01</span>
+                  <strong>Idea to interface</strong>
+                </div>
+                <div>
+                  <span>02</span>
+                  <strong>Shader to system</strong>
+                </div>
+                <div>
+                  <span>03</span>
+                  <strong>Design that ships</strong>
+                </div>
+                <div>
+                  <span>04</span>
+                  <strong>Prototype to product</strong>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <CV />
+          </section>
+        </CV>
       </main>
       <Footer />
     </>
