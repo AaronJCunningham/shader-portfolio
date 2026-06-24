@@ -32,7 +32,7 @@ export default function DynamicProject({project, previousProject, nextProject}: 
       />
       <nav className="project-top-nav" aria-label="Project navigation">
         <Link href="/work" className="project-top-nav__back">
-          ← Projects
+          ← My Work
         </Link>
         <div className="project-top-nav__pager">
           {previousProject ? (
