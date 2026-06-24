@@ -1,6 +1,7 @@
 .header_canvas {
   background-color: $base-color;
   height: 100vh;
+  height: 100svh;
   width: 100vw;
   position: relative;
   overflow: hidden;
@@ -11,6 +12,7 @@
   inset: 0;
   z-index: 900;
   height: 100vh;
+  height: 100svh;
   width: 100vw;
   overflow: hidden;
   pointer-events: auto;

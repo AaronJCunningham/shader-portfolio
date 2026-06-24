@@ -8,6 +8,7 @@ const useMouseWheelAndTouch = (
   const currentPhaseRef = useRef<number>(1);
   const normalizedValueRef = useRef<number>(0);
   const lastTouchYRef = useRef<number>(0);
+  const lastTouchXRef = useRef<number>(0);
 
   // Snap state
   const snapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -127,19 +128,27 @@ const useMouseWheelAndTouch = (
 
   const handleTouchStart = (event: TouchEvent) => {
     lastTouchYRef.current = event.touches[0].clientY;
+    lastTouchXRef.current = event.touches[0].clientX;
     cancelSnap();
   };
 
   const handleTouchMove = (event: TouchEvent) => {
     if (!isLoaded) return;
 
-    const touchY = event.touches[0].clientY;
+    const touch = event.touches[0];
+    const touchY = touch.clientY;
+    const touchX = touch.clientX;
     const deltaY = lastTouchYRef.current - touchY;
+    const deltaX = lastTouchXRef.current - touchX;
     lastTouchYRef.current = touchY;
+    lastTouchXRef.current = touchX;
 
+    if (Math.abs(deltaY) < 2 || Math.abs(deltaY) < Math.abs(deltaX)) return;
+
+    event.preventDefault();
     cancelSnap();
 
-    cumulativeDeltaRef.current += deltaY;
+    cumulativeDeltaRef.current += deltaY * 1.35;
     updateDerivedValues();
     callback(event, cumulativeDeltaRef.current);
 
@@ -152,9 +161,9 @@ const useMouseWheelAndTouch = (
 
   useEffect(() => {
     window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleWheel);

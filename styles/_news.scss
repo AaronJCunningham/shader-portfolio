@@ -1,14 +1,16 @@
 .news_header {
+  width: 90%;
+  max-width: 900px;
   padding-top: 80px;
-  padding-bottom: 10px;
-  margin: 0;
+  padding-bottom: 0;
+  margin: 0 auto;
   color: $accent-color;
-  text-align: center;
+  text-align: left;
   h1 {
     font-size: 3.5rem;
     font-weight: 900;
     line-height: 3rem;
-    padding: 20px;
+    padding: 20px 0 8px;
     color: $accent-color;
   }
 }
@@ -72,7 +74,7 @@
   max-width: 900px;
   height: auto;
   font-size: 1rem;
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 40px;
   display: inline;
   flex-direction: column;
@@ -193,13 +195,16 @@ p {
 
   .news_text_container {
     width: 95%;
+    padding-top: 12px;
     padding-bottom: 20px;
   }
   .news_header {
+    width: 95%;
+
     h1 {
       font-size: 1.6rem;
       line-height: 1.5rem;
-      padding: 10px;
+      padding: 10px 0 0;
     }
   }
 
