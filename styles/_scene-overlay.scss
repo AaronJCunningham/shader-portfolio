@@ -161,13 +161,18 @@
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text) !important;
+  color: #ffffff !important;
   margin: 0;
   white-space: nowrap;
 }
 
 .scene-overlay__prompt-mobile {
   display: none;
+  color: #ffffff !important;
+}
+
+.scene-overlay__prompt-desktop {
+  color: #ffffff !important;
 }
 
 .scene-overlay__meta {
@@ -327,7 +332,7 @@
     left: 0;
     bottom: max(22px, env(safe-area-inset-bottom));
     font-size: 0.62rem;
-    color: rgba($light-color, 0.62) !important;
+    color: #ffffff !important;
   }
 
   .scene-overlay__prompt-desktop {
