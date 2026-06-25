@@ -17,7 +17,7 @@ export const CV = ({ children }: CVProps) => {
   return (
     <div id="bio" className="bio_content">
       <div className="section-meta">
-        <span className="section-meta__index">{"//05"}</span>
+        <span className="section-meta__index">{"//06"}</span>
         <span className="section-meta__label">ABOUT ME</span>
       </div>
       <div className="bio-links">

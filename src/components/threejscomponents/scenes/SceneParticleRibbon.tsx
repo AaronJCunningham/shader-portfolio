@@ -6,20 +6,26 @@ import vertexShader from "../shaders/particleRibbon/vertex.glsl.js";
 import fragmentShader from "../shaders/particleRibbon/fragment.glsl.js";
 
 interface SceneParticleRibbonProps {
+  isLowQuality?: boolean;
   pointer: { x: number; y: number };
 }
 
 const BAND_COUNT = 11;
-const PARTICLES_PER_BAND = 760;
-const PARTICLE_COUNT = BAND_COUNT * PARTICLES_PER_BAND;
+const PARTICLES_PER_BAND_HIGH = 760;
+const PARTICLES_PER_BAND_LOW = 510;
 const RIBBON_SIZE_BOOST = 1.2;
 const RIBBON_BASE_ANGLE = Math.PI * 0.16;
 
 export default function SceneParticleRibbon({
+  isLowQuality = false,
   pointer,
 }: SceneParticleRibbonProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const particlesPerBand = isLowQuality
+    ? PARTICLES_PER_BAND_LOW
+    : PARTICLES_PER_BAND_HIGH;
+  const particleCount = BAND_COUNT * particlesPerBand;
   const ribbonDepth = 9;
   const fov = 55;
   const { size } = useThree();
@@ -39,18 +45,18 @@ export default function SceneParticleRibbon({
   );
 
   const { positions, uValues, bands, sides, seeds, large, colorMixes } = useMemo(() => {
-    const pos = new Float32Array(PARTICLE_COUNT * 3);
-    const u = new Float32Array(PARTICLE_COUNT);
-    const band = new Float32Array(PARTICLE_COUNT);
-    const side = new Float32Array(PARTICLE_COUNT);
-    const seed = new Float32Array(PARTICLE_COUNT);
-    const largeParticle = new Float32Array(PARTICLE_COUNT);
-    const colorMix = new Float32Array(PARTICLE_COUNT);
+    const pos = new Float32Array(particleCount * 3);
+    const u = new Float32Array(particleCount);
+    const band = new Float32Array(particleCount);
+    const side = new Float32Array(particleCount);
+    const seed = new Float32Array(particleCount);
+    const largeParticle = new Float32Array(particleCount);
+    const colorMix = new Float32Array(particleCount);
 
     for (let b = 0; b < BAND_COUNT; b++) {
-      for (let i = 0; i < PARTICLES_PER_BAND; i++) {
-        const index = b * PARTICLES_PER_BAND + i;
-        const t = i / (PARTICLES_PER_BAND - 1);
+      for (let i = 0; i < particlesPerBand; i++) {
+        const index = b * particlesPerBand + i;
+        const t = i / (particlesPerBand - 1);
 
         u[index] = t * 2 - 1;
         band[index] = b;
@@ -78,7 +84,7 @@ export default function SceneParticleRibbon({
       large: largeParticle,
       colorMixes: colorMix,
     };
-  }, []);
+  }, [particleCount, particlesPerBand]);
 
   const uniforms = useMemo(
     () => ({
@@ -114,43 +120,43 @@ export default function SceneParticleRibbon({
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={positions}
             itemSize={3}
           />
           <bufferAttribute
             attach="attributes-aU"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={uValues}
             itemSize={1}
           />
           <bufferAttribute
             attach="attributes-aBand"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={bands}
             itemSize={1}
           />
           <bufferAttribute
             attach="attributes-aSide"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={sides}
             itemSize={1}
           />
           <bufferAttribute
             attach="attributes-aSeed"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={seeds}
             itemSize={1}
           />
           <bufferAttribute
             attach="attributes-aLarge"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={large}
             itemSize={1}
           />
           <bufferAttribute
             attach="attributes-aColorMix"
-            count={PARTICLE_COUNT}
+            count={particleCount}
             array={colorMixes}
             itemSize={1}
           />

@@ -6,14 +6,18 @@ import vertexShader from "../shaders/nebula/vertex.glsl.js";
 import fragmentShader from "../shaders/nebula/fragment.glsl.js";
 
 interface SceneNebulaProps {
+  isLowQuality?: boolean;
   pointer: { x: number; y: number };
 }
 
-export default function SceneNebula({ pointer }: SceneNebulaProps) {
+export default function SceneNebula({
+  isLowQuality = false,
+  pointer,
+}: SceneNebulaProps) {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const particleCount = 5000;
+  const particleCount = isLowQuality ? 3500 : 5000;
   const nebulaDepth = 8;
   const fov = 55;
   const { size } = useThree();
@@ -68,9 +72,9 @@ export default function SceneNebula({ pointer }: SceneNebulaProps) {
       phases: ph,
       seeds: sd,
       large: largeParticle,
-        colorMixes: colorMix,
+      colorMixes: colorMix,
     };
-  }, [visibleHeight, visibleWidth]);
+  }, [particleCount, visibleHeight, visibleWidth]);
 
   const uniforms = useMemo(
     () => ({

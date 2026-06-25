@@ -6,16 +6,20 @@ import vertexShader from "../shaders/particleGrid/vertex.glsl.js";
 import fragmentShader from "../shaders/particleGrid/fragment.glsl.js";
 
 interface SceneFourProps {
+  isLowQuality?: boolean;
   pointer: { x: number; y: number };
 }
 
-export default function SceneFourPhysics({ pointer }: SceneFourProps) {
+export default function SceneFourPhysics({
+  isLowQuality = false,
+  pointer,
+}: SceneFourProps) {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const prevPointer = useRef(new THREE.Vector2(0, 0));
   const pointerSpeed = useRef(0);
 
-  const gridSize = 120;
+  const gridSize = isLowQuality ? 95 : 120;
   const spacing = 0.14;
   const particleCount = gridSize * gridSize;
 
@@ -35,7 +39,7 @@ export default function SceneFourPhysics({ pointer }: SceneFourProps) {
     }
 
     return { positions: pos, randoms: rnd };
-  }, []);
+  }, [gridSize, particleCount]);
 
   const uniforms = useMemo(
     () => ({

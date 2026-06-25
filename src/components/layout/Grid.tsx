@@ -10,7 +10,7 @@ export const Grid: FC<GridProps> = ({posts}) => {
   return (
     <div className="project-grid" id="grid">
       <div id="projects" className="section-meta">
-        <span className="section-meta__index">{'//06'}</span>
+        <span className="section-meta__index">{'//05'}</span>
         <span className="section-meta__label">MY WORK</span>
       </div>
       <div className="main-grid-container">

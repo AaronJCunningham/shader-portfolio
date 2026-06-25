@@ -6,14 +6,18 @@ import vertexShader from "../shaders/particleSphere/vertex.glsl.js";
 import fragmentShader from "../shaders/particleSphere/fragment.glsl.js";
 
 interface SceneThreeProps {
+  isLowQuality?: boolean;
   pointer: { x: number; y: number };
 }
 
-export default function SceneThree({ pointer }: SceneThreeProps) {
+export default function SceneThree({
+  isLowQuality = false,
+  pointer,
+}: SceneThreeProps) {
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const particleCount = 15000;
+  const particleCount = isLowQuality ? 9000 : 15000;
 
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
@@ -28,7 +32,7 @@ export default function SceneThree({ pointer }: SceneThreeProps) {
       pos[i * 3 + 2] = radius * Math.cos(phi);
     }
     return pos;
-  }, []);
+  }, [particleCount]);
 
   const uniforms = useMemo(
     () => ({

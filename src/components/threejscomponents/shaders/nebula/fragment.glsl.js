@@ -15,15 +15,17 @@ void main() {
   // Brighter toward the cloud's center
   float centerHot = exp(-vCenterDist * 0.55);
 
-  vec3 cyanDim    = vec3(0.06, 0.40, 0.38);
-  vec3 cyanBright = vec3(0.18, 0.72, 0.68);
-  vec3 hot        = vec3(0.75, 1.0, 0.95);
+  float core = 1.0 - smoothstep(0.0, 0.15, d);
+
+  vec3 cyanDim    = vec3(0.08, 0.48, 0.45);
+  vec3 cyanBright = vec3(0.25, 0.88, 0.82);
+  vec3 hot        = vec3(0.86, 1.0, 0.97);
 
   vec3 color = mix(cyanDim, cyanBright, vGlow * 0.45 + centerHot * 0.32);
   color = mix(color, hot, vColorMix * 0.72);
-  color = mix(color, hot, vMouseProx * 0.24 + centerHot * 0.16);
+  color = mix(color, hot, vMouseProx * 0.24 + centerHot * 0.16 + core * 0.16);
 
-  alpha *= 0.72 + vMouseProx * 0.12 + vColorMix * 0.1;
+  alpha *= 0.86 + vMouseProx * 0.14 + vColorMix * 0.12 + core * 0.08;
 
   gl_FragColor = vec4(color * alpha, alpha);
 }

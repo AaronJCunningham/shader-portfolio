@@ -1,21 +1,12 @@
 import * as THREE from "three";
 import {
-  Canvas,
-  extend,
   useFrame,
-  ReactThreeFiber,
   createPortal,
   useThree,
   useLoader,
 } from "@react-three/fiber";
-import {
-  OrbitControls,
-  OrthographicCamera,
-  shaderMaterial,
-  useFBO,
-  useProgress,
-} from "@react-three/drei";
-import React, { MutableRefObject, useEffect, useRef } from "react";
+import { useFBO, useProgress } from "@react-three/drei";
+import React, { useEffect, useMemo, useRef } from "react";
 
 import SceneNebula from "./SceneNebula";
 import SceneParticleSphere from "./SceneParticleSphere";
@@ -32,31 +23,82 @@ import useMouseWheelandTouch from "@/components/hooks/useWheelEvent";
 const ShaderScene = () => {
   const shaderRef = useRef<THREE.ShaderMaterial>(null);
   const smoothedGlobalScrollRef = useRef(0);
+  const preRenderedRef = useRef(false);
 
-  const scene1 = new THREE.Scene();
-  const scene2 = new THREE.Scene();
-  const scene3 = new THREE.Scene();
-  const scene4 = new THREE.Scene();
-
-  const renderTargetA = useFBO();
-  const renderTargetB = useFBO();
-  const renderTargetC = useFBO();
-  const renderTargetD = useFBO();
+  const scenes = useMemo(
+    () => [
+      new THREE.Scene(),
+      new THREE.Scene(),
+      new THREE.Scene(),
+      new THREE.Scene(),
+    ],
+    [],
+  );
 
   const noiseTexture = useLoader(THREE.TextureLoader, "/images/noise.png");
-  const { size, camera, viewport, pointer } = useThree();
-  const { active, progress, errors, item, loaded, total } = useProgress();
+  const { size, viewport, pointer } = useThree();
+  const { progress } = useProgress();
+  const isLowQuality = useMemo(() => {
+    if (typeof window === "undefined") return false;
 
-  const [loadingProgress, setLoadingProgress] = useLoadingProgress((state) => [
-    state.loadingProgress,
-    state.setLoadingProgress,
-  ]);
+    const nav = window.navigator as Navigator & { deviceMemory?: number };
+    const isMobileViewport = window.matchMedia("(max-width: 767px)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const hasHighDpr = window.devicePixelRatio >= 2;
+    const hasLowMemory =
+      typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
+    const forceLowQuality = new URLSearchParams(window.location.search).get(
+      "shaderQuality",
+    ) === "low";
+
+    return (
+      forceLowQuality ||
+      isMobileViewport ||
+      hasHighDpr ||
+      hasLowMemory ||
+      prefersReducedMotion
+    );
+  }, []);
+  const fboScale = isLowQuality ? 0.72 : 1;
+  const fboWidth = Math.max(1, Math.floor(size.width * fboScale));
+  const fboHeight = Math.max(1, Math.floor(size.height * fboScale));
+
+  const renderTargetA = useFBO(fboWidth, fboHeight, {
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0,
+  });
+  const renderTargetB = useFBO(fboWidth, fboHeight, {
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0,
+  });
+  const renderTargetC = useFBO(fboWidth, fboHeight, {
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0,
+  });
+  const renderTargetD = useFBO(fboWidth, fboHeight, {
+    depthBuffer: false,
+    stencilBuffer: false,
+    samples: 0,
+  });
+  const renderTargets = useMemo(
+    () => [renderTargetA, renderTargetB, renderTargetC, renderTargetD],
+    [renderTargetA, renderTargetB, renderTargetC, renderTargetD],
+  );
+
+  const setLoadingProgress = useLoadingProgress(
+    (state: any) => state.setLoadingProgress,
+  );
 
   const setScrollState = useScrollPhase((state) => state.setScrollState);
 
   useEffect(() => {
     setLoadingProgress(progress);
-  }, [progress]);
+  }, [progress, setLoadingProgress]);
 
   useEffect(() => {
     if (!shaderRef.current) return;
@@ -64,32 +106,29 @@ const ShaderScene = () => {
       size.width,
       size.height,
     );
-  });
+  }, [size.height, size.width]);
 
-  const cameraSceneOne = new THREE.PerspectiveCamera(
-    55,
-    viewport.width / viewport.height,
-    1,
-    1000,
+  const sceneCameras = useMemo(
+    () =>
+      Array.from(
+        { length: 4 },
+        () =>
+          new THREE.PerspectiveCamera(
+            55,
+            1,
+            1,
+            1000,
+          ),
+      ),
+    [],
   );
-  const cameraSceneTwo = new THREE.PerspectiveCamera(
-    55,
-    viewport.width / viewport.height,
-    1,
-    1000,
-  );
-  const cameraSceneThree = new THREE.PerspectiveCamera(
-    55,
-    viewport.width / viewport.height,
-    1,
-    1000,
-  );
-  const cameraSceneFour = new THREE.PerspectiveCamera(
-    55,
-    viewport.width / viewport.height,
-    1,
-    1000,
-  );
+
+  useEffect(() => {
+    sceneCameras.forEach((sceneCamera) => {
+      sceneCamera.aspect = viewport.width / viewport.height;
+      sceneCamera.updateProjectionMatrix();
+    });
+  }, [sceneCameras, viewport.height, viewport.width]);
 
   const phaseSize = 1 / 3; // 3 transitions
 
@@ -116,25 +155,43 @@ const ShaderScene = () => {
 
     setScrollState(currentPhase, normalizedScroll);
 
-    gl.setRenderTarget(renderTargetA);
-    gl.render(scene1, cameraSceneOne);
-    gl.setRenderTarget(renderTargetB);
-    gl.render(scene2, cameraSceneTwo);
-    gl.setRenderTarget(renderTargetC);
-    gl.render(scene3, cameraSceneThree);
-    gl.setRenderTarget(renderTargetD);
-    gl.render(scene4, cameraSceneFour);
+    const renderScene = (index: number) => {
+      gl.setRenderTarget(renderTargets[index]);
+      gl.clear();
+      gl.render(scenes[index], sceneCameras[index]);
+    };
+
+    if (!preRenderedRef.current) {
+      renderScene(0);
+      renderScene(1);
+      renderScene(2);
+      renderScene(3);
+      preRenderedRef.current = true;
+    } else {
+      const isScrollSettled =
+        Math.abs(smoothedGlobalScroll - normalizedValueRef.current) < 0.0005;
+      const isAtPhaseStart = normalizedScroll < 0.002;
+      const isAtPhaseEnd = normalizedScroll > 0.998;
+
+      if (isScrollSettled && (isAtPhaseStart || isAtPhaseEnd)) {
+        renderScene(
+          THREE.MathUtils.clamp(
+            currentPhase - 1 + (isAtPhaseEnd ? 1 : 0),
+            0,
+            3,
+          ),
+        );
+      } else {
+        renderScene(currentPhase - 1);
+        renderScene(currentPhase);
+      }
+    }
 
     if (shaderRef.current) {
-      // @ts-ignore
       shaderRef.current.uniforms.uTime.value = clock.getElapsedTime();
-      // @ts-ignore
       shaderRef.current.uniforms.uTextureOne.value = renderTargetA.texture;
-      // @ts-ignore
       shaderRef.current.uniforms.uTextureTwo.value = renderTargetB.texture;
-      // @ts-ignore
       shaderRef.current.uniforms.uTextureThree.value = renderTargetC.texture;
-      // @ts-ignore
       shaderRef.current.uniforms.uTextureFour.value = renderTargetD.texture;
       shaderRef.current.uniforms.uScroll.value = normalizedScroll;
       shaderRef.current.uniforms.uCurrentPhase.value = currentPhase;
@@ -161,16 +218,16 @@ const ShaderScene = () => {
           ref={shaderRef}
           uniforms={{
             uTextureOne: {
-              value: null,
+              value: renderTargetA.texture,
             },
             uTextureTwo: {
-              value: null,
+              value: renderTargetB.texture,
             },
             uTextureThree: {
-              value: null,
+              value: renderTargetC.texture,
             },
             uTextureFour: {
-              value: null,
+              value: renderTargetD.texture,
             },
             uNoiseTexture: {
               value: noiseTexture,
@@ -188,17 +245,29 @@ const ShaderScene = () => {
               value: 0.0,
             },
             uResolution: {
-              value: null,
+              value: new THREE.Vector2(size.width, size.height),
             },
           }}
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
         />
       </mesh>
-      {createPortal(<SceneParticleSphere pointer={pointer} />, scene1)}
-      {createPortal(<SceneNebula pointer={pointer} />, scene2)}
-      {createPortal(<SceneParticleRibbon pointer={pointer} />, scene3)}
-      {createPortal(<SceneParticleGrid pointer={pointer} />, scene4)}
+      {createPortal(
+        <SceneParticleSphere isLowQuality={isLowQuality} pointer={pointer} />,
+        scenes[0],
+      )}
+      {createPortal(
+        <SceneNebula isLowQuality={isLowQuality} pointer={pointer} />,
+        scenes[1],
+      )}
+      {createPortal(
+        <SceneParticleRibbon isLowQuality={isLowQuality} pointer={pointer} />,
+        scenes[2],
+      )}
+      {createPortal(
+        <SceneParticleGrid isLowQuality={isLowQuality} pointer={pointer} />,
+        scenes[3],
+      )}
     </>
   );
 };
