@@ -19,7 +19,7 @@ export default function SceneFourPhysics({
   const prevPointer = useRef(new THREE.Vector2(0, 0));
   const pointerSpeed = useRef(0);
 
-  const gridSize = isLowQuality ? 95 : 120;
+  const gridSize = isLowQuality ? 80 : 90;
   const spacing = 0.14;
   const particleCount = gridSize * gridSize;
 
@@ -48,7 +48,7 @@ export default function SceneFourPhysics({
       uPrevPointer: { value: new THREE.Vector2(0, 0) },
       uPointerSpeed: { value: 0 },
     }),
-    []
+    [],
   );
 
   useFrame(({ clock }) => {
@@ -61,7 +61,7 @@ export default function SceneFourPhysics({
 
     materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
     materialRef.current.uniforms.uPrevPointer.value.copy(
-      materialRef.current.uniforms.uPointer.value
+      materialRef.current.uniforms.uPointer.value,
     );
     materialRef.current.uniforms.uPointer.value.set(pointer.x, pointer.y);
     materialRef.current.uniforms.uPointerSpeed.value = pointerSpeed.current;

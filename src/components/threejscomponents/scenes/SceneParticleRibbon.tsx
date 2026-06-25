@@ -11,8 +11,8 @@ interface SceneParticleRibbonProps {
 }
 
 const BAND_COUNT = 11;
-const PARTICLES_PER_BAND_HIGH = 760;
-const PARTICLES_PER_BAND_LOW = 510;
+const PARTICLES_PER_BAND_HIGH = 501;
+const PARTICLES_PER_BAND_LOW = 405;
 const RIBBON_SIZE_BOOST = 1.2;
 const RIBBON_BASE_ANGLE = Math.PI * 0.16;
 
@@ -44,47 +44,48 @@ export default function SceneParticleRibbon({
     [visibleHeight, visibleWidth],
   );
 
-  const { positions, uValues, bands, sides, seeds, large, colorMixes } = useMemo(() => {
-    const pos = new Float32Array(particleCount * 3);
-    const u = new Float32Array(particleCount);
-    const band = new Float32Array(particleCount);
-    const side = new Float32Array(particleCount);
-    const seed = new Float32Array(particleCount);
-    const largeParticle = new Float32Array(particleCount);
-    const colorMix = new Float32Array(particleCount);
+  const { positions, uValues, bands, sides, seeds, large, colorMixes } =
+    useMemo(() => {
+      const pos = new Float32Array(particleCount * 3);
+      const u = new Float32Array(particleCount);
+      const band = new Float32Array(particleCount);
+      const side = new Float32Array(particleCount);
+      const seed = new Float32Array(particleCount);
+      const largeParticle = new Float32Array(particleCount);
+      const colorMix = new Float32Array(particleCount);
 
-    for (let b = 0; b < BAND_COUNT; b++) {
-      for (let i = 0; i < particlesPerBand; i++) {
-        const index = b * particlesPerBand + i;
-        const t = i / (particlesPerBand - 1);
+      for (let b = 0; b < BAND_COUNT; b++) {
+        for (let i = 0; i < particlesPerBand; i++) {
+          const index = b * particlesPerBand + i;
+          const t = i / (particlesPerBand - 1);
 
-        u[index] = t * 2 - 1;
-        band[index] = b;
-        side[index] = (b - (BAND_COUNT - 1) * 0.5) / ((BAND_COUNT - 1) * 0.5);
-        seed[index] = Math.random();
-        largeParticle[index] = Math.random() < 0.02 ? 1 : 0;
+          u[index] = t * 2 - 1;
+          band[index] = b;
+          side[index] = (b - (BAND_COUNT - 1) * 0.5) / ((BAND_COUNT - 1) * 0.5);
+          seed[index] = Math.random();
+          largeParticle[index] = Math.random() < 0.02 ? 1 : 0;
 
-        const colorRoll = Math.random();
-        if (colorRoll < 0.2) {
-          colorMix[index] = 0.82 + Math.random() * 0.18;
-        } else if (colorRoll < 0.52) {
-          colorMix[index] = 0.28 + Math.random() * 0.42;
-        } else {
-          colorMix[index] = Math.random() * 0.18;
+          const colorRoll = Math.random();
+          if (colorRoll < 0.2) {
+            colorMix[index] = 0.82 + Math.random() * 0.18;
+          } else if (colorRoll < 0.52) {
+            colorMix[index] = 0.28 + Math.random() * 0.42;
+          } else {
+            colorMix[index] = Math.random() * 0.18;
+          }
         }
       }
-    }
 
-    return {
-      positions: pos,
-      uValues: u,
-      bands: band,
-      sides: side,
-      seeds: seed,
-      large: largeParticle,
-      colorMixes: colorMix,
-    };
-  }, [particleCount, particlesPerBand]);
+      return {
+        positions: pos,
+        uValues: u,
+        bands: band,
+        sides: side,
+        seeds: seed,
+        large: largeParticle,
+        colorMixes: colorMix,
+      };
+    }, [particleCount, particlesPerBand]);
 
   const uniforms = useMemo(
     () => ({

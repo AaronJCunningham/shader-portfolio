@@ -17,7 +17,7 @@ export default function SceneThree({
   const meshRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
-  const particleCount = isLowQuality ? 9000 : 15000;
+  const particleCount = isLowQuality ? 4000 : 5000;
 
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
@@ -39,7 +39,7 @@ export default function SceneThree({
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0, 0) },
     }),
-    []
+    [],
   );
 
   useFrame(({ clock }) => {
