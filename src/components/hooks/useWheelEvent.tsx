@@ -2,7 +2,7 @@ import { useActivateScroll, useLoadingProgress } from "@/store";
 import { useEffect, useRef, useCallback } from "react";
 
 const useMouseWheelAndTouch = (
-  callback: (event: WheelEvent | TouchEvent, cumulativeDelta: number) => void
+  callback: (event: WheelEvent | TouchEvent, cumulativeDelta: number) => void,
 ) => {
   const cumulativeDeltaRef = useRef<number>(0);
   const currentPhaseRef = useRef<number>(1);
@@ -25,7 +25,7 @@ const useMouseWheelAndTouch = (
   const mobileTransitionMultiplier =
     typeof window !== "undefined" &&
     window.matchMedia("(max-width: 767px)").matches
-      ? 1.5
+      ? 2.5
       : 1;
 
   const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
@@ -33,17 +33,25 @@ const useMouseWheelAndTouch = (
     state.setActivateScroll,
   ]);
 
-  const loadingProgress = useLoadingProgress((state: any) => state.loadingProgress);
+  const loadingProgress = useLoadingProgress(
+    (state: any) => state.loadingProgress,
+  );
   const isLoaded = loadingProgress >= 100;
 
   const maxScroll = totalRange - 1; // cap at end of phase 4, no wrapping
 
   const updateDerivedValues = useCallback(() => {
     // Clamp between 0 and max — no wrapping
-    cumulativeDeltaRef.current = Math.max(0, Math.min(cumulativeDeltaRef.current, maxScroll));
+    cumulativeDeltaRef.current = Math.max(
+      0,
+      Math.min(cumulativeDeltaRef.current, maxScroll),
+    );
     const val = cumulativeDeltaRef.current;
 
-    const normalizedDelta = Math.min(Math.floor(val / sceneSize), numScenes - 1);
+    const normalizedDelta = Math.min(
+      Math.floor(val / sceneSize),
+      numScenes - 1,
+    );
     currentPhaseRef.current = normalizedDelta + 1;
     normalizedValueRef.current = val / totalRange;
   }, []);
