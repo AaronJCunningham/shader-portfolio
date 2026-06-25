@@ -22,6 +22,11 @@ const useMouseWheelAndTouch = (
   const snapDelay = 1000; // ms idle before snap triggers
   const snapDamping = 0.015; // very soft damp factor per frame
   const snapThreshold = 0.5; // px close enough to stop
+  const mobileTransitionMultiplier =
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 767px)").matches
+      ? 1.5
+      : 1;
 
   const [activateScroll, setActivateScroll] = useActivateScroll((state) => [
     state.activateScroll,
@@ -148,7 +153,7 @@ const useMouseWheelAndTouch = (
     event.preventDefault();
     cancelSnap();
 
-    cumulativeDeltaRef.current += deltaY * 1.35;
+    cumulativeDeltaRef.current += deltaY * 1.35 * mobileTransitionMultiplier;
     updateDerivedValues();
     callback(event, cumulativeDeltaRef.current);
 
