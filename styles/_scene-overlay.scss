@@ -166,6 +166,10 @@
   white-space: nowrap;
 }
 
+.scene-overlay__prompt-mobile {
+  display: none;
+}
+
 .scene-overlay__meta {
   position: absolute;
   top: var(--edge);
@@ -318,7 +322,20 @@
   }
 
   .scene-overlay__scroll-prompt {
+    display: block;
+    right: auto;
+    left: 0;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    font-size: 0.62rem;
+    color: rgba($light-color, 0.62) !important;
+  }
+
+  .scene-overlay__prompt-desktop {
     display: none;
+  }
+
+  .scene-overlay__prompt-mobile {
+    display: inline;
   }
 }
 

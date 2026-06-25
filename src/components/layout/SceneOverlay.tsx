@@ -125,7 +125,10 @@ export default function SceneOverlay() {
         </div>
 
         {"showScrollPrompt" in content && content.showScrollPrompt && (
-          <p className="scene-overlay__scroll-prompt">SCROLL TO INTERACT</p>
+          <p className="scene-overlay__scroll-prompt">
+            <span className="scene-overlay__prompt-desktop">SCROLL TO INTERACT</span>
+            <span className="scene-overlay__prompt-mobile">SWIPE TO INTERACT</span>
+          </p>
         )}
 
         {"body" in content && content.body && (
