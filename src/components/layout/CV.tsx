@@ -34,11 +34,11 @@ export const CV = ({ children }: CVProps) => {
       </div>
       {children}
       <p>
-        I'm a Lead Creative Technologist & Full-Stack Developer. I build
-        immersive 3D experiences, full-stack Web3 platforms, and interactive
-        data visualizations — from GLSL shaders to smart contracts to backend
-        services. Everything I build works and looks right, backed by 7+ years
-        of development and 10+ years of professional design.
+        I'm a Lead Full-Stack Developer & Creative Technologist. I build
+        ambitious products end to end across architecture, frontend, backend,
+        real-time systems, and immersive 3D. Everything I build works and looks
+        right, backed by 7 years of development and 10 years of professional
+        design.
       </p>
 
       <p>
@@ -140,8 +140,9 @@ export const CV = ({ children }: CVProps) => {
       </p>
 
       <p>
-        I use AI tooling — Claude Code, OpenClaw, Hermes — and agentic
-        workflows to speed up development and ship faster.
+        I use Claude Code, OpenClaw, and Hermes in structured agentic workflows
+        for planning, implementation, and review, with human verification
+        before release.
       </p>
 
       <p>

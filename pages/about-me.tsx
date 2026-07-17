@@ -8,7 +8,7 @@ export default function AboutMe() {
     <>
       <MetaDataHeader
         title="About Me"
-        content="Aaron J. Cunningham is a lead creative technologist and full-stack developer building immersive 3D, Web3, and interactive systems."
+        content="Aaron J. Cunningham is a lead full-stack developer and creative technologist building complete products, real-time systems, and immersive 3D experiences."
       />
       <PortalMenu />
       <main className="about-me-page">
@@ -16,9 +16,9 @@ export default function AboutMe() {
           <section className="about-signal" aria-label="Creative technology profile">
             <div className="about-signal__sheet">
               <div className="about-signal__ruler" aria-hidden="true">
+                <span>FULL-STACK DEVELOPMENT</span>
+                <span>PRODUCT OWNERSHIP</span>
                 <span>CREATIVE TECHNOLOGY</span>
-                <span>AI-FIRST BUILDER</span>
-                <span>FULL APP THINKING</span>
               </div>
 
               <div className="about-signal__grid">
