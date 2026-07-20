@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type {PortableTextComponents} from '@portabletext/react'
 import {PortableText} from '@portabletext/react'
 
@@ -9,6 +10,7 @@ type ProjectBodyProps = {
 
 const components: PortableTextComponents = {
   block: {
+    normal: ({children}) => <p>{children}</p>,
     h2: ({children}) => <h2>{children}</h2>,
     h3: ({children}) => <h3>{children}</h3>,
     blockquote: ({children}) => <blockquote>{children}</blockquote>,
@@ -31,7 +33,13 @@ const components: PortableTextComponents = {
 
       return (
         <figure>
-          <img src={urlFor(value).width(1000).fit('max').auto('format').url()} alt={value.alt || ''} />
+          <Image
+            src={urlFor(value).width(1600).fit('max').auto('format').url()}
+            alt={value.alt || ''}
+            width={1600}
+            height={1000}
+            sizes="(max-width: 800px) 100vw, 900px"
+          />
           {value.caption && <figcaption>{value.caption}</figcaption>}
         </figure>
       )

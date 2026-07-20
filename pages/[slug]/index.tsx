@@ -1,7 +1,8 @@
-import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import {Footer} from '@/components/layout/Footer'
+import PortalMenu from '@/components/layout/PortalMenu'
 import MetaDataHeader from '@/components/metadata/MetaDataHeader'
 import {ProjectBody} from '@/components/sanity/ProjectBody'
 import {getProjectBySlug, getProjectNavigation, getProjectSlugs} from '@/sanity/lib/projects'
@@ -21,7 +22,18 @@ interface StaticPropsContext {
   params: Params
 }
 
+const formatDate = (date?: string) =>
+  date
+    ? new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null
+
 export default function DynamicProject({project, previousProject, nextProject}: DynamicProjectProps) {
+  const publishedDate = formatDate(project.publishedAt)
+
   return (
     <>
       <MetaDataHeader
@@ -30,46 +42,131 @@ export default function DynamicProject({project, previousProject, nextProject}: 
         image={project.seoImageUrl || project.imageUrl}
         noIndex={project.seo?.noIndex}
       />
-      <nav className="project-top-nav" aria-label="Project navigation">
-        <Link href="/work" className="project-top-nav__back">
-          ← My Work
-        </Link>
-        <div className="project-top-nav__pager">
-          {previousProject ? (
-            <Link href={`/${previousProject.slug}`}>Prev</Link>
-          ) : (
-            <span className="is-disabled">Prev</span>
+
+      <div className="project-experience">
+        <PortalMenu />
+
+        <main className="project-case">
+          <header className="project-masthead">
+            <Link className="project-mark" href="/" aria-label="Return home">
+              AJC
+            </Link>
+            <span>CASE STUDY / SELECTED WORK</span>
+            <nav className="project-masthead__nav" aria-label="Project navigation">
+              <Link href="/work">ALL WORK</Link>
+              {previousProject ? (
+                <Link href={`/${previousProject.slug}`} aria-label={`Previous project: ${previousProject.title}`}>
+                  PREV
+                </Link>
+              ) : (
+                <span>PREV</span>
+              )}
+              {nextProject ? (
+                <Link href={`/${nextProject.slug}`} aria-label={`Next project: ${nextProject.title}`}>
+                  NEXT
+                </Link>
+              ) : (
+                <span>NEXT</span>
+              )}
+            </nav>
+          </header>
+
+          <section className="project-hero" aria-labelledby="project-title">
+            <div className="project-kicker">
+              <span>{'// CASE STUDY'}</span>
+              <span>{publishedDate || 'SELECTED PROJECT'}</span>
+            </div>
+            <h1 id="project-title">{project.title}</h1>
+            {project.excerpt && <p>{project.excerpt}</p>}
+
+            <div className="project-hero__footer">
+              <span>AARON J. CUNNINGHAM</span>
+              <span>DESIGN / DEVELOPMENT / PRODUCT</span>
+              <i aria-hidden="true" />
+            </div>
+          </section>
+
+          {project.imageUrl && (
+            <figure className="project-lead-media">
+              <Image
+                src={project.imageUrl}
+                alt={project.mainImage?.alt || `${project.title} project preview`}
+                width={1800}
+                height={1125}
+                sizes="100vw"
+                priority
+              />
+              <figcaption>
+                <span>{'//00'}</span>
+                <span>{project.mainImage?.caption || 'PROJECT OVERVIEW'}</span>
+              </figcaption>
+            </figure>
           )}
-          <span aria-hidden="true">/</span>
-          {nextProject ? (
-            <Link href={`/${nextProject.slug}`}>Next</Link>
-          ) : (
-            <span className="is-disabled">Next</span>
-          )}
-        </div>
-      </nav>
-      <div className="about_container">
-        <div className="news_content">
-          <div className="news_header">
-            <h1>{project.title}</h1>
-          </div>
-          <div className="news_text_container">
-            <ProjectBody value={project.body} />
-          </div>
-        </div>
+
+          <section className="project-content" aria-label={`${project.title} case study content`}>
+            <aside className="project-content__rail">
+              <div>
+                <span>{'//01'}</span>
+                <strong>PROJECT NOTES</strong>
+              </div>
+              <dl>
+                <div>
+                  <dt>AUTHOR</dt>
+                  <dd>AARON J. CUNNINGHAM</dd>
+                </div>
+                {publishedDate && (
+                  <div>
+                    <dt>PUBLISHED</dt>
+                    <dd>{publishedDate}</dd>
+                  </div>
+                )}
+              </dl>
+              {project.links && project.links.length > 0 && (
+                <nav aria-label="Project links">
+                  {project.links.map((link) => (
+                    <a
+                      key={link._key || link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.label} <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </nav>
+              )}
+            </aside>
+
+            <article className="project-rich-text">
+              <ProjectBody value={project.body} />
+            </article>
+          </section>
+
+          <nav className="project-bottom-nav" aria-label="More case studies">
+            {previousProject ? (
+              <Link href={`/${previousProject.slug}`}>
+                <span>PREVIOUS PROJECT</span>
+                <strong>{previousProject.title}</strong>
+              </Link>
+            ) : (
+              <div />
+            )}
+            {nextProject ? (
+              <Link href={`/${nextProject.slug}`}>
+                <span>NEXT PROJECT</span>
+                <strong>{nextProject.title}</strong>
+              </Link>
+            ) : (
+              <Link href="/work">
+                <span>CONTINUE</span>
+                <strong>All work</strong>
+              </Link>
+            )}
+          </nav>
+        </main>
+
+        <Footer />
       </div>
-      <div className="article-meta">
-        <p>
-          By Aaron J. Cunningham
-          {project.publishedAt &&
-            ` • Date Published: ${new Date(project.publishedAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}`}
-        </p>
-      </div>
-      <Footer />
     </>
   )
 }
@@ -78,11 +175,9 @@ export const getStaticPaths = async () => {
   try {
     const projects = await getProjectSlugs()
 
-    const paths = projects.map((project) => {
-      return {
-        params: {slug: project.slug},
-      }
-    })
+    const paths = projects.map((project) => ({
+      params: {slug: project.slug},
+    }))
 
     return {
       paths,
