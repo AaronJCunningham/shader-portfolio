@@ -16,9 +16,6 @@ type MatterReelProps = {
   projects: ProjectListItem[]
 }
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max)
-
 const initialStatus: MatterRendererStatus = {
   phase: 'idle',
   backend: 'WEBGPU',
@@ -33,7 +30,7 @@ export default function MatterReel({projects}: MatterReelProps) {
   const [rendererUnavailable, setRendererUnavailable] = useState(false)
   const isStatic = renderMode === 'static' || rendererUnavailable
   const isInteractive = renderMode === 'animated' && !rendererUnavailable
-  const {refs, displayProgress, activeIndex, scrollToChapter} = useMatterScroll(
+  const {refs, activeIndex, scrollToChapter} = useMatterScroll(
     rootRef,
     chapters.length,
     !isInteractive,
@@ -45,7 +42,6 @@ export default function MatterReel({projects}: MatterReelProps) {
   }, [])
 
   const activeChapter = chapters[activeIndex]
-  const progress = clamp(displayProgress / Math.max(1, chapters.length - 1), 0, 1)
   const isLoading =
     !isStatic &&
     (renderMode === 'pending' ||
@@ -187,7 +183,7 @@ export default function MatterReel({projects}: MatterReelProps) {
 
         <nav className="matter-reel__rail" aria-label="Matter Reel chapters">
           {chapters.map((chapter, index) => {
-            const visited = displayProgress >= index - 0.05
+            const visited = activeIndex >= index
             return (
               <button
                 key={chapter.id}
@@ -215,13 +211,10 @@ export default function MatterReel({projects}: MatterReelProps) {
         </div>
 
         <div className="matter-reel__progress" aria-hidden="true">
-          <span style={{transform: `scaleX(${progress})`}} />
+          <span />
         </div>
 
-        <div
-          className={`matter-reel__scroll-cue ${displayProgress > 0.22 ? 'matter-reel__scroll-cue--hidden' : ''}`}
-          aria-hidden="true"
-        >
+        <div className="matter-reel__scroll-cue" aria-hidden="true">
           <span>SCROLL TO APPLY ENERGY</span>
           <i />
         </div>

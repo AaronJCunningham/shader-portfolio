@@ -55,7 +55,20 @@ export const matterReelProjectsQuery = defineQuery(/* groq */ `
 export const projectBySlugQuery = defineQuery(/* groq */ `
   *[${visibleProjectsFilter} && slug.current == $slug][0] {
     ${projectCardFields},
-    body,
+    body[] {
+      ...,
+      _type == "image" => {
+        ...,
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions { width, height, aspectRatio }
+          }
+        }
+      }
+    },
     links[] { _key, label, url },
     "seoImageUrl": coalesce(seo.image.asset->url, mainImage.asset->url),
     "seo": {

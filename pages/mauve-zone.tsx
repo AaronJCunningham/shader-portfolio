@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import MetaDataHeader from '@/components/metadata/MetaDataHeader';
 
 const MauveZonePageClient = dynamic(() => import('@/components/MauveZonePageClient'), {
   ssr: false,
@@ -14,6 +15,15 @@ const MauveZonePageClient = dynamic(() => import('@/components/MauveZonePageClie
   ),
 });
 
-const MauveZonePage = () => <MauveZonePageClient />;
+const MauveZonePage = () => (
+  <>
+    <MetaDataHeader
+      title="The Mauve Zone"
+      content="An experimental generative art space by Aaron J. Cunningham."
+      noIndex
+    />
+    <MauveZonePageClient />
+  </>
+);
 
 export default MauveZonePage;

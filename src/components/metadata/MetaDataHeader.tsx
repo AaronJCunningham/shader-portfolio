@@ -6,9 +6,10 @@ type MetaDataHeaderProps = {
   image?: string
   title?: string
   noIndex?: boolean
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
-const DEFAULT_DESCRIPTION = 'Aaron J. Cunningham is a frontend developer specializing in metaverse & web3 using Three.js, R3F, Next.js & React.'
+const DEFAULT_DESCRIPTION = 'Aaron J. Cunningham is a lead full-stack developer and creative technologist turning ambitious ideas into shipped products.'
 const DEFAULT_IMAGE = 'https://aaronjcunningham.com/images/meta-image.png'
 
 const MetaDataHeader = ({
@@ -16,6 +17,7 @@ const MetaDataHeader = ({
   image = DEFAULT_IMAGE,
   title = 'home',
   noIndex = false,
+  structuredData,
 }: MetaDataHeaderProps) => {
   const router = useRouter()
   const canonicalUrl = (
@@ -48,6 +50,14 @@ const MetaDataHeader = ({
       <meta name="msapplication-TileColor" content="#da532c" />
       <meta name="theme-color" content="#030304" />
       <meta name="yandex-verification" content="8d5b06a83511cd21" />
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
+          }}
+        />
+      )}
     </Head>
   )
 }

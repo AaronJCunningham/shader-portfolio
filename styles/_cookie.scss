@@ -1,0 +1,102 @@
+.cookie-consent {
+  position: fixed;
+  right: clamp(14px, 2vw, 28px);
+  bottom: clamp(14px, 2vw, 28px);
+  left: clamp(14px, 2vw, 28px);
+  z-index: 1400;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 30px;
+  max-width: 760px;
+  margin-left: auto;
+  border: 1px solid rgba(243, 240, 232, 0.22);
+  padding: 16px 18px;
+  color: rgba(243, 240, 232, 0.7);
+  background: rgba(2, 2, 7, 0.92);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(18px);
+  box-sizing: border-box;
+}
+
+.cookie-consent__content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  min-width: 0;
+  font-size: 0.66rem;
+  line-height: 1.5;
+
+  span {
+    color: inherit;
+  }
+
+  a {
+    color: #55efe4;
+    text-decoration: underline;
+    text-decoration-color: rgba(85, 239, 228, 0.35);
+    text-underline-offset: 3px;
+  }
+}
+
+.cookie-consent__index {
+  color: #55efe4 !important;
+  font-size: 0.55rem;
+  letter-spacing: 0.11em;
+  white-space: nowrap;
+}
+
+.cookie-consent__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cookie-consent__button {
+  appearance: none;
+  border: 1px solid rgba(243, 240, 232, 0.24);
+  border-radius: 999px;
+  padding: 9px 13px;
+  color: rgba(243, 240, 232, 0.68);
+  background: transparent;
+  font: inherit;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.22s ease, color 0.22s ease, background-color 0.22s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(85, 239, 228, 0.68);
+    color: #f3f0e8;
+    outline: none;
+  }
+
+  &--accept {
+    border-color: rgba(85, 239, 228, 0.52);
+    color: #f3f0e8;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(85, 239, 228, 0.08);
+    }
+  }
+}
+
+@media (max-width: 620px) {
+  .cookie-consent {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 15px;
+  }
+
+  .cookie-consent__content {
+    align-items: flex-start;
+  }
+
+  .cookie-consent__actions {
+    justify-content: flex-end;
+  }
+}

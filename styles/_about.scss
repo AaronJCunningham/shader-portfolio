@@ -663,7 +663,7 @@ footer {
   margin: 22px 0 28px;
   padding: 0;
   color: var(--about-ink) !important;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(4.15rem, 8.9vw, 10.8rem);
   font-weight: 100 !important;
   letter-spacing: -0.062em;
@@ -676,10 +676,10 @@ footer {
   max-width: none;
   margin: 0;
   color: rgba(243, 240, 232, 0.78);
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.35rem, 1.85vw, 2.2rem);
   font-weight: 100;
-  letter-spacing: -0.032em;
+  letter-spacing: -0.018em;
   line-height: 1.2;
   text-wrap: balance;
 }
@@ -750,7 +750,7 @@ footer {
 
   strong {
     color: rgba(243, 240, 232, 0.86);
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.25rem, 2vw, 2.5rem);
     font-weight: 100;
     letter-spacing: -0.035em;
@@ -862,7 +862,7 @@ footer {
   strong {
     max-width: 12ch;
     color: rgba(243, 240, 232, 0.86);
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.15rem, 2vw, 2.4rem);
     font-weight: 100;
     letter-spacing: -0.035em;
@@ -917,7 +917,7 @@ footer {
   margin: 0;
   padding: 0;
   color: var(--about-ink) !important;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.9rem, 3.2vw, 4.2rem);
   font-weight: 100 !important;
   letter-spacing: -0.032em;
@@ -928,7 +928,7 @@ footer {
 .about-proof__row > p {
   margin: 0;
   color: var(--about-muted);
-  font-size: clamp(0.69rem, 0.75vw, 0.8rem);
+  font-size: clamp(0.72rem, 0.78vw, 0.84rem);
   line-height: 1.58;
 }
 
@@ -958,7 +958,7 @@ footer {
   strong {
     max-width: 12ch;
     color: var(--about-ink);
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(2.3rem, 4.4vw, 6rem);
     font-weight: 100;
     letter-spacing: -0.055em;
@@ -979,7 +979,7 @@ footer {
     padding: 24px 0;
     border-bottom: 1px solid var(--about-line);
     color: var(--about-muted);
-    font-size: clamp(0.74rem, 0.82vw, 0.9rem);
+    font-size: clamp(0.78rem, 0.85vw, 0.92rem);
     line-height: 1.68;
   }
 
@@ -1016,7 +1016,7 @@ footer {
 
   strong {
     color: rgba(243, 240, 232, 0.72);
-    font-size: clamp(0.65rem, 0.85vw, 0.85rem);
+    font-size: clamp(0.68rem, 0.86vw, 0.88rem);
     font-weight: 300;
     letter-spacing: 0.04em;
   }
@@ -1049,7 +1049,7 @@ footer {
   .footer_cta {
     margin: 0 0 30px;
     padding: 0;
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.65rem, 4.2vw, 5.5rem);
     font-weight: 100 !important;
     letter-spacing: -0.045em;

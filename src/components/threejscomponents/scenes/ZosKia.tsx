@@ -44,7 +44,7 @@ function Spiral({
       roughness: 0.3,
       metalness: 0.6,
     });
-  }, [colorA, colorB]);
+  }, [colorA]);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;

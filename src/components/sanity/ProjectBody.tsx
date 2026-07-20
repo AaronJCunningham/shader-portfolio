@@ -31,14 +31,21 @@ const components: PortableTextComponents = {
     image: ({value}) => {
       if (!value?.asset) return null
 
+      const dimensions = value.asset.metadata?.dimensions
+      const width = Math.min(1600, dimensions?.width || 1600)
+      const height = Math.round(width / (dimensions?.aspectRatio || 1.6))
+      const blurDataURL = value.asset.metadata?.lqip
+
       return (
         <figure>
           <Image
-            src={urlFor(value).width(1600).fit('max').auto('format').url()}
+            src={urlFor(value).width(width).fit('max').auto('format').url()}
             alt={value.alt || ''}
-            width={1600}
-            height={1000}
+            width={width}
+            height={height}
             sizes="(max-width: 800px) 100vw, 900px"
+            placeholder={blurDataURL ? 'blur' : 'empty'}
+            blurDataURL={blurDataURL}
           />
           {value.caption && <figcaption>{value.caption}</figcaption>}
         </figure>

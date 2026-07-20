@@ -126,6 +126,7 @@
   position: absolute;
   inset: 0;
   will-change: transform;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .grid-container .image_container {
@@ -155,6 +156,11 @@
 .work-experience .work-card:focus-visible .image_container {
   opacity: 1;
   filter: saturate(1.05) contrast(1.08);
+}
+
+.work-experience .grid-container:hover .image_container__inner,
+.work-experience .work-card:focus-visible .image_container__inner {
+  transform: scale(1.035);
 }
 
 // .image-wrapper {

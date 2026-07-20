@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['xeleven.space', 'cdn.sanity.io'],
+    remotePatterns: [
+      {protocol: 'https', hostname: 'xeleven.space'},
+      {protocol: 'https', hostname: 'cdn.sanity.io'},
+    ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400,
   },
   webpack: (config, { isServer }) => {
     config.resolve.fallback = {

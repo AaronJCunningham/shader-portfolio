@@ -126,7 +126,7 @@
   margin: 22px 0 30px;
   padding: 0;
   color: var(--work-ink) !important;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(5rem, 10vw, 12rem);
   font-weight: 100 !important;
   letter-spacing: -0.055em;
@@ -139,7 +139,7 @@
   max-width: 38ch;
   margin: 0;
   color: rgba(243, 240, 232, 0.78);
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.2rem, 1.7vw, 2rem);
   font-weight: 100;
   letter-spacing: -0.018em;
@@ -212,7 +212,7 @@
 
   strong {
     color: rgba(243, 240, 232, 0.86);
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.25rem, 2vw, 2.5rem);
     font-weight: 100;
     letter-spacing: -0.02em;
@@ -322,6 +322,7 @@
   will-change: transform;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.3s ease,
     background-color 0.3s ease,
     box-shadow 0.38s ease;
@@ -375,7 +376,7 @@
     margin: 0;
     padding: 0;
     color: var(--work-ink) !important;
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.55rem, 2.1vw, 2.9rem);
     font-weight: 100 !important;
     letter-spacing: -0.025em;
@@ -388,7 +389,7 @@
     max-width: 62ch;
     margin: 14px 0 0;
     color: var(--work-muted);
-    font-size: clamp(0.68rem, 0.75vw, 0.8rem);
+    font-size: clamp(0.72rem, 0.78vw, 0.84rem);
     font-weight: 300;
     letter-spacing: 0;
     line-height: 1.62;
@@ -405,6 +406,7 @@
 .work-card:hover,
 .work-card:focus-visible {
   .grid-container {
+    transform: translateY(-4px);
     border-color: rgba(85, 239, 228, 0.52);
     background-color: rgba(85, 239, 228, 0.045);
     box-shadow:
@@ -491,7 +493,7 @@
   .footer_cta {
     margin: 0 0 30px;
     padding: 0;
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.65rem, 4.2vw, 5.5rem);
     font-weight: 100 !important;
     letter-spacing: -0.03em;

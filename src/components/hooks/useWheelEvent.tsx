@@ -54,7 +54,7 @@ const useMouseWheelAndTouch = (
     );
     currentPhaseRef.current = normalizedDelta + 1;
     normalizedValueRef.current = val / totalRange;
-  }, []);
+  }, [maxScroll, sceneSize]);
 
   const cancelSnap = useCallback(() => {
     if (snapTimeoutRef.current) {
@@ -80,7 +80,7 @@ const useMouseWheelAndTouch = (
       return sceneStart;
     }
     return null;
-  }, []);
+  }, [sceneSize]);
 
   const animateSnap = useCallback(() => {
     if (snapTargetRef.current === null) return;
@@ -103,7 +103,7 @@ const useMouseWheelAndTouch = (
     updateDerivedValues();
 
     snapAnimationRef.current = requestAnimationFrame(animateSnap);
-  }, []);
+  }, [updateDerivedValues]);
 
   const scheduleSnap = useCallback(() => {
     if (snapTimeoutRef.current) {
@@ -117,62 +117,57 @@ const useMouseWheelAndTouch = (
       isSnappingRef.current = true;
       snapAnimationRef.current = requestAnimationFrame(animateSnap);
     }, snapDelay);
-  }, []);
-
-  const handleWheel = (event: WheelEvent) => {
-    if (!activateScroll) {
-      event.preventDefault();
-    }
-
-    // Block all scroll input while loading
-    if (!isLoaded) {
-      event.preventDefault();
-      return;
-    }
-
-    // Cancel any in-progress snap
-    cancelSnap();
-
-    cumulativeDeltaRef.current += event.deltaY;
-    updateDerivedValues();
-    callback(event, cumulativeDeltaRef.current);
-    scheduleSnap();
-  };
-
-  const handleTouchStart = (event: TouchEvent) => {
-    lastTouchYRef.current = event.touches[0].clientY;
-    lastTouchXRef.current = event.touches[0].clientX;
-    cancelSnap();
-  };
-
-  const handleTouchMove = (event: TouchEvent) => {
-    if (!isLoaded) return;
-
-    const touch = event.touches[0];
-    const touchY = touch.clientY;
-    const touchX = touch.clientX;
-    const deltaY = lastTouchYRef.current - touchY;
-    const deltaX = lastTouchXRef.current - touchX;
-    lastTouchYRef.current = touchY;
-    lastTouchXRef.current = touchX;
-
-    if (Math.abs(deltaY) < 2 || Math.abs(deltaY) < Math.abs(deltaX)) return;
-
-    event.preventDefault();
-    cancelSnap();
-
-    cumulativeDeltaRef.current += deltaY * 1.35 * mobileTransitionMultiplier;
-    updateDerivedValues();
-    callback(event, cumulativeDeltaRef.current);
-
-    scheduleSnap();
-  };
-
-  const handleTouchEnd = () => {
-    scheduleSnap();
-  };
+  }, [animateSnap, computeSnapTarget]);
 
   useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (!activateScroll) {
+        event.preventDefault();
+      }
+
+      if (!isLoaded) {
+        event.preventDefault();
+        return;
+      }
+
+      cancelSnap();
+      cumulativeDeltaRef.current += event.deltaY;
+      updateDerivedValues();
+      callback(event, cumulativeDeltaRef.current);
+      scheduleSnap();
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      lastTouchYRef.current = event.touches[0].clientY;
+      lastTouchXRef.current = event.touches[0].clientX;
+      cancelSnap();
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (!isLoaded) return;
+
+      const touch = event.touches[0];
+      const touchY = touch.clientY;
+      const touchX = touch.clientX;
+      const deltaY = lastTouchYRef.current - touchY;
+      const deltaX = lastTouchXRef.current - touchX;
+      lastTouchYRef.current = touchY;
+      lastTouchXRef.current = touchX;
+
+      if (Math.abs(deltaY) < 2 || Math.abs(deltaY) < Math.abs(deltaX)) return;
+
+      event.preventDefault();
+      cancelSnap();
+      cumulativeDeltaRef.current += deltaY * 1.35 * mobileTransitionMultiplier;
+      updateDerivedValues();
+      callback(event, cumulativeDeltaRef.current);
+      scheduleSnap();
+    };
+
+    const handleTouchEnd = () => {
+      scheduleSnap();
+    };
+
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -185,7 +180,15 @@ const useMouseWheelAndTouch = (
       window.removeEventListener("touchend", handleTouchEnd);
       cancelSnap();
     };
-  }, [callback]);
+  }, [
+    activateScroll,
+    callback,
+    cancelSnap,
+    isLoaded,
+    mobileTransitionMultiplier,
+    scheduleSnap,
+    updateDerivedValues,
+  ]);
 
   return {
     cumulativeDeltaRef,

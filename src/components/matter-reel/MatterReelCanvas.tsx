@@ -96,6 +96,7 @@ export default function MatterReelCanvas({
     let renderer: THREE.WebGPURenderer | null = null
     let renderPipeline: THREE.RenderPipeline | null = null
     let resizeObserver: ResizeObserver | null = null
+    let visibilityHandler: (() => void) | null = null
 
     onStatus({
       phase: 'initializing',
@@ -147,6 +148,9 @@ export default function MatterReelCanvas({
           backend?: {isWebGPUBackend?: boolean}
         }).backend
         const nativeWebGPU = backend?.isWebGPUBackend === true
+        const runtimeBackend: MatterRendererStatus['backend'] = nativeWebGPU
+          ? 'WEBGPU'
+          : 'WEBGL2'
         const tier = getParticleTier(nativeWebGPU)
         const particleCount = tier.count
 
@@ -644,12 +648,17 @@ export default function MatterReelCanvas({
           renderPipeline.outputNode = sceneColor.add(bloomPass)
         }
 
+        const basePixelRatio = Math.min(
+          window.devicePixelRatio,
+          tier.isMobile ? 1 : 1.4,
+        )
+        let renderScale = 1
+
         const resize = () => {
           if (!renderer || disposed) return
           const parent = canvas.parentElement
           const width = Math.max(1, parent?.clientWidth || window.innerWidth)
           const height = Math.max(1, parent?.clientHeight || window.innerHeight)
-          const pixelRatio = Math.min(window.devicePixelRatio, tier.isMobile ? 1 : 1.4)
 
           camera.aspect = width / height
           camera.position.z = Math.max(
@@ -657,7 +666,7 @@ export default function MatterReelCanvas({
             (tier.isMobile ? 9.6 : 8.7) / camera.aspect,
           )
           camera.updateProjectionMatrix()
-          renderer.setPixelRatio(pixelRatio)
+          renderer.setPixelRatio(basePixelRatio * renderScale)
           renderer.setSize(width, height, false)
         }
 
@@ -669,15 +678,67 @@ export default function MatterReelCanvas({
         let previous = performance.now()
         let renderedProgress = motion.progress.current
         let renderedVelocity = 0
+        let documentVisible = !document.hidden
+        let qualityWindowStart = performance.now() + 1500
+        let qualityFrameTime = 0
+        let qualityFrameCount = 0
+        let fastQualityWindows = 0
         const pointerWorld = new THREE.Vector3(100, 100, 0)
+
+        visibilityHandler = () => {
+          documentVisible = !document.hidden
+          previous = performance.now()
+          qualityWindowStart = previous + 800
+          qualityFrameTime = 0
+          qualityFrameCount = 0
+        }
+        document.addEventListener('visibilitychange', visibilityHandler)
 
         renderer.setAnimationLoop(() => {
           if (!renderer || disposed) return
 
           const now = performance.now()
-          const delta = Math.min(Math.max((now - previous) / 1000, 1 / 240), 1 / 30)
+          if (!documentVisible) {
+            previous = now
+            return
+          }
+
+          const rawFrameTime = Math.max(now - previous, 1)
+          const delta = Math.min(Math.max(rawFrameTime / 1000, 1 / 240), 1 / 30)
           previous = now
           elapsed += delta
+
+          if (now >= qualityWindowStart) {
+            qualityFrameTime += rawFrameTime
+            qualityFrameCount += 1
+
+            if (now - qualityWindowStart >= 2500 && qualityFrameCount > 30) {
+              const averageFrameTime = qualityFrameTime / qualityFrameCount
+              let nextRenderScale = renderScale
+
+              if (averageFrameTime > 21.5) {
+                nextRenderScale = Math.max(0.7, renderScale - 0.1)
+                fastQualityWindows = 0
+              } else if (averageFrameTime < 17.2 && renderScale < 1) {
+                fastQualityWindows += 1
+                if (fastQualityWindows >= 2) {
+                  nextRenderScale = Math.min(1, renderScale + 0.1)
+                  fastQualityWindows = 0
+                }
+              } else {
+                fastQualityWindows = 0
+              }
+
+              if (nextRenderScale !== renderScale) {
+                renderScale = nextRenderScale
+                resize()
+              }
+
+              qualityWindowStart = now
+              qualityFrameTime = 0
+              qualityFrameCount = 0
+            }
+          }
 
           renderedProgress = THREE.MathUtils.damp(
             renderedProgress,
@@ -729,7 +790,7 @@ export default function MatterReelCanvas({
 
         onStatus({
           phase: 'ready',
-          backend: nativeWebGPU ? 'WEBGPU' : 'WEBGL2',
+          backend: runtimeBackend,
           particleCount,
           detail: tier.detail,
         })
@@ -758,6 +819,9 @@ export default function MatterReelCanvas({
     return () => {
       disposed = true
       resizeObserver?.disconnect()
+      if (visibilityHandler) {
+        document.removeEventListener('visibilitychange', visibilityHandler)
+      }
       renderPipeline?.dispose()
       if (renderer) {
         renderer.setAnimationLoop(null)

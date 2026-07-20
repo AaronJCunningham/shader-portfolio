@@ -46,7 +46,7 @@ export default function Bio() {
     setDelta(cumulativeDeltaRef.current);
     setPhase(currentPhaseRef.current);
     setNormalizedValue(normalizedValueRef.current);
-  }, [currentPhaseRef, cumulativeDeltaRef, normalizedValueRef.current]);
+  }, [currentPhaseRef, cumulativeDeltaRef, normalizedValueRef]);
 
   useEffect(() => {
     if (loadingProgress >= 100) {

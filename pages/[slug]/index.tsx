@@ -5,6 +5,7 @@ import {Footer} from '@/components/layout/Footer'
 import PortalMenu from '@/components/layout/PortalMenu'
 import MetaDataHeader from '@/components/metadata/MetaDataHeader'
 import {ProjectBody} from '@/components/sanity/ProjectBody'
+import {urlFor} from '@/sanity/lib/image'
 import {getProjectBySlug, getProjectNavigation, getProjectSlugs} from '@/sanity/lib/projects'
 import type {Project, ProjectNavItem} from '@/sanity/types'
 
@@ -33,6 +34,33 @@ const formatDate = (date?: string) =>
 
 export default function DynamicProject({project, previousProject, nextProject}: DynamicProjectProps) {
   const publishedDate = formatDate(project.publishedAt)
+  const leadImageDimensions = project.mainImage?.asset?.metadata?.dimensions
+  const leadImageWidth = Math.min(1800, leadImageDimensions?.width || 1800)
+  const leadImageHeight = Math.round(
+    leadImageWidth / (leadImageDimensions?.aspectRatio || 1.6),
+  )
+  const leadImageUrl = project.mainImage?.asset
+    ? urlFor(project.mainImage)
+        .width(leadImageWidth)
+        .fit('max')
+        .auto('format')
+        .url()
+    : project.imageUrl
+  const leadBlurDataURL = project.mainImage?.asset?.metadata?.lqip
+  const projectStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.seo?.description || project.excerpt,
+    url: `https://www.aaronjcunningham.com/${project.slug}`,
+    image: project.seoImageUrl || project.imageUrl,
+    datePublished: project.publishedAt,
+    author: {
+      '@type': 'Person',
+      name: 'Aaron J. Cunningham',
+      url: 'https://www.aaronjcunningham.com',
+    },
+  }
 
   return (
     <>
@@ -41,6 +69,7 @@ export default function DynamicProject({project, previousProject, nextProject}: 
         content={project.seo?.description || project.excerpt}
         image={project.seoImageUrl || project.imageUrl}
         noIndex={project.seo?.noIndex}
+        structuredData={projectStructuredData}
       />
 
       <div className="project-experience">
@@ -86,15 +115,16 @@ export default function DynamicProject({project, previousProject, nextProject}: 
             </div>
           </section>
 
-          {project.imageUrl && (
+          {leadImageUrl && (
             <figure className="project-lead-media">
               <Image
-                src={project.imageUrl}
+                src={leadImageUrl}
                 alt={project.mainImage?.alt || `${project.title} project preview`}
-                width={1800}
-                height={1125}
+                width={leadImageWidth}
+                height={leadImageHeight}
                 sizes="100vw"
-                priority
+                placeholder={leadBlurDataURL ? 'blur' : 'empty'}
+                blurDataURL={leadBlurDataURL}
               />
               <figcaption>
                 <span>{'//00'}</span>

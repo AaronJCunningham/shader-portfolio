@@ -24,7 +24,6 @@ export const Grid: FC<GridProps> = ({posts}) => {
             post={post}
             index={index}
             key={post.slug}
-            priority={index < 2}
           />
         ))}
       </div>

@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Suspense, useEffect, useState, useRef } from "react";
 import { Loader } from "@react-three/drei";
 import AudioControls from "@/components/audio/AudioControls";
+import MetaDataHeader from "@/components/metadata/MetaDataHeader";
 
 const MusicVisualizerScene = dynamic(() => import("@/components/threejscomponents/scenes/MusicVisualizerScene"), {
   ssr: false,
@@ -14,6 +15,13 @@ const Canvas = dynamic(() => import("@react-three/fiber").then((mod) => mod.Canv
 export default function MusicVisualizerPage() {
   const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const metadata = (
+    <MetaDataHeader
+      title="Music Visualizer Experiment"
+      content="An experimental audio-reactive Three.js visualizer by Aaron J. Cunningham."
+      noIndex
+    />
+  );
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,19 +39,26 @@ export default function MusicVisualizerPage() {
   }, []);
 
   if (!isMounted) {
-    return <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, left: 0, zIndex: 1, background: 'black' }} />;
+    return (
+      <>
+        {metadata}
+        <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, left: 0, zIndex: 1, background: 'black' }} />
+      </>
+    );
   }
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, left: 0, zIndex: 1, background: 'black' }}>
-      <AudioControls audioRef={audioRef} />
-      <Canvas>
-        <Suspense fallback={null}>
-           <MusicVisualizerScene audioRef={audioRef} />
-        </Suspense>
-      </Canvas>
-      <Loader />
-    </div>
+    <>
+      {metadata}
+      <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, left: 0, zIndex: 1, background: 'black' }}>
+        <AudioControls audioRef={audioRef} />
+        <Canvas>
+          <Suspense fallback={null}>
+             <MusicVisualizerScene audioRef={audioRef} />
+          </Suspense>
+        </Canvas>
+        <Loader />
+      </div>
+    </>
   );
 }
-

@@ -43,8 +43,8 @@ const Ring: React.FC<RingProps> = ({ index, total }) => {
 
   // Each ring has its own cycle
   const cycleDur = useMemo(() => 25 + hash(index * 7.31 + 1) * 15, [index]);
-  const phaseOffset = useMemo(() => hash(index * 3.17 + 2) * cycleDur, [index]);
-  const direction = useMemo(() => (hash(index * 11.3) > 0.5 ? 1 : -1), []);
+  const phaseOffset = useMemo(() => hash(index * 3.17 + 2) * cycleDur, [cycleDur, index]);
+  const direction = useMemo(() => (hash(index * 11.3) > 0.5 ? 1 : -1), [index]);
 
   // Logarithmic spacing
   const baseRadius = useMemo(() => {

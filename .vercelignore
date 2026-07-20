@@ -1,0 +1,13 @@
+# Archived, currently unreferenced 3D assets. Keep them locally without
+# uploading roughly 122 MB of unused payload with each deployment.
+public/glbs/ring.glb
+public/glbs/mill.glb
+public/glbs/metro.glb
+public/glbs/tavern.glb
+public/glbs/organicRed.glb
+public/glbs/dragon.glb
+public/glbs/island2.glb
+public/glbs/gyroidBall.glb
+public/glbs/rocket.glb
+public/glbs/island.glb
+public/glbs/mac-draco.glb

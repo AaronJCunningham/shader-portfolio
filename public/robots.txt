@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.aaronjcunningham.com/
+Host: https://www.aaronjcunningham.com
 
 # Sitemaps
 Sitemap: https://www.aaronjcunningham.com/sitemap.xml

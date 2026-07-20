@@ -4,6 +4,7 @@
   --matter-muted: rgba(243, 240, 232, 0.62);
   --matter-line: rgba(243, 240, 232, 0.16);
   --matter-state: 85, 239, 228;
+  --matter-progress: 0;
 
   position: relative;
   isolation: isolate;
@@ -315,7 +316,7 @@
   max-width: 11ch;
   margin: 0;
   color: var(--matter-ink) !important;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(2.45rem, 5.15vw, 6.25rem);
   font-weight: 100 !important;
   letter-spacing: -0.047em;
@@ -490,10 +491,16 @@
     height: 100%;
     background: rgb(var(--matter-state));
     box-shadow: 0 0 12px rgba(var(--matter-state), 0.62);
+    transform: scaleX(var(--matter-progress));
     transform-origin: left center;
     transition: background-color 0.8s ease;
     will-change: transform;
   }
+}
+
+.matter-reel[data-scrolled="true"] .matter-reel__scroll-cue {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .matter-reel__scroll-cue {
@@ -677,7 +684,7 @@
   h1 {
     margin: 18px 0;
     color: var(--matter-ink) !important;
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(3.5rem, 9vw, 9rem);
     font-weight: 100 !important;
     letter-spacing: -0.055em;
@@ -715,7 +722,7 @@
   h2 {
     margin: 0;
     color: var(--matter-ink);
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(1.5rem, 2.6vw, 3.1rem);
     font-weight: 100 !important;
     letter-spacing: -0.035em;
@@ -801,12 +808,13 @@
   }
 
   .matter-reel__skip {
-    top: 69px;
+    top: max(69px, calc(env(safe-area-inset-top) + 58px));
     max-width: 150px;
     line-height: 1.45;
   }
 
   .matter-reel__masthead {
+    top: max(var(--matter-edge), calc(env(safe-area-inset-top) + 12px));
     align-items: flex-start;
   }
 
@@ -931,7 +939,7 @@
 
   .matter-reel__telemetry {
     right: var(--matter-edge);
-    bottom: calc(var(--matter-edge) + 10px);
+    bottom: max(calc(var(--matter-edge) + 10px), calc(env(safe-area-inset-bottom) + 12px));
     gap: 8px;
 
     span {
@@ -946,6 +954,10 @@
 
   .matter-reel__scroll-cue {
     display: none;
+  }
+
+  .matter-reel__progress {
+    bottom: max(var(--matter-edge), calc(env(safe-area-inset-bottom) + 6px));
   }
 
   .matter-reel__grid {

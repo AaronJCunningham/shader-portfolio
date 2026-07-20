@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const menuItems = [
   { label: "HOME", href: "/" },
@@ -12,41 +12,88 @@ const menuItems = [
 export default function PortalMenu() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const trigger = triggerRef.current;
+    document.body.style.overflow = "hidden";
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      firstLinkRef.current?.focus();
+    });
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
+        return;
       }
+
+      if (event.key !== "Tab" || !menuRef.current) return;
+
+      const focusable = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>('button, a[href]'),
+      ).filter((element) => element.tabIndex !== -1);
+      if (focusable.length === 0) return;
+
+      const currentIndex = focusable.indexOf(document.activeElement as HTMLElement);
+      const nextIndex = event.shiftKey
+        ? currentIndex <= 0
+          ? focusable.length - 1
+          : currentIndex - 1
+        : currentIndex === focusable.length - 1
+          ? 0
+          : currentIndex + 1;
+
+      event.preventDefault();
+      focusable[nextIndex].focus();
     };
 
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      window.cancelAnimationFrame(focusFrame);
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      trigger?.focus();
     };
   }, [isOpen]);
 
   return (
-    <div className={`portal-menu ${isOpen ? "portal-menu--open" : ""}`}>
+    <div
+      ref={menuRef}
+      className={`portal-menu ${isOpen ? "portal-menu--open" : ""}`}
+    >
+      <span className="portal-menu__label" aria-hidden="true">
+        {isOpen ? "CLOSE" : "MENU"}
+      </span>
       <button
+        ref={triggerRef}
         className="portal-menu__trigger"
         type="button"
         aria-label={isOpen ? "Close menu" : "Open menu"}
         aria-expanded={isOpen}
+        aria-controls="portal-menu-overlay"
         onClick={() => setIsOpen((open) => !open)}
       >
         <span className="portal-menu__trigger-core" />
       </button>
 
-      <div className="portal-menu__overlay" aria-hidden={!isOpen}>
+      <div
+        id="portal-menu-overlay"
+        className="portal-menu__overlay"
+        role="dialog"
+        aria-modal={isOpen ? "true" : undefined}
+        aria-hidden={!isOpen}
+        aria-label="Site navigation"
+      >
         <nav className="portal-menu__panel" aria-label="Primary navigation">
           <div className="portal-menu__links">
-            {menuItems.map((item) => {
+            {menuItems.map((item, index) => {
               const isActive =
                 router.pathname === item.href ||
                 (item.href.includes("#") && router.asPath === item.href);
@@ -56,6 +103,7 @@ export default function PortalMenu() {
 
               return (
                 <Link
+                  ref={index === 0 ? firstLinkRef : undefined}
                   key={item.href}
                   className={className}
                   href={item.href}

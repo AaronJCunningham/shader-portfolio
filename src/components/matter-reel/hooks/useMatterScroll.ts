@@ -24,9 +24,9 @@ export function useMatterScroll(
   const pointer = useRef({x: 0, y: 0, active: 0})
   const previousProgress = useRef(0)
   const previousTime = useRef(0)
-  const displayProgressRef = useRef(0)
+  const activeIndexRef = useRef(0)
   const scrollableDistance = useRef(1)
-  const [displayProgress, setDisplayProgress] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const updateScrollMetrics = useCallback(() => {
     const root = rootRef.current
@@ -41,8 +41,10 @@ export function useMatterScroll(
       progress.current = 0
       velocity.current = 0
       previousProgress.current = 0
-      displayProgressRef.current = 0
-      setDisplayProgress(0)
+      activeIndexRef.current = 0
+      setActiveIndex(0)
+      rootRef.current?.style.setProperty('--matter-progress', '0')
+      rootRef.current?.removeAttribute('data-scrolled')
       return
     }
 
@@ -82,9 +84,20 @@ export function useMatterScroll(
         previousProgress.current = nextProgress
         previousTime.current = now
 
-        if (Math.abs(nextProgress - displayProgressRef.current) > 0.002) {
-          displayProgressRef.current = nextProgress
-          setDisplayProgress(nextProgress)
+        const nextActiveIndex = clamp(
+          Math.round(nextProgress),
+          0,
+          chapterCount - 1,
+        )
+        const visualProgress = clamp(nextProgress / Math.max(1, maxProgress), 0, 1)
+
+        scrollRoot.style.setProperty('--matter-progress', visualProgress.toFixed(4))
+        if (nextProgress > 0.22) scrollRoot.dataset.scrolled = 'true'
+        else scrollRoot.removeAttribute('data-scrolled')
+
+        if (nextActiveIndex !== activeIndexRef.current) {
+          activeIndexRef.current = nextActiveIndex
+          setActiveIndex(nextActiveIndex)
         }
       }
 
@@ -101,6 +114,11 @@ export function useMatterScroll(
   }, [chapterCount, isStatic, rootRef, updateScrollMetrics])
 
   useEffect(() => {
+    if (isStatic) {
+      pointer.current.active = 0
+      return
+    }
+
     const handlePointerMove = (event: PointerEvent) => {
       pointer.current.x = (event.clientX / window.innerWidth) * 2 - 1
       pointer.current.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -118,7 +136,7 @@ export function useMatterScroll(
       window.removeEventListener('pointermove', handlePointerMove)
       document.documentElement.removeEventListener('pointerleave', handlePointerLeave)
     }
-  }, [])
+  }, [isStatic])
 
   const scrollToChapter = useCallback(
     (index: number) => {
@@ -144,8 +162,7 @@ export function useMatterScroll(
 
   return {
     refs,
-    displayProgress,
-    activeIndex: clamp(Math.round(displayProgress), 0, chapterCount - 1),
+    activeIndex,
     scrollToChapter,
   }
 }

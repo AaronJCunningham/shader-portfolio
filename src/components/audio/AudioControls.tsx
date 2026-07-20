@@ -32,7 +32,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({ audioRef }) => {
         }, 500);
         return () => clearInterval(interval);
     }
-  }, [audioRef]);
+  }, [audioRef, volume]);
 
   const togglePlay = () => {
     if (audioRef.current) {

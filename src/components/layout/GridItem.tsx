@@ -1,19 +1,25 @@
-import {useRef, FC} from 'react'
+import {FC} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {gsap} from 'gsap'
+import {urlFor} from '@/sanity/lib/image'
 import type {ProjectListItem} from '@/sanity/types'
 
 interface GridItemProps {
   post: ProjectListItem
   index: number
-  priority?: boolean
 }
 
-export const GridItem: FC<GridItemProps> = ({post, index, priority = false}) => {
-  const gridRef = useRef<HTMLElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
+export const GridItem: FC<GridItemProps> = ({post, index}) => {
   const imageAlt = post.mainImage?.alt || post.seo?.image?.alt || post.title
+  const imageSource = post.mainImage?.asset
+    ? urlFor(post.mainImage)
+        .width(1200)
+        .height(750)
+        .fit('crop')
+        .auto('format')
+        .url()
+    : post.imageUrl
+  const blurDataURL = post.mainImage?.asset?.metadata?.lqip
   const publishedYear = post.publishedAt
     ? new Date(post.publishedAt).getFullYear()
     : null
@@ -21,37 +27,24 @@ export const GridItem: FC<GridItemProps> = ({post, index, priority = false}) => 
     ? publishedYear
     : 'CASE STUDY'
 
-  const handleIn = () => {
-    gsap.to(gridRef.current, {y: -4, duration: 0.35, ease: 'power2.out'})
-    gsap.to(imageRef.current, {scale: 1.035, duration: 0.7, ease: 'power3.out'})
-  }
-  const handleOut = () => {
-    gsap.to(gridRef.current, {y: 0, duration: 0.35, ease: 'power2.out'})
-    gsap.to(imageRef.current, {scale: 1, duration: 0.7, ease: 'power3.out'})
-  }
-
   return (
     <Link className="work-card" href={`/${post.slug}`}>
-      <article
-        ref={gridRef}
-        className="grid-container"
-        onMouseEnter={handleIn}
-        onMouseLeave={handleOut}
-      >
+      <article className="grid-container">
         <div className="work-card__meta">
           <span>{`//${String(index + 1).padStart(2, '0')}`}</span>
           <span>{displayYear}</span>
         </div>
         <div className="image_container">
-          <div ref={imageRef} className="image_container__inner">
-            {post.imageUrl ? (
+          <div className="image_container__inner">
+            {imageSource ? (
               <Image
-                src={post.imageUrl}
+                src={imageSource}
                 fill
                 alt={imageAlt}
-                sizes="(max-width: 700px) calc(100vw - 40px), 50vw"
+                sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1100px) 50vw, (min-width: 1800px) 25vw, 33vw"
                 style={{objectFit: 'cover', objectPosition: 'center'}}
-                priority={priority}
+                placeholder={blurDataURL ? 'blur' : 'empty'}
+                blurDataURL={blurDataURL}
               />
             ) : (
               <div className="project-image-placeholder">
