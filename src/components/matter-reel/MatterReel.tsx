@@ -112,6 +112,11 @@ export default function MatterReel({projects}: MatterReelProps) {
           </div>
         </header>
 
+        <div className="matter-reel__mobile-chapter-meta" aria-hidden="true">
+          <span>{activeChapter.index}</span>
+          <span>{activeChapter.eyebrow}</span>
+        </div>
+
         <div className="matter-reel__chapters">
           {chapters.map((chapter, index) => {
             const isActive = index === activeIndex

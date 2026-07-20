@@ -307,6 +307,10 @@
   }
 }
 
+.matter-reel__mobile-chapter-meta {
+  display: none;
+}
+
 .matter-reel__title {
   max-width: 11ch;
   margin: 0;
@@ -817,6 +821,34 @@
     font-size: 0.53rem;
     line-height: 1.3;
     text-align: right;
+  }
+
+  .matter-reel__mobile-chapter-meta {
+    position: absolute;
+    top: max(132px, calc(env(safe-area-inset-top) + 108px));
+    right: calc(var(--matter-edge) + 42px);
+    left: var(--matter-edge);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+
+    span {
+      color: rgba(243, 240, 232, 0.54);
+      font-size: 0.53rem;
+      font-weight: 400;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    span:first-child {
+      color: rgb(var(--matter-state));
+    }
+  }
+
+  .matter-reel__chapter-meta {
+    display: none;
   }
 
   .matter-reel__chapters {
