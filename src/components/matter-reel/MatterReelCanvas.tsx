@@ -264,49 +264,41 @@ export default function MatterReelCanvas({
             .greaterThan(0.7)
             .select(nexusEdgePosition, nexusNodePosition)
 
-          // State 02 — a central orchestrator and five mechanically-linked gears.
-          const gear = float(instanceIndex.mod(6))
-          const centralGear = gear.lessThan(0.5)
-          const satelliteAngle = gear.sub(1).mul(TWO_PI.div(5)).add(PI.div(2))
-          const gearCenter = vec3(
-            centralGear.select(float(0), cos(satelliteAngle).mul(2.05)),
-            centralGear.select(float(0), sin(satelliteAngle).mul(1.48)),
-            0,
+          // State 02 — a deep woven field of flowing ribbons.
+          const machineLaneIndex = seedA.mul(17).floor()
+          const machineLane = machineLaneIndex.sub(8)
+          const machineX = seedB
+            .sub(0.5)
+            .mul(7.2)
+            .add(sin(machineLane.mul(0.8)).mul(0.1))
+          const machinePrimaryWave = sin(
+            machineX
+              .mul(machineLaneIndex.mod(4).mul(0.16).add(0.78))
+              .add(machineLane.mul(0.58))
+              .add(timeUniform.mul(0.46)),
+          ).mul(machineLaneIndex.mod(3).mul(0.045).add(0.16))
+          const machineSecondaryWave = sin(
+            machineX
+              .mul(2.15)
+              .sub(timeUniform.mul(0.3))
+              .add(machineLane.mul(0.91)),
+          ).mul(0.055)
+          const machinePosition = vec3(
+            machineX,
+            machineLane
+              .mul(0.225)
+              .add(machinePrimaryWave)
+              .add(machineSecondaryWave)
+              .add(seedE.sub(0.5).mul(0.025)),
+            sin(
+              machineX
+                .mul(0.72)
+                .sub(timeUniform.mul(0.22))
+                .add(machineLane.mul(0.48)),
+            )
+              .mul(0.34)
+              .add(seedC.sub(0.5).mul(0.08)),
           )
-          const gearRadius = centralGear.select(float(1.02), gear.mul(0.025).add(0.58))
-          const gearTeeth = centralGear.select(float(24), gear.mul(2).add(10))
-          const gearDirection = centralGear.select(float(1), float(-1))
-          const gearAngle = id
-            .mul(0.021)
-            .add(seedA.mul(TWO_PI))
-            .add(timeUniform.mul(0.22).mul(gearDirection))
-          const tooth = cos(gearAngle.mul(gearTeeth)).max(0).pow(16).mul(0.13)
-          const ringRadius = gearRadius.add(seedB.sub(0.5).mul(0.2)).add(tooth)
-          const gearRingPosition = gearCenter.add(
-            vec3(
-              cos(gearAngle).mul(ringRadius),
-              sin(gearAngle).mul(ringRadius),
-              seedC.sub(0.5).mul(0.46),
-            ),
-          )
-          const spokeCount = gearTeeth.mul(0.5)
-          const spokeAngle = seedA
-            .mul(spokeCount)
-            .floor()
-            .mul(TWO_PI)
-            .div(spokeCount)
-            .add(timeUniform.mul(0.22).mul(gearDirection))
-          const spokeRadius = seedB.mul(gearRadius)
-          const gearSpokePosition = gearCenter.add(
-            vec3(
-              cos(spokeAngle).mul(spokeRadius),
-              sin(spokeAngle).mul(spokeRadius),
-              seedC.sub(0.5).mul(0.18),
-            ),
-          )
-          const machinePosition = seedD
-            .greaterThan(0.78)
-            .select(gearSpokePosition, gearRingPosition)
 
           // State 03 — stacked market signals, each with a distinct frequency.
           const signalLaneIndex = seedA.mul(13).floor()
@@ -374,72 +366,79 @@ export default function MatterReelCanvas({
             .greaterThan(0.82)
             .select(portalRingPosition, portalMembranePosition)
 
-          // State 05 — a pentagram, three card frames and an orbital star field.
-          const starSegment = seedA.mul(5).floor()
-          const starStartAngle = starSegment.mul(TWO_PI.div(5)).add(PI.div(2))
-          const starEndAngle = starSegment
-            .add(2)
-            .mul(TWO_PI.div(5))
-            .add(PI.div(2))
-          const starStart = vec3(
-            cos(starStartAngle).mul(2.2),
-            sin(starStartAngle).mul(2.2),
-            seedC.sub(0.5).mul(0.18),
+          // State 05 — one slowly rotating faceted diamond.
+          const diamondFace = seedA.mul(8).floor()
+          const diamondTopFace = diamondFace.lessThan(4)
+          const diamondSide = diamondFace.mod(4)
+          const diamondAngle = diamondSide.mul(PI.div(2)).add(PI.div(4))
+          const diamondNextAngle = diamondAngle.add(PI.div(2))
+          const diamondApex = vec3(
+            0,
+            diamondTopFace.select(float(2.72), float(-2.72)),
+            0,
           )
-          const starEnd = vec3(
-            cos(starEndAngle).mul(2.2),
-            sin(starEndAngle).mul(2.2),
-            seedC.sub(0.5).mul(0.18),
+          const diamondEdgeA = vec3(
+            cos(diamondAngle).mul(2.08),
+            0,
+            sin(diamondAngle).mul(2.08),
           )
-          const tarotStarPosition = mix(starStart, starEnd, seedB)
+          const diamondEdgeB = vec3(
+            cos(diamondNextAngle).mul(2.08),
+            0,
+            sin(diamondNextAngle).mul(2.08),
+          )
+          const diamondSurfaceRadius = sqrt(seedB)
+          const diamondSurfacePosition = diamondApex
+            .mul(diamondSurfaceRadius.oneMinus())
+            .add(
+              diamondEdgeA
+                .mul(diamondSurfaceRadius.mul(seedC.oneMinus()))
+                .add(diamondEdgeB.mul(diamondSurfaceRadius.mul(seedC))),
+            )
 
-          const cardIndex = seedA.mul(3).floor().sub(1)
-          const cardEdge = seedB.mul(4).floor()
-          const cardEdgeT = seedC
-          const cardX = cardEdge.lessThan(0.5).select(
-            cardEdgeT.mul(1.4).sub(0.7),
-            cardEdge.lessThan(1.5).select(
-              float(0.7),
-              cardEdge.lessThan(2.5).select(
-                float(0.7).sub(cardEdgeT.mul(1.4)),
-                float(-0.7),
-              ),
-            ),
+          const diamondLine = seedA.mul(12).floor()
+          const diamondLineSide = diamondLine.mod(4)
+          const diamondLineAngle = diamondLineSide.mul(PI.div(2)).add(PI.div(4))
+          const diamondLineNextAngle = diamondLineAngle.add(PI.div(2))
+          const diamondLineVertex = vec3(
+            cos(diamondLineAngle).mul(2.08),
+            0,
+            sin(diamondLineAngle).mul(2.08),
           )
-          const cardY = cardEdge.lessThan(0.5).select(
-            float(1.15),
-            cardEdge.lessThan(1.5).select(
-              float(1.15).sub(cardEdgeT.mul(2.3)),
-              cardEdge.lessThan(2.5).select(
-                float(-1.15),
-                cardEdgeT.mul(2.3).sub(1.15),
-              ),
-            ),
+          const diamondLineNextVertex = vec3(
+            cos(diamondLineNextAngle).mul(2.08),
+            0,
+            sin(diamondLineNextAngle).mul(2.08),
           )
-          const cardRotation = cardIndex.mul(0.11)
-          const cardRotatedX = cardX
-            .mul(cos(cardRotation))
-            .sub(cardY.mul(sin(cardRotation)))
-          const cardRotatedY = cardX
-            .mul(sin(cardRotation))
-            .add(cardY.mul(cos(cardRotation)))
-          const tarotCardPosition = vec3(
-            cardRotatedX.add(cardIndex.mul(1.72)),
-            cardRotatedY,
-            seedE.sub(0.5).mul(0.15),
+          const diamondLineStart = diamondLine.lessThan(4).select(
+            vec3(0, 2.72, 0),
+            diamondLine.lessThan(8).select(vec3(0, -2.72, 0), diamondLineVertex),
           )
+          const diamondLineEnd = diamondLine
+            .lessThan(8)
+            .select(diamondLineVertex, diamondLineNextVertex)
+          const diamondEdgePosition = mix(diamondLineStart, diamondLineEnd, seedB)
+          const diamondPosition = seedD
+            .lessThan(0.78)
+            .select(diamondSurfacePosition, diamondEdgePosition)
 
-          const orbitAngle = seedA.mul(TWO_PI).add(timeUniform.mul(0.1))
-          const orbitRadius = seedB.mul(2.4).add(1.35)
-          const tarotOrbitPosition = vec3(
-            cos(orbitAngle).mul(orbitRadius),
-            sin(orbitAngle).mul(orbitRadius).mul(0.66),
-            sin(orbitAngle.mul(3)).mul(0.34).add(seedC.sub(0.5).mul(0.3)),
-          )
-          const tarotPosition = seedD.lessThan(0.48).select(
-            tarotStarPosition,
-            seedD.lessThan(0.84).select(tarotCardPosition, tarotOrbitPosition),
-          )
+          const diamondSpin = timeUniform.mul(0.16)
+          const diamondTilt = float(0.28).add(sin(timeUniform.mul(0.11)).mul(0.06))
+          const diamondRotatedX = diamondPosition.x
+            .mul(cos(diamondSpin))
+            .sub(diamondPosition.z.mul(sin(diamondSpin)))
+          const diamondRotatedZ = diamondPosition.x
+            .mul(sin(diamondSpin))
+            .add(diamondPosition.z.mul(cos(diamondSpin)))
+          const editorPosition = vec3(
+            diamondRotatedX,
+            diamondPosition.y
+              .mul(cos(diamondTilt))
+              .sub(diamondRotatedZ.mul(sin(diamondTilt))),
+            diamondPosition.y
+              .mul(sin(diamondTilt))
+              .add(diamondRotatedZ.mul(cos(diamondTilt))),
+          ).add(vec3(seedE.sub(0.5), seedF.sub(0.5), seedC.sub(0.5)).mul(0.025))
 
           const phase = progressUniform.floor()
           const localProgress = progressUniform.fract()
@@ -457,7 +456,7 @@ export default function MatterReelCanvas({
                 portalPosition,
                 phase.lessThan(3.5).select(
                   nexusPosition,
-                  phase.lessThan(4.5).select(machinePosition, tarotPosition),
+                  phase.lessThan(4.5).select(machinePosition, editorPosition),
                 ),
               ),
             ),
@@ -468,7 +467,7 @@ export default function MatterReelCanvas({
               portalPosition,
               phase.lessThan(2.5).select(
                 nexusPosition,
-                phase.lessThan(3.5).select(machinePosition, tarotPosition),
+                phase.lessThan(3.5).select(machinePosition, editorPosition),
               ),
             ),
           )
@@ -521,12 +520,12 @@ export default function MatterReelCanvas({
           )
 
           const machineWeight = progressUniform.sub(4).abs().min(1).oneMinus()
-          const tarotWeight = progressUniform.sub(5).abs().min(1).oneMinus()
+          const editorWeight = progressUniform.sub(5).abs().min(1).oneMinus()
           velocity.addAssign(
             vec3(position.y.negate(), position.x, 0)
               .add(vec3(0.0001))
               .normalize()
-              .mul(machineWeight.mul(0.025).add(tarotWeight.mul(0.018)))
+              .mul(machineWeight.mul(0.025).add(editorWeight.mul(0.008)))
               .mul(deltaUniform),
           )
 
@@ -550,6 +549,7 @@ export default function MatterReelCanvas({
         const renderSeedC = hash(instanceIndex.add(37))
         const renderPhase = progressUniform.floor()
         const renderTransition = smoothstep(0, 1, progressUniform.fract())
+        const renderEditorWeight = progressUniform.sub(5).abs().min(1).oneMinus()
 
         const originColor = mix(
           vec3(0.333, 0.259, 0.651),
@@ -582,11 +582,14 @@ export default function MatterReelCanvas({
         const portalColor = renderSeedC
           .greaterThan(0.965)
           .select(vec3(1), portalBaseColor)
-        const tarotColor = mix(
-          vec3(0.506, 0.455, 0.718),
-          vec3(0.804, 0.667, 0.408),
+        const editorBaseColor = mix(
+          vec3(0.075, 0.435, 0.98),
+          vec3(0.94, 0.18, 0.66),
           renderSeedA.pow(0.72),
         )
+        const editorColor = renderSeedC
+          .greaterThan(0.985)
+          .select(vec3(0.82, 1, 0.96), editorBaseColor)
 
         const fromColor = renderPhase.lessThan(0.5).select(
           originColor,
@@ -596,7 +599,7 @@ export default function MatterReelCanvas({
               portalColor,
               renderPhase.lessThan(3.5).select(
                 nexusColor,
-                renderPhase.lessThan(4.5).select(machineColor, tarotColor),
+                renderPhase.lessThan(4.5).select(machineColor, editorColor),
               ),
             ),
           ),
@@ -607,17 +610,19 @@ export default function MatterReelCanvas({
             portalColor,
             renderPhase.lessThan(2.5).select(
               nexusColor,
-              renderPhase.lessThan(3.5).select(machineColor, tarotColor),
+              renderPhase.lessThan(3.5).select(machineColor, editorColor),
             ),
           ),
         )
         material.positionNode = positions.toAttribute()
         material.scaleNode = particleSizeUniform.mul(
           renderSeedB.pow(8).mul(1.8).add(0.52),
-        )
+        ).mul(float(1).sub(renderEditorWeight.mul(0.24)))
         material.colorNode = mix(fromColor, toColor, renderTransition)
         const particleShape = shapeCircle() as unknown as ReturnType<typeof float>
-        material.opacityNode = particleShape.mul(renderSeedC.mul(0.32).add(0.18))
+        material.opacityNode = particleShape
+          .mul(renderSeedC.mul(0.32).add(0.18))
+          .mul(float(1).sub(renderEditorWeight.mul(0.62)))
         material.transparent = true
         material.alphaToCoverage = true
         material.depthWrite = false

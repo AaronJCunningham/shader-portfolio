@@ -7,7 +7,7 @@ export type MatterState =
   | 'machine'
   | 'signal'
   | 'portal'
-  | 'tarot'
+  | 'editor'
 
 export type MatterChapter = {
   id: string

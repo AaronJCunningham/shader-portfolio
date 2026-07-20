@@ -59,7 +59,7 @@ const projectStates: ProjectStateDefinition[] = [
     description:
       'Led Three.js development on a production editor that kept video, application state and real-time graphics synchronized in one responsive workflow.',
     materialLabel: 'TYPESCRIPT / REACT / NEXT.JS / R3F / THREE.JS / WEBGL',
-    state: 'tarot',
+    state: 'editor',
   },
 ]
 
