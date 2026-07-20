@@ -1,9 +1,19 @@
 import {client} from './client'
-import {projectBySlugQuery, projectNavQuery, projectSlugsQuery, projectsQuery} from './queries'
+import {
+  matterReelProjectsQuery,
+  projectBySlugQuery,
+  projectNavQuery,
+  projectSlugsQuery,
+  projectsQuery,
+} from './queries'
 import type {Project, ProjectListItem, ProjectNavItem} from '../types'
 
 export function getProjects() {
   return client.fetch<ProjectListItem[]>(projectsQuery)
+}
+
+export function getMatterReelProjects(slugs: readonly string[]) {
+  return client.fetch<ProjectListItem[]>(matterReelProjectsQuery, {slugs})
 }
 
 export function getProjectBySlug(slug: string) {

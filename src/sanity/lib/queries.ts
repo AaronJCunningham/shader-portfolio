@@ -46,6 +46,12 @@ export const projectsQuery = defineQuery(/* groq */ `
   }
 `)
 
+export const matterReelProjectsQuery = defineQuery(/* groq */ `
+  *[${visibleProjectsFilter} && slug.current in $slugs] {
+    ${projectCardFields}
+  }
+`)
+
 export const projectBySlugQuery = defineQuery(/* groq */ `
   *[${visibleProjectsFilter} && slug.current == $slug][0] {
     ${projectCardFields},
