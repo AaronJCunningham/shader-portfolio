@@ -652,7 +652,10 @@ export default function MatterReelCanvas({
           const pixelRatio = Math.min(window.devicePixelRatio, tier.isMobile ? 1 : 1.4)
 
           camera.aspect = width / height
-          camera.position.z = Math.max(9.4, 8.7 / camera.aspect)
+          camera.position.z = Math.max(
+            9.4,
+            (tier.isMobile ? 9.6 : 8.7) / camera.aspect,
+          )
           camera.updateProjectionMatrix()
           renderer.setPixelRatio(pixelRatio)
           renderer.setSize(width, height, false)

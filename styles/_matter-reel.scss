@@ -832,8 +832,19 @@
     &--signal,
     &--portal,
     &--editor {
-      bottom: max(118px, calc(env(safe-area-inset-bottom) + 96px));
+      bottom: max(92px, calc(env(safe-area-inset-bottom) + 58px));
     }
+  }
+
+  .matter-reel__vignette {
+    background:
+      linear-gradient(
+        0deg,
+        rgba(2, 2, 7, 0.96) 0%,
+        rgba(2, 2, 7, 0.76) 27%,
+        transparent 57%
+      ),
+      radial-gradient(circle at center, transparent 42%, rgba(2, 2, 7, 0.7) 100%);
   }
 
   .matter-reel__chapter-meta {
