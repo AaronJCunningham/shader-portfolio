@@ -138,6 +138,25 @@
   filter: contrast(1.08) saturate(1.04);
 }
 
+.work-experience .image_container {
+  aspect-ratio: 16 / 10;
+  border: 1px solid rgba(243, 240, 232, 0.08);
+  border-radius: 2px;
+  box-sizing: border-box;
+  background: #07070a;
+}
+
+.work-experience .grid-container .image_container {
+  opacity: 0.82;
+  filter: saturate(0.88) contrast(1.02);
+}
+
+.work-experience .grid-container:hover .image_container,
+.work-experience .work-card:focus-visible .image_container {
+  opacity: 1;
+  filter: saturate(1.05) contrast(1.08);
+}
+
 // .image-wrapper {
 //   width: 100%; // Full width of the parent
 //   // Define a fixed aspect ratio if needed, e.g., for a 16:9 aspect ratio:

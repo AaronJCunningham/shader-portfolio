@@ -6,13 +6,20 @@ import type {ProjectListItem} from '@/sanity/types'
 
 interface GridItemProps {
   post: ProjectListItem
+  index: number
   priority?: boolean
 }
 
-export const GridItem: FC<GridItemProps> = ({post, priority = false}) => {
-  const gridRef = useRef<HTMLDivElement>(null)
+export const GridItem: FC<GridItemProps> = ({post, index, priority = false}) => {
+  const gridRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
   const imageAlt = post.mainImage?.alt || post.seo?.image?.alt || post.title
+  const publishedYear = post.publishedAt
+    ? new Date(post.publishedAt).getFullYear()
+    : null
+  const displayYear = publishedYear && !Number.isNaN(publishedYear)
+    ? publishedYear
+    : 'CASE STUDY'
 
   const handleIn = () => {
     gsap.to(gridRef.current, {y: -4, duration: 0.35, ease: 'power2.out'})
@@ -24,14 +31,17 @@ export const GridItem: FC<GridItemProps> = ({post, priority = false}) => {
   }
 
   return (
-    <Link href={`/${post.slug}`}>
-      <div
+    <Link className="work-card" href={`/${post.slug}`}>
+      <article
         ref={gridRef}
         className="grid-container"
-        key={post.slug}
         onMouseEnter={handleIn}
         onMouseLeave={handleOut}
       >
+        <div className="work-card__meta">
+          <span>{`//${String(index + 1).padStart(2, '0')}`}</span>
+          <span>{displayYear}</span>
+        </div>
         <div className="image_container">
           <div ref={imageRef} className="image_container__inner">
             {post.imageUrl ? (
@@ -39,7 +49,7 @@ export const GridItem: FC<GridItemProps> = ({post, priority = false}) => {
                 src={post.imageUrl}
                 fill
                 alt={imageAlt}
-                sizes="(max-width: 650px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                sizes="(max-width: 700px) calc(100vw - 40px), 50vw"
                 style={{objectFit: 'cover', objectPosition: 'center'}}
                 priority={priority}
               />
@@ -52,10 +62,12 @@ export const GridItem: FC<GridItemProps> = ({post, priority = false}) => {
         </div>
         <div className="title-container">
           <div className="title-inner">
-            <h4>{post.title}</h4>
+            <h2>{post.title}</h2>
+            {post.excerpt && <p>{post.excerpt}</p>}
           </div>
+          <span className="work-card__arrow" aria-hidden="true">↗</span>
         </div>
-      </div>
+      </article>
     </Link>
   )
 }

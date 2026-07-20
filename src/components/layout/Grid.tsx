@@ -7,17 +7,30 @@ interface GridProps {
 }
 
 export const Grid: FC<GridProps> = ({posts}) => {
+  const projectCount = String(posts.length).padStart(2, '0')
+
   return (
-    <div className="project-grid" id="grid">
-      <div id="projects" className="section-meta">
-        <span className="section-meta__index">{'//05'}</span>
-        <span className="section-meta__label">MY WORK</span>
-      </div>
+    <section className="project-grid" id="projects" aria-labelledby="project-index-title">
+      <header className="work-section-heading">
+        <div className="work-kicker">
+          <span>{'//01'}</span>
+          <span id="project-index-title">PROJECT INDEX</span>
+        </div>
+        <span>{projectCount} CASE STUDIES / SELECTED SYSTEMS</span>
+      </header>
       <div className="main-grid-container">
-        {posts.map((post, index) => {
-          return <GridItem post={post} key={post.slug} priority={index < 3} />
-        })}
+        {posts.map((post, index) => (
+          <GridItem
+            post={post}
+            index={index}
+            key={post.slug}
+            priority={index < 2}
+          />
+        ))}
       </div>
-    </div>
+      {posts.length === 0 && (
+        <p className="project-grid__empty">Project index is temporarily unavailable.</p>
+      )}
+    </section>
   )
 }
