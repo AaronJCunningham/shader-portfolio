@@ -315,6 +315,41 @@
   }
 }
 
+.portal-menu--open.portal-menu--closing .portal-menu__links {
+  pointer-events: none;
+}
+
+.portal-menu--open.portal-menu--closing .portal-menu__link {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.24s ease,
+    transform 0.34s cubic-bezier(0.7, 0, 0.84, 0);
+
+  &:nth-child(1) {
+    transition-delay: 0.18s;
+  }
+
+  &:nth-child(2) {
+    transition-delay: 0.12s;
+  }
+
+  &:nth-child(3) {
+    transition-delay: 0.06s;
+  }
+
+  &:nth-child(4) {
+    transition-delay: 0s;
+  }
+}
+
+.portal-menu--fading .portal-menu__overlay {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition-duration: 0.36s;
+}
+
 .portal-menu__footer {
   padding-top: clamp(18px, 2.5vh, 28px);
 }

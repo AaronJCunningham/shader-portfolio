@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { MouseEvent } from "react";
 
 const menuItems = [
   { label: "HOME", href: "/" },
@@ -9,15 +10,87 @@ const menuItems = [
   { label: "CONNECT", href: "mailto:hello@aaronjcunningham.com" },
 ];
 
+type MenuPhase = "closed" | "open" | "closing" | "fading";
+
+const ITEM_EXIT_DURATION = 180;
+const CLOSE_DURATION = 560;
+
 export default function PortalMenu() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [phase, setPhase] = useState<MenuPhase>("closed");
+  const phaseRef = useRef<MenuPhase>("closed");
+  const itemExitTimerRef = useRef<number>();
+  const closeTimerRef = useRef<number>();
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const isVisible = phase !== "closed";
+  const isInteractive = phase === "open";
+
+  const setMenuPhase = useCallback((nextPhase: MenuPhase) => {
+    phaseRef.current = nextPhase;
+    setPhase(nextPhase);
+  }, []);
+
+  const openMenu = useCallback(() => {
+    if (phaseRef.current !== "closed") return;
+    setMenuPhase("open");
+  }, [setMenuPhase]);
+
+  const closeMenu = useCallback(
+    (afterClose?: () => void) => {
+      if (phaseRef.current !== "open") return;
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setMenuPhase("closed");
+        afterClose?.();
+        return;
+      }
+
+      setMenuPhase("closing");
+
+      itemExitTimerRef.current = window.setTimeout(() => {
+        setMenuPhase("fading");
+      }, ITEM_EXIT_DURATION);
+
+      closeTimerRef.current = window.setTimeout(() => {
+        setMenuPhase("closed");
+        afterClose?.();
+      }, CLOSE_DURATION);
+    },
+    [setMenuPhase],
+  );
+
+  const handleItemClick = (
+    event: MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    closeMenu(() => {
+      if (href.startsWith("mailto:")) {
+        window.location.href = href;
+        return;
+      }
+
+      if (router.asPath !== href) {
+        void router.push(href);
+      }
+    });
+  };
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isVisible) return;
 
     const previousOverflow = document.body.style.overflow;
     const trigger = triggerRef.current;
@@ -29,7 +102,7 @@ export default function PortalMenu() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsOpen(false);
+        closeMenu();
         return;
       }
 
@@ -61,24 +134,42 @@ export default function PortalMenu() {
       window.removeEventListener("keydown", handleKeyDown);
       trigger?.focus();
     };
-  }, [isOpen]);
+  }, [closeMenu, isVisible]);
+
+  useEffect(
+    () => () => {
+      window.clearTimeout(itemExitTimerRef.current);
+      window.clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
 
   return (
     <div
       ref={menuRef}
-      className={`portal-menu ${isOpen ? "portal-menu--open" : ""}`}
+      className={`portal-menu ${
+        phase !== "closed" ? "portal-menu--open" : ""
+      } ${phase === "closing" || phase === "fading" ? "portal-menu--closing" : ""} ${
+        phase === "fading" ? "portal-menu--fading" : ""
+      }`}
     >
       <span className="portal-menu__label" aria-hidden="true">
-        {isOpen ? "CLOSE" : "MENU"}
+        {isVisible ? "CLOSE" : "MENU"}
       </span>
       <button
         ref={triggerRef}
         className="portal-menu__trigger"
         type="button"
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-        aria-expanded={isOpen}
+        aria-label={isVisible ? "Close menu" : "Open menu"}
+        aria-expanded={isInteractive}
         aria-controls="portal-menu-overlay"
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={() => {
+          if (phaseRef.current === "closed") {
+            openMenu();
+          } else if (phaseRef.current === "open") {
+            closeMenu();
+          }
+        }}
       >
         <span className="portal-menu__trigger-core" />
       </button>
@@ -87,8 +178,8 @@ export default function PortalMenu() {
         id="portal-menu-overlay"
         className="portal-menu__overlay"
         role="dialog"
-        aria-modal={isOpen ? "true" : undefined}
-        aria-hidden={!isOpen}
+        aria-modal={isVisible ? "true" : undefined}
+        aria-hidden={!isVisible}
         aria-label="Site navigation"
       >
         <nav className="portal-menu__panel" aria-label="Primary navigation">
@@ -112,8 +203,8 @@ export default function PortalMenu() {
                   key={item.href}
                   className={className}
                   href={item.href}
-                  tabIndex={isOpen ? undefined : -1}
-                  onClick={() => setIsOpen(false)}
+                  tabIndex={isInteractive ? undefined : -1}
+                  onClick={(event) => handleItemClick(event, item.href)}
                 >
                   <span className="portal-menu__index">
                     {`//${String(index + 1).padStart(2, "0")}`}
