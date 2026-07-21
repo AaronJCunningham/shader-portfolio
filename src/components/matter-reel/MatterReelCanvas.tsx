@@ -477,11 +477,7 @@ export default function MatterReelCanvas({
           )
           const target = mix(fromTarget, toTarget, staggeredProgress)
           const energy = scrollVelocityUniform.abs().min(5)
-          const portalWeight = progressUniform.sub(2).abs().min(1).oneMinus()
-          const springStrength = energy
-            .mul(0.65)
-            .add(7.4)
-            .add(portalWeight.mul(6.6))
+          const springStrength = energy.mul(0.65).add(7.4)
 
           velocity.addAssign(
             target.sub(position).mul(springStrength).mul(deltaUniform),
@@ -538,13 +534,7 @@ export default function MatterReelCanvas({
           )
 
           const damping = float(1)
-            .sub(
-              deltaUniform.mul(
-                float(4.7)
-                  .add(portalWeight.mul(2.8))
-                  .sub(energy.min(1).mul(1.8)),
-              ),
-            )
+            .sub(deltaUniform.mul(float(4.7).sub(energy.min(1).mul(1.8))))
             .max(0.78)
           velocity.mulAssign(damping)
 
@@ -588,14 +578,9 @@ export default function MatterReelCanvas({
           vec3(0.62, 0.24, 0.68),
           renderSeedC,
         )
-        const portalBaseColor = mix(
-          vec3(0.12, 0.28, 0.62),
-          vec3(0.32, 0.56, 0.46),
-          renderSeedB.pow(2),
+        const portalColor = vec3(0.28, 0.5, 0.54).mul(
+          renderSeedB.mul(0.22).add(0.78),
         )
-        const portalColor = renderSeedC
-          .greaterThan(0.965)
-          .select(vec3(0.58, 0.72, 0.78), portalBaseColor)
         const editorBaseColor = mix(
           vec3(0.48, 0.16, 0.34),
           vec3(0.72, 0.3, 0.52),
@@ -632,7 +617,7 @@ export default function MatterReelCanvas({
         material.scaleNode = particleSizeUniform.mul(
           renderSeedB.pow(8).mul(1.8).add(0.52),
         ).mul(float(1).sub(renderEditorWeight.mul(0.24)))
-        material.colorNode = mix(fromColor, toColor, renderTransition)
+        material.colorNode = mix(fromColor, toColor, renderTransition).mul(0.9)
         const particleShape = shapeCircle() as unknown as ReturnType<typeof float>
         material.opacityNode = particleShape
           .mul(renderSeedC.mul(0.32).add(0.18))
@@ -654,7 +639,7 @@ export default function MatterReelCanvas({
           renderPipeline = new THREE.RenderPipeline(renderer)
           const scenePass = pass(scene, camera)
           const sceneColor = scenePass.getTextureNode('output')
-          const bloomPass = bloom(sceneColor, 0.42, 0.25, 0.42)
+          const bloomPass = bloom(sceneColor, 0.3, 0.22, 0.08)
           bloomPass.setResolutionScale(0.35)
           renderPipeline.outputNode = sceneColor.add(bloomPass)
         }

@@ -51,7 +51,7 @@
 }
 
 .matter-reel[data-state="portal"] {
-  --matter-state: 216, 243, 74;
+  --matter-state: 82, 153, 161;
 }
 
 .matter-reel[data-state="editor"] {
@@ -328,6 +328,10 @@
 .matter-reel__chapter--machine .matter-reel__title,
 .matter-reel__chapter--portal .matter-reel__title {
   margin-left: auto;
+}
+
+.matter-reel__chapter--portal .matter-reel__title {
+  max-width: 6.5ch;
 }
 
 .matter-reel__description {
