@@ -273,7 +273,7 @@ export default function MatterReelCanvas({
           const machineLane = machineLaneIndex.sub(8)
           const machineX = seedB
             .sub(0.5)
-            .mul(7.2)
+            .mul(4.4)
             .add(sin(machineLane.mul(0.8)).mul(0.1))
           const machinePrimaryWave = sin(
             machineX
@@ -307,7 +307,7 @@ export default function MatterReelCanvas({
           // State 03 — stacked market signals, each with a distinct frequency.
           const signalLaneIndex = seedA.mul(13).floor()
           const signalLane = signalLaneIndex.sub(6)
-          const signalX = seedB.sub(0.5).mul(7.2)
+          const signalX = seedB.sub(0.5).mul(4.4)
           const signalFrequency = signalLaneIndex.mod(5).mul(0.34).add(1.05)
           const signalAmplitude = signalLaneIndex.mod(3).mul(0.07).add(0.13)
           const signalWave = sin(
@@ -477,7 +477,11 @@ export default function MatterReelCanvas({
           )
           const target = mix(fromTarget, toTarget, staggeredProgress)
           const energy = scrollVelocityUniform.abs().min(5)
-          const springStrength = energy.mul(0.65).add(7.4)
+          const portalWeight = progressUniform.sub(2).abs().min(1).oneMinus()
+          const springStrength = energy
+            .mul(0.65)
+            .add(7.4)
+            .add(portalWeight.mul(6.6))
 
           velocity.addAssign(
             target.sub(position).mul(springStrength).mul(deltaUniform),
@@ -534,7 +538,13 @@ export default function MatterReelCanvas({
           )
 
           const damping = float(1)
-            .sub(deltaUniform.mul(float(4.7).sub(energy.min(1).mul(1.8))))
+            .sub(
+              deltaUniform.mul(
+                float(4.7)
+                  .add(portalWeight.mul(2.8))
+                  .sub(energy.min(1).mul(1.8)),
+              ),
+            )
             .max(0.78)
           velocity.mulAssign(damping)
 
@@ -580,7 +590,7 @@ export default function MatterReelCanvas({
         )
         const portalBaseColor = mix(
           vec3(0.12, 0.28, 0.62),
-          vec3(0.52, 0.65, 0.18),
+          vec3(0.32, 0.56, 0.46),
           renderSeedB.pow(2),
         )
         const portalColor = renderSeedC

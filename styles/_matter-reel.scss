@@ -331,7 +331,7 @@
 }
 
 .matter-reel__description {
-  max-width: 470px;
+  max-width: 330px;
   margin: 22px 0 0;
   color: var(--matter-muted);
   font-size: clamp(0.75rem, 0.86vw, 0.92rem);
@@ -903,7 +903,7 @@
 
   .matter-reel__description {
     display: -webkit-box;
-    max-width: 94%;
+    max-width: min(330px, 94%);
     margin-top: 14px;
     overflow: hidden;
     font-size: 0.7rem;
