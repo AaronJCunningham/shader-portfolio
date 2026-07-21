@@ -45,7 +45,7 @@ const projectStates: ProjectStateDefinition[] = [
     id: 'defi-launchpad',
     slug: MATTER_REEL_SLUGS[2],
     eyebrow: '03 / DEFI LAUNCHPAD / BASEDAI',
-    title: 'DeFi Launchpad',
+    title: 'DeFi Platform',
     description:
       'Five connected Solidity contracts, milestone voting, on-chain staking and transferable positions. EIP-1167 clone factories cut repeat deployment cost by roughly 95%.',
     materialLabel: 'SOLIDITY / NEXT.JS / EXPRESS / SUPABASE / EIP-1167',
