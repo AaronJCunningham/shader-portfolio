@@ -81,23 +81,6 @@ export default function DynamicProject({project, previousProject, nextProject}: 
               AJC
             </Link>
             <span>CASE STUDY / SELECTED WORK</span>
-            <nav className="project-masthead__nav" aria-label="Project navigation">
-              <Link href="/work">ALL WORK</Link>
-              {previousProject ? (
-                <Link href={`/${previousProject.slug}`} aria-label={`Previous project: ${previousProject.title}`}>
-                  PREV
-                </Link>
-              ) : (
-                <span>PREV</span>
-              )}
-              {nextProject ? (
-                <Link href={`/${nextProject.slug}`} aria-label={`Next project: ${nextProject.title}`}>
-                  NEXT
-                </Link>
-              ) : (
-                <span>NEXT</span>
-              )}
-            </nav>
           </header>
 
           <section className="project-hero" aria-labelledby="project-title">
