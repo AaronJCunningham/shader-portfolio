@@ -6,7 +6,7 @@ const menuItems = [
   { label: "HOME", href: "/" },
   { label: "WORK", href: "/work" },
   { label: "ABOUT", href: "/about-me" },
-  { label: "CONNECT", href: "/about-me#contact" },
+  { label: "CONNECT", href: "mailto:hello@aaronjcunningham.com" },
 ];
 
 export default function PortalMenu() {
@@ -92,6 +92,11 @@ export default function PortalMenu() {
         aria-label="Site navigation"
       >
         <nav className="portal-menu__panel" aria-label="Primary navigation">
+          <div className="portal-menu__meta" aria-hidden="true">
+            <span>{"// NAVIGATION"}</span>
+            <span>AARON J. CUNNINGHAM / 2026</span>
+          </div>
+
           <div className="portal-menu__links">
             {menuItems.map((item, index) => {
               const isActive =
@@ -110,10 +115,28 @@ export default function PortalMenu() {
                   tabIndex={isOpen ? undefined : -1}
                   onClick={() => setIsOpen(false)}
                 >
-                  <span>{item.label}</span>
+                  <span className="portal-menu__index">
+                    {`//${String(index + 1).padStart(2, "0")}`}
+                  </span>
+                  <span className="portal-menu__name">{item.label}</span>
+                  <span className="portal-menu__action">
+                    <span>
+                      {isActive
+                        ? "CURRENT"
+                        : item.href.startsWith("mailto:")
+                          ? "EMAIL"
+                          : "OPEN"}
+                    </span>
+                    <i aria-hidden="true">↗</i>
+                  </span>
                 </Link>
               );
             })}
+          </div>
+
+          <div className="portal-menu__footer" aria-hidden="true">
+            <span>LEAD FULL-STACK DEVELOPER / CREATIVE TECHNOLOGIST</span>
+            <span>BERLIN / REMOTE</span>
           </div>
         </nav>
       </div>
