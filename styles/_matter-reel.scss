@@ -55,7 +55,7 @@
 }
 
 .matter-reel[data-state="editor"] {
-  --matter-state: 92, 139, 255;
+  --matter-state: 236, 138, 178;
 }
 
 .matter-reel__track {
@@ -323,7 +323,6 @@
   line-height: 0.88;
   text-wrap: balance;
   text-transform: uppercase;
-  text-shadow: 0 12px 44px rgba(2, 2, 7, 0.88);
 }
 
 .matter-reel__chapter--machine .matter-reel__title,
@@ -338,7 +337,6 @@
   font-size: clamp(0.75rem, 0.86vw, 0.92rem);
   font-weight: 300;
   line-height: 1.58;
-  text-shadow: 0 8px 26px #020207;
 }
 
 .matter-reel__chapter-actions {

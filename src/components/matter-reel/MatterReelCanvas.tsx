@@ -556,44 +556,44 @@ export default function MatterReelCanvas({
         const renderEditorWeight = progressUniform.sub(5).abs().min(1).oneMinus()
 
         const originColor = mix(
-          vec3(0.333, 0.259, 0.651),
-          vec3(0.624, 0.992, 0.957),
+          vec3(0.24, 0.16, 0.48),
+          vec3(0.52, 0.66, 0.72),
           renderSeedA,
         )
         const nexusColor = mix(
-          vec3(0.031, 0.169, 0.192),
-          vec3(0.306, 1, 0.937),
+          vec3(0.025, 0.12, 0.16),
+          vec3(0.22, 0.62, 0.58),
           renderSeedA.pow(0.42),
         )
         const machineBaseColor = mix(
-          vec3(0.145, 0.165, 0.192),
-          vec3(0.957, 0.722, 0.353),
+          vec3(0.12, 0.14, 0.18),
+          vec3(0.62, 0.38, 0.14),
           renderSeedB.pow(2.8),
         )
         const machineColor = renderSeedC
           .greaterThan(0.94)
-          .select(vec3(0.188, 0.933, 0.569), machineBaseColor)
+          .select(vec3(0.22, 0.58, 0.38), machineBaseColor)
         const signalColor = mix(
-          vec3(0.075, 0.843, 0.918),
-          vec3(0.937, 0.329, 1),
+          vec3(0.14, 0.48, 0.58),
+          vec3(0.62, 0.24, 0.68),
           renderSeedC,
         )
         const portalBaseColor = mix(
-          vec3(0.086, 0.49, 1),
-          vec3(0.847, 0.953, 0.29),
+          vec3(0.12, 0.28, 0.62),
+          vec3(0.52, 0.65, 0.18),
           renderSeedB.pow(2),
         )
         const portalColor = renderSeedC
           .greaterThan(0.965)
-          .select(vec3(1), portalBaseColor)
+          .select(vec3(0.58, 0.72, 0.78), portalBaseColor)
         const editorBaseColor = mix(
-          vec3(0.075, 0.435, 0.98),
-          vec3(0.94, 0.18, 0.66),
+          vec3(0.48, 0.16, 0.34),
+          vec3(0.72, 0.3, 0.52),
           renderSeedA.pow(0.72),
         )
         const editorColor = renderSeedC
           .greaterThan(0.985)
-          .select(vec3(0.82, 1, 0.96), editorBaseColor)
+          .select(vec3(0.86, 0.54, 0.66), editorBaseColor)
 
         const fromColor = renderPhase.lessThan(0.5).select(
           originColor,
@@ -626,6 +626,7 @@ export default function MatterReelCanvas({
         const particleShape = shapeCircle() as unknown as ReturnType<typeof float>
         material.opacityNode = particleShape
           .mul(renderSeedC.mul(0.32).add(0.18))
+          .mul(0.88)
           .mul(float(1).sub(renderEditorWeight.mul(0.62)))
         material.transparent = true
         material.alphaToCoverage = true
