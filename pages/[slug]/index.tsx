@@ -105,7 +105,7 @@ export default function DynamicProject({project, previousProject, nextProject}: 
                 alt={project.mainImage?.alt || `${project.title} project preview`}
                 width={leadImageWidth}
                 height={leadImageHeight}
-                sizes="100vw"
+                sizes="(max-width: 820px) calc(100vw - 40px), 80vw"
                 placeholder={leadBlurDataURL ? 'blur' : 'empty'}
                 blurDataURL={leadBlurDataURL}
               />
