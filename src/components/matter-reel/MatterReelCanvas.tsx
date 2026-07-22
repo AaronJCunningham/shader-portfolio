@@ -520,7 +520,7 @@ export default function MatterReelCanvas({
               .mul(pointerInfluence)
               .mul(pointerActiveUniform)
               .mul(deltaUniform)
-              .mul(3.2),
+              .mul(6.4),
           )
 
           const machineWeight = progressUniform.sub(4).abs().min(1).oneMinus()
