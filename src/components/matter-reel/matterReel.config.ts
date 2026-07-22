@@ -5,13 +5,13 @@ export const MATTER_REEL_SLUGS = [
   'threejs-metaverse',
   'basedai-nexus-visualizing-a-blockchain-in-3d',
   'building-a-defi-launchpad',
-  'montra-browser-video-editor',
 ] as const
 
 type ProjectStateDefinition = {
   id: string
   slug?: (typeof MATTER_REEL_SLUGS)[number]
   href?: string
+  actionLabel?: string
   external?: boolean
   eyebrow: string
   title: string
@@ -52,13 +52,14 @@ const projectStates: ProjectStateDefinition[] = [
     state: 'machine',
   },
   {
-    id: 'montra-video-editor',
-    slug: MATTER_REEL_SLUGS[3],
-    eyebrow: '04 / MONTRA / LEAD THREE.JS DEVELOPER',
-    title: 'Montra Video Editor',
+    id: 'finale',
+    href: '/work',
+    actionLabel: 'View case studies',
+    eyebrow: 'THE MATTER REEL / SYSTEM COMPLETE',
+    title: 'Ambitious ideas, shipped.',
     description:
-      'Led Three.js development on a production editor that kept video, application state and real-time graphics synchronized in one responsive workflow.',
-    materialLabel: 'TYPESCRIPT / REACT / NEXT.JS / R3F / THREE.JS / WEBGL',
+      'I help teams turn difficult technical concepts into finished products through full-stack development, real-time graphics, and end-to-end ownership.',
+    materialLabel: 'ONE SYSTEM / SIX STATES / ZERO SCENE CUTS',
     state: 'editor',
   },
 ]
@@ -70,7 +71,7 @@ export function createMatterChapters(projects: ProjectListItem[]): MatterChapter
     {
       id: 'origin',
       index: '//00',
-      eyebrow: 'FULL-STACK DEVELOPMENT / PRODUCT OWNERSHIP / DESIGN JUDGMENT',
+      eyebrow: 'FULL-STACK DEVELOPMENT / PRODUCT OWNERSHIP',
       title: 'Aaron J. Cunningham',
       description:
         'I turn ambitious ideas into shipped products, combining full-stack development, design judgment, and disciplined agentic workflows.',
@@ -109,6 +110,7 @@ export function createMatterChapters(projects: ProjectListItem[]): MatterChapter
       materialLabel: definition.materialLabel,
       project,
       href: definition.href || (project ? `/${project.slug}` : undefined),
+      actionLabel: definition.actionLabel,
       external: definition.external,
       state: definition.state,
     })

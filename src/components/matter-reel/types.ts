@@ -18,6 +18,7 @@ export type MatterChapter = {
   state: MatterState
   project?: ProjectListItem
   href?: string
+  actionLabel?: string
   external?: boolean
   materialLabel: string
 }

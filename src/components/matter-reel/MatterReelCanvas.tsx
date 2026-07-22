@@ -426,8 +426,27 @@ export default function MatterReelCanvas({
             .lessThan(0.78)
             .select(diamondSurfacePosition, diamondEdgePosition)
 
-          const diamondSpin = timeUniform.mul(0.16)
-          const diamondTilt = float(0.28).add(sin(timeUniform.mul(0.11)).mul(0.06))
+          const editorInteractionWeight = progressUniform
+            .sub(5)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const diamondSpin = timeUniform
+            .mul(0.16)
+            .add(
+              pointerUniform.x
+                .mul(pointerActiveUniform)
+                .mul(editorInteractionWeight)
+                .mul(0.045),
+            )
+          const diamondTilt = float(0.28)
+            .add(sin(timeUniform.mul(0.11)).mul(0.06))
+            .add(
+              pointerUniform.y
+                .mul(pointerActiveUniform)
+                .mul(editorInteractionWeight)
+                .mul(0.025),
+            )
           const diamondRotatedX = diamondPosition.x
             .mul(cos(diamondSpin))
             .sub(diamondPosition.z.mul(sin(diamondSpin)))
@@ -513,6 +532,41 @@ export default function MatterReelCanvas({
           const pointerDelta = position.sub(pointerUniform)
           const pointerDistance3d = pointerDelta.length()
           const pointerInfluence = smoothstep(0, 2, pointerDistance3d).oneMinus()
+          const pointerInfluenceWide = smoothstep(
+            0,
+            3.2,
+            pointerDistance3d,
+          ).oneMinus()
+          const motionOriginWeight = progressUniform.abs().min(1).oneMinus()
+          const motionSignalWeight = progressUniform
+            .sub(1)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const motionPortalWeight = progressUniform
+            .sub(2)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const motionNexusWeight = progressUniform
+            .sub(3)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const motionMachineWeight = progressUniform
+            .sub(4)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const motionEditorWeight = progressUniform
+            .sub(5)
+            .abs()
+            .min(1)
+            .oneMinus()
+          const pointerRadialStrength = motionOriginWeight
+            .mul(6.2)
+            .add(motionPortalWeight.mul(1.4))
+            .add(motionMachineWeight.mul(2.8))
           velocity.addAssign(
             pointerDelta
               .add(vec3(0.001))
@@ -520,16 +574,65 @@ export default function MatterReelCanvas({
               .mul(pointerInfluence)
               .mul(pointerActiveUniform)
               .mul(deltaUniform)
-              .mul(6.4),
+              .mul(pointerRadialStrength),
           )
 
-          const machineWeight = progressUniform.sub(4).abs().min(1).oneMinus()
-          const editorWeight = progressUniform.sub(5).abs().min(1).oneMinus()
+          // Signal lanes bow vertically instead of simply scattering.
+          velocity.addAssign(
+            vec3(0, pointerDelta.y, pointerDelta.z.mul(0.1))
+              .add(vec3(0.001))
+              .normalize()
+              .mul(pointerInfluenceWide)
+              .mul(pointerActiveUniform)
+              .mul(motionSignalWeight)
+              .mul(deltaUniform)
+              .mul(5.4),
+          )
+
+          // Nexus nodes pull toward the cursor and begin to orbit it.
+          velocity.addAssign(
+            pointerUniform
+              .sub(position)
+              .add(vec3(0.001))
+              .normalize()
+              .mul(pointerInfluenceWide)
+              .mul(pointerActiveUniform)
+              .mul(motionNexusWeight)
+              .mul(deltaUniform)
+              .mul(5.2),
+          )
+          velocity.addAssign(
+            vec3(pointerDelta.y.negate(), pointerDelta.x, 0)
+              .add(vec3(0.001))
+              .normalize()
+              .mul(pointerInfluenceWide)
+              .mul(pointerActiveUniform)
+              .mul(motionNexusWeight)
+              .mul(deltaUniform)
+              .mul(1.35),
+          )
+
+          // The final diamond follows the pointer as one rotating object.
+          velocity.addAssign(
+            vec3(position.y.negate(), position.x, position.z.mul(0.08))
+              .add(vec3(0.001))
+              .normalize()
+              .mul(pointerInfluenceWide)
+              .mul(pointerActiveUniform)
+              .mul(motionEditorWeight)
+              .mul(deltaUniform)
+              .mul(3.4),
+          )
+
           velocity.addAssign(
             vec3(position.y.negate(), position.x, 0)
               .add(vec3(0.0001))
               .normalize()
-              .mul(machineWeight.mul(0.025).add(editorWeight.mul(0.008)))
+              .mul(
+                motionMachineWeight
+                  .mul(0.025)
+                  .add(motionEditorWeight.mul(0.008)),
+              )
               .mul(deltaUniform),
           )
 

@@ -149,11 +149,14 @@ export default function MatterReel({projects}: MatterReelProps) {
                       className="matter-reel__project-link"
                       href={chapter.href}
                       tabIndex={isActive ? 0 : -1}
-                      aria-label={`Open ${chapter.title} case study`}
+                      aria-label={
+                        chapter.actionLabel || `Open ${chapter.title} case study`
+                      }
                       target={chapter.external ? '_blank' : undefined}
                       rel={chapter.external ? 'noopener noreferrer' : undefined}
                     >
-                      Open case study <span aria-hidden="true">↗</span>
+                      {chapter.actionLabel || 'Open case study'}{' '}
+                      <span aria-hidden="true">↗</span>
                     </Link>
                   ) : (
                     <button
@@ -166,7 +169,15 @@ export default function MatterReel({projects}: MatterReelProps) {
                       <span aria-hidden="true">↓</span>
                     </button>
                   )}
-                  {index === chapters.length - 1 && (
+                  {chapter.id === 'finale' ? (
+                    <a
+                      className="matter-reel__all-work"
+                      href="mailto:hello@aaronjcunningham.com"
+                      tabIndex={isActive ? 0 : -1}
+                    >
+                      Get in touch
+                    </a>
+                  ) : index === chapters.length - 1 ? (
                     <Link
                       className="matter-reel__all-work"
                       href="/work"
@@ -174,7 +185,7 @@ export default function MatterReel({projects}: MatterReelProps) {
                     >
                       View all work
                     </Link>
-                  )}
+                  ) : null}
                 </div>
               </article>
             )
@@ -215,7 +226,7 @@ export default function MatterReel({projects}: MatterReelProps) {
         </div>
 
         <div className="matter-reel__scroll-cue" aria-hidden="true">
-          <span>SCROLL TO APPLY ENERGY</span>
+          <span>SCROLL / MOVE TO DISTURB</span>
           <i />
         </div>
         </div>
@@ -231,7 +242,7 @@ export default function MatterReel({projects}: MatterReelProps) {
           </p>
         </div>
         {chapters
-          .filter((chapter) => chapter.href)
+          .filter((chapter) => chapter.project && chapter.href)
           .map((chapter) => (
             <article className="matter-reel__static-card" key={chapter.id}>
               <div>
