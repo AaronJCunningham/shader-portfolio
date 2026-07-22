@@ -553,12 +553,14 @@ export default function MatterReelCanvas({
         const renderSeedC = hash(instanceIndex.add(37))
         const renderPhase = progressUniform.floor()
         const renderTransition = smoothstep(0, 1, progressUniform.fract())
+        const renderOriginWeight = progressUniform.abs().min(1).oneMinus()
+        const renderNexusWeight = progressUniform.sub(3).abs().min(1).oneMinus()
         const renderEditorWeight = progressUniform.sub(5).abs().min(1).oneMinus()
 
         const originColor = mix(
-          vec3(0.24, 0.16, 0.48),
-          vec3(0.52, 0.66, 0.72),
-          renderSeedA,
+          vec3(0.11, 0.045, 0.26),
+          vec3(0.42, 0.22, 0.62),
+          renderSeedA.pow(0.72),
         )
         const nexusColor = mix(
           vec3(0.025, 0.12, 0.16),
@@ -616,12 +618,17 @@ export default function MatterReelCanvas({
         material.positionNode = positions.toAttribute()
         material.scaleNode = particleSizeUniform.mul(
           renderSeedB.pow(8).mul(1.8).add(0.52),
-        ).mul(float(1).sub(renderEditorWeight.mul(0.24)))
-        material.colorNode = mix(fromColor, toColor, renderTransition).mul(0.9)
+        )
+          .mul(float(1).sub(renderNexusWeight.mul(0.15)))
+          .mul(float(1).sub(renderEditorWeight.mul(0.24)))
+        material.colorNode = mix(fromColor, toColor, renderTransition)
+          .mul(0.9)
+          .mul(float(1).sub(renderOriginWeight.mul(0.14)))
         const particleShape = shapeCircle() as unknown as ReturnType<typeof float>
         material.opacityNode = particleShape
           .mul(renderSeedC.mul(0.32).add(0.18))
           .mul(0.88)
+          .mul(float(1).sub(renderOriginWeight.mul(0.1)))
           .mul(float(1).sub(renderEditorWeight.mul(0.62)))
         material.transparent = true
         material.alphaToCoverage = true
