@@ -1152,7 +1152,8 @@ footer {
 
   .about-hero__surname {
     display: inline-block;
-    font-size: 0.84em;
+    color: var(--about-ink) !important;
+    font-size: 0.78em;
     letter-spacing: -0.055em;
     white-space: nowrap;
   }
