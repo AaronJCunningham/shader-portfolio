@@ -1150,6 +1150,13 @@ footer {
     line-height: 0.82;
   }
 
+  .about-hero__surname {
+    display: inline-block;
+    font-size: 0.84em;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+
   .about-hero__main > p {
     max-width: 94%;
     font-size: clamp(1rem, 5vw, 1.25rem);

@@ -76,7 +76,7 @@ export default function AboutMe() {
               <h1 id="about-title">
                 Aaron J.
                 <br />
-                Cunningham
+                <span className="about-hero__surname">Cunningham</span>
               </h1>
               <p>
                 I turn ambitious ideas into shipped products, combining full-stack
