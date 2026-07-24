@@ -192,7 +192,7 @@ export default function MatterReel({projects}: MatterReelProps) {
           })}
         </div>
 
-        <nav className="matter-reel__rail" aria-label="Matter Reel chapters">
+        <nav className="matter-reel__rail" aria-label="Portfolio chapters">
           {chapters.map((chapter, index) => {
             const visited = activeIndex >= index
             return (

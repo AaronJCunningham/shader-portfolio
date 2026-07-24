@@ -3,6 +3,7 @@ import {useRouter} from 'next/router'
 
 type MetaDataHeaderProps = {
   content?: string
+  exactTitle?: boolean
   image?: string
   title?: string
   noIndex?: boolean
@@ -14,6 +15,7 @@ const DEFAULT_IMAGE = 'https://aaronjcunningham.com/images/meta-image.png'
 
 const MetaDataHeader = ({
   content = DEFAULT_DESCRIPTION,
+  exactTitle = false,
   image = DEFAULT_IMAGE,
   title = 'home',
   noIndex = false,
@@ -23,7 +25,7 @@ const MetaDataHeader = ({
   const canonicalUrl = (
     'https://aaronjcunningham.com' + (router.asPath === '/' ? '' : router.asPath)
   ).split('?')[0]
-  const pageTitle = `${title} - Aaron J. Cunningham`
+  const pageTitle = exactTitle ? title : `${title} - Aaron J. Cunningham`
   const description = content || DEFAULT_DESCRIPTION
   const socialImage = image || DEFAULT_IMAGE
 

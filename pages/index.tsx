@@ -31,7 +31,8 @@ export default function Home({projects}: HomeProps) {
   return (
     <>
       <MetaDataHeader
-        title="Matter Reel"
+        exactTitle
+        title="Aaron J. Cunningham"
         content="Aaron J. Cunningham's interactive WebGPU portfolio: one persistent field of matter transforms into networks, machines, signals, portals and constellations."
         structuredData={profileStructuredData}
       />
@@ -51,7 +52,7 @@ export async function getStaticProps() {
       revalidate: 3600,
     }
   } catch (error) {
-    console.error('Failed to fetch Sanity projects for Matter Reel', error)
+    console.error('Failed to fetch Sanity projects for homepage', error)
 
     return {
       props: {projects: []},

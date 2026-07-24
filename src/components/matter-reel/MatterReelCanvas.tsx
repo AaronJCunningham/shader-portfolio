@@ -901,7 +901,7 @@ export default function MatterReelCanvas({
           detail: tier.detail,
         })
       } catch (error) {
-        console.error('Matter Reel renderer failed to initialize', error)
+        console.error('Portfolio renderer failed to initialize', error)
         renderPipeline?.dispose()
         renderPipeline = null
         if (renderer) {
